@@ -1,6 +1,6 @@
 {
-    "name": "culturicat",
-    "short_name": "culturicat",
+    "name": "prova_login",
+    "short_name": "prova_login",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
