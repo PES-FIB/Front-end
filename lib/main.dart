@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_page.dart';
-import 'main_screen.dart';
+import '../views/login_page.dart';
+import '../views/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

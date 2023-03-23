@@ -1,11 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'main_screen.dart';
-import 'create_account.dart';
-import 'dart:async';
-import 'dart:convert';
+
+import '../controllers/login_page_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,44 +13,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
-  Future<bool> _checkUser(String email, String password) async {
-    try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/v1/apitest/users/$email'));
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        if (jsonResponse['password'] == password) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-          return true;
-        } else {
-          return false;
-        }
-      }
-      return false;
-    } catch (error) {
-      print(error.toString());
-      return false;
-    }
-  }
-    
-  void _login(String email, String password) {    
-    
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainScreen()),
-    );
-  }
-
-  void _singUp() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CreateAccount()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    final LoginPageController loginPageController = LoginPageController(context);
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -92,9 +54,10 @@ class _LoginPageState extends State<LoginPage> {
                         //obtengo los valores de los campos
                         String email = _emailController.text;
                         String password = _passwordController.text;
-                        if (await _checkUser(email, password)) {
-                          _login(email, password);
+                        if (await loginPageController.checkUser(email, password)) {
+                          loginPageController.realize_login();
                         } else {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Usuario i/o contraseña incorrectos', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
@@ -107,9 +70,9 @@ class _LoginPageState extends State<LoginPage> {
                     TextButton(
                       child: Text('Crear una nueva cuenta'),
                       onPressed: () {
-                        _singUp();
+                        loginPageController.signUp();
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
