@@ -1,6 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main_screen.dart';
 import 'create_account.dart';
+import 'dart:async';
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -13,11 +18,29 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  void _login() {
-    // Implementación del inicio de sesión aquí
-
-    // Después de iniciar sesión, navegar a la siguiente pantalla
+  
+  Future<bool> _checkUser(String email, String password) async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:8080/api/v1/apitest/users/$email'));
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['password'] == password) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return false;
+    } catch (error) {
+      print(error.toString());
+      return false;
+    }
+  }
+    
+  void _login(String email, String password) {    
+    
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
@@ -25,9 +48,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _singUp() {
-    // Implementación de la creación de una nueva cuenta aquí
-
-    // Después de crear una nueva cuenta, navegar a la siguiente pantalla
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateAccount()),
@@ -52,7 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 10),
-                    MyTextField(
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: 'Email'),
                       controller: _emailController,
                     ),
                     TextFormField(
@@ -67,8 +88,19 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {
-                          _login();
+                      onPressed: () async {
+                        //obtengo los valores de los campos
+                        String email = _emailController.text;
+                        String password = _passwordController.text;
+                        if (await _checkUser(email, password)) {
+                          _login(email, password);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Usuario i/o contraseña incorrectos', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
+                            ),
+                          );
+                        }
                       },
                       child: Text('Login'),
                     ),
@@ -84,27 +116,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class MyTextField extends StatelessWidget {
-  final TextEditingController controller;
-
-  const MyTextField({super.key, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      style: TextStyle(fontSize: 14),
-      controller: controller,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        hintText: 'Insereixi el seu correu electrònic',
       ),
     );
   }
