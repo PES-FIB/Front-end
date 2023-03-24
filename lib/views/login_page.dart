@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../controllers/login_page_controller.dart';
 
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -65,12 +68,30 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         }
                       },
-                      child: Text('Login'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 8, height: 30),
+                          const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                     TextButton(
                       child: Text('Crear una nueva cuenta'),
                       onPressed: () {
                         loginPageController.signUp();
+                      },
+                    ),
+                    //espacio para el boton de google
+                    const SizedBox(height: 20),
+                    //un flatbutton para el boton de google
+                    SignInButton(
+                      Buttons.Google,
+                      onPressed: () {
+                        loginPageController.googleLogin();
                       },
                     ),
                   ],

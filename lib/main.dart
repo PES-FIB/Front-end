@@ -4,7 +4,6 @@ import '../views/login_page.dart';
 import '../views/main_screen.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   runApp(MyApp(isLoggedIn: isLoggedIn));
