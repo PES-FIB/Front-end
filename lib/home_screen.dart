@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'UserList.dart';
+import 'EventList.dart';
+
 
 class Home extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
+   //final TextEditingController _searchController = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold( 
-        body: UserList(),
-      )
+    return Scaffold(
+        body: EventList(),
+    );
 
 
 
@@ -74,6 +74,5 @@ class Home extends StatelessWidget {
           ],
         ),
       ), */
-    );
   }
 }
