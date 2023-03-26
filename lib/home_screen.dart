@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'UserList.dart';
 
 class Home extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      home: Scaffold( 
+        body: UserList(),
+      )
+
+
+
       //una barra de búsqueda
+      /*
       body: Container(
         color: Colors.white,
         child: Column(
@@ -65,7 +73,7 @@ class Home extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ), */
     );
   }
 }
