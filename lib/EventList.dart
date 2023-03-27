@@ -1,10 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'event_screen.dart';
 
 class Event {
-  String title, description;
-  Event(this.title, this.description);
+  String title, description; // startDate, endDate, tickets, link, adress, location, placeOnLocation, email;
+  Event(this.title, this.description); // this.startDate, this.endDate, this.tickets, this.link, this.adress, this.location, this.placeOnLocation, this.email);
 }
 
 class EventList extends StatefulWidget {
@@ -31,10 +32,16 @@ class _EventListState extends State<EventList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
+        
         return ListTile(
           title: Text(events[index].title),
           subtitle: Text(events[index].description),
           leading:  Icon(Icons.calendar_month),
+          trailing: Icon(Icons.favorite_border),
+
+          onTap: () { 
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Events()));
+          }
         );
 
       },
