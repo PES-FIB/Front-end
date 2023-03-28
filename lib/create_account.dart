@@ -65,7 +65,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   Widget build(BuildContext context) {
     final CreateAccountController createAccountController = CreateAccountController(context);
     // Build a Form widget using the _formKey created above.
-    String errorMessage = '';
     return Form(
       key: _formKey,
       child: Column(
@@ -92,6 +91,9 @@ class MyCustomFormState extends State<MyCustomForm> {
           validator: (value) {
             if (value == null || value.isEmpty) {
               return '';
+            }
+            else {
+
             }
             return null;
           },
@@ -138,19 +140,23 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
+              int response = 0;
               try {
-                await createAccountController.signUp(_nameController.text, _emailController.text, _passwordController.text);
+                response = await createAccountController.signUp(_nameController.text, _emailController.text, _passwordController.text);
               }
               catch (error) { 
-               print(error);
+               print('error');
               }
               finally {
+                print(response);
+                if (response == 201) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MainScreen()),
                 );
               }
             }
+          };
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),

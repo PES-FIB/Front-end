@@ -14,16 +14,19 @@ class CreateAccountController {
 
   CreateAccountController(this.context);
 
-  Future<void> signUp(String name, String email, String password) async {
+  Future<int> signUp(String name, String email, String password) async {
     final http.Response response = await
     http.post(
     Uri.parse(UserApis.getRegisterUrl()),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
     body: jsonEncode(<String, String>{
-      'name': name,
       'email': email,
+      'name': name,
       'password': password,
     }),
-    );   
+    ); 
+    return response.statusCode;
   }
-
 }
