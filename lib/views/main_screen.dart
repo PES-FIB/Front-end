@@ -49,11 +49,17 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.orange,
-        elevation: 10,
-        title: Text(headerPage, style: TextStyle(color: Colors.white))
+        backgroundColor: Colors.redAccent,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "C U L T U R I C A 'T",
+          style: TextStyle(
+            color:Colors.white,
+            fontWeight: FontWeight.bold),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -70,23 +76,23 @@ class _MainScreenState extends State<MainScreen> {
                       child: BottomNavigationBar(
                         elevation: 4,
                         unselectedItemColor: Colors.black,
-                        selectedItemColor: Colors.orange,
+                        selectedItemColor: Colors.red,
                         items: [
                           BottomNavigationBarItem(
                             icon: Icon(Icons.calendar_month),
-                            label: 'Home',
+                            label: 'events',
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.place),
-                            label: 'Map',
+                            label: 'map',
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.star),
-                            label: 'Favorites',
+                            label: 'favs',
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.person),
-                            label: 'Perfil', 
+                            label: 'perfil' 
                           ),
                         ],
                         currentIndex: selectedIndex,
@@ -96,8 +102,8 @@ class _MainScreenState extends State<MainScreen> {
                           });
                         },
                         selectedLabelStyle: TextStyle(
-                          color: Colors.orange,
-                          fontSize: 16,
+                          color: Colors.redAccent,
+                          fontSize: 16, 
                         ),
                         iconSize: 30,
                       ),
