@@ -57,13 +57,26 @@ class _LoginPageState extends State<LoginPage> {
                         //obtengo los valores de los campos
                         String email = _emailController.text;
                         String password = _passwordController.text;
-                        if (await loginPageController.checkUser(email, password)) {
-                          loginPageController.realize_login();
-                        } else {
-                          // ignore: use_build_context_synchronously
+                        try {
+                          //llamo a la funcion de login
+                          int statusCode = await loginPageController.loginUser(email, password);
+                          if (statusCode == 200) {
+                            loginPageController.realize_login();
+                          }
+                          else {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Usuario i/o contraseña incorrectos', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
+                              ),
+                            );
+                          }
+                        }
+                        catch(error) {
+                          print(error);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Usuario i/o contraseña incorrectos', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
+                              content: Text('Error al intentar iniciar sesión', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
                             ),
                           );
                         }
@@ -82,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextButton(
                       child: Text('Crear una nueva cuenta'),
                       onPressed: () {
-                        loginPageController.signUp();
+                        loginPageController.to_signUp();
                       },
                     ),
                     //espacio para el boton de google
@@ -91,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                     SignInButton(
                       Buttons.Google,
                       onPressed: () {
-                        loginPageController.googleLogin();
+                        //loginPageController.googleLogin();
                       },
                     ),
                   ],
