@@ -1,5 +1,5 @@
 
-class UserApis {
+class userApis {
 
 
 

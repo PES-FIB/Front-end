@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
 import 'main_screen.dart';
-import '../controllers/CreateAccountController.dart';
+import '../controllers/userController.dart';
 
 
 class CreateAccount extends StatefulWidget {
@@ -63,7 +62,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final CreateAccountController createAccountController = CreateAccountController(context);
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
@@ -142,13 +140,12 @@ class MyCustomFormState extends State<MyCustomForm> {
             if (_formKey.currentState!.validate()) {
               int response = 0;
               try {
-                response = await createAccountController.signUp(_nameController.text, _emailController.text, _passwordController.text);
+                response = await userController.signUp(_nameController.text, _emailController.text, _passwordController.text);
               }
               catch (error) { 
                print('error');
               }
               finally {
-                print(response);
                 if (response == 201) {
                 Navigator.push(
                   context,
@@ -156,7 +153,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 );
               }
             }
-          };
+          }
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
