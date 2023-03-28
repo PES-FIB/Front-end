@@ -24,13 +24,17 @@ class _RegisterPageState extends State<CreateAccount> {
         body: Center(
           child: Column(
             children:<Widget> [
-              Flexible(child: Image.asset('assets/Captura.png', height: 200.0)),
+              Flexible(
+                child: Image.asset('assets/Captura.png', height: 200.0)),
               SizedBox(height: 20),
-              MyCustomForm(),
-                ]
+              Container (
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                child: MyCustomForm()
               ),
-            ),
+            ],
+          ),
         ),
+      ),
     );
   }
 }
@@ -129,20 +133,29 @@ class MyCustomFormState extends State<MyCustomForm> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(30),
             ),
           ),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               try {
                 await createAccountController.signUp(_nameController.text, _emailController.text, _passwordController.text);
-             }
-             catch (error) {
-
-             }
+              }
+              catch (error) { 
+               print(error);
+              }
+              finally {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                );
+              }
             }
           },
-          child: Text('Crear un nou Compte'),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+            child: Text('Crear un nou Compte'),
+          ),
         ),
       ],
       ),
