@@ -23,6 +23,7 @@ class EventsController {
 
     try {
 
+      //cookies management
       Dio dio = Dio();
       CookieJar cookieJar = CookieJar();
       dio.interceptors.add(CookieManager(cookieJar));
@@ -40,10 +41,7 @@ class EventsController {
       print(response.statusCode);
   
       if (response.statusCode == 200) {
-        print('OK');
-       
-        print('DECODED');
-        for (int i = 0; i < response.data['data'].length; ++i) {
+        for (int i = 0; i < response.data['data'].length; ++i) { //respons is already decoded. 
         Event event = Event(
           response.data['data'][i]['denomination'],
           response.data['data'][i]['description'], false

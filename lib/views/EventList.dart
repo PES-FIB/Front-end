@@ -7,7 +7,9 @@ import '../controllers/events_controller.dart';
 class Event {
   String title, description; // startDate, endDate, tickets, link, adress, location, placeOnLocation, email;
   bool fav;
+
   Event(this.title, this.description, this.fav); // this.startDate, this.endDate, this.tickets, this.link, this.adress, this.location, this.placeOnLocation, this.email);
+  
 }
 
 class EventList extends StatefulWidget {
@@ -32,8 +34,18 @@ class _EventListState extends State<EventList> {
       print('events loaded');
     });
   }
+
+  void pushEventScreen(int clickedEvent) async {
+    final updatedEvent = await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: events[clickedEvent])));
+    if (updatedEvent != null) {
+      setState(() {
+        events[clickedEvent] = updatedEvent;
+      });
+    }
+  }
   
-  /*
+  /* 
+  //FAKE EVENTS
   @override
   void initState() {
     events = [
@@ -50,14 +62,13 @@ class _EventListState extends State<EventList> {
     return ListView.builder(
       itemBuilder: (context, index) {
         return ListTile(
-          
+          contentPadding: EdgeInsets.all(20.0),
           title: Text(events[index].title),
           subtitle: Text(events[index].description),
-          leading:  Icon(Icons.calendar_month, color: Colors.black, size: 30,),
+          leading:  Icon(Icons.event, color: Colors.black, size: 30),
           trailing: IconButton(
-            color: Colors.black,
-            iconSize: 20,
-            icon: Icon(Icons.favorite, color: events[index].fav ? Colors.redAccent: Colors.black),
+            iconSize: 25,
+            icon: Icon(Icons.favorite, color: events[index].fav ? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
             onPressed: () {
             setState(() {
               events[index].fav = !events[index].fav;
@@ -66,7 +77,7 @@ class _EventListState extends State<EventList> {
           ),
 
           onTap: () { 
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Events()));
+            pushEventScreen(index);
           }
         );
 
