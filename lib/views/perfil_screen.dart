@@ -3,10 +3,32 @@ import 'package:prova_login/controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 
-class Perfil extends StatelessWidget {
+class Perfil extends StatefulWidget {
+   @override
+  State<Perfil> createState() {
+    return _PerfilState();
+  }
+}
+class _PerfilState extends State<Perfil> {
+   List<User> lu = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
+
+
+  Future<void> loadUser() async {
+    User CurrentUser = await userController.getUserInfo();
+    setState(() {
+      lu.add(CurrentUser);
+      print('User loaded');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future u = userController.getUserInfo();
     return Scaffold(
       body: Container(
         margin: EdgeInsets.all(5.0),
@@ -42,23 +64,9 @@ class Perfil extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              ElevatedButton (
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  ), 
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed: () async {
-                  User u = await userController.getUserInfo();
-                  if (u.getEmail() != 'null') {
-                  Text(u.getEmail());
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-                  child: Text('Dades Usuari'),
-                ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+                child: Text(lu[0].email),
               ),
             ],
           ), 
