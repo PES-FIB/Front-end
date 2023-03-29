@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "Culturica't",
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.grey,
       ),
       home: LoginPage(),
     );
