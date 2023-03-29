@@ -4,6 +4,7 @@ import 'create_account.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import '../controllers/dioController.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     // Implementación del inicio de sesión aquí
-    final dio = Dio();
     //Login mentre no esta tot a prod
     try {
     await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', 
