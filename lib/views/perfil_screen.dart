@@ -38,10 +38,13 @@ class _PerfilState extends State<Perfil> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  SizedBox(
-                   child: ElevatedButton (
-                    style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.orange,
+                   child: IconButton (
+                    tooltip: 'Tanca Sessió',
+                    style: IconButton.styleFrom(
+                        shape: CircleBorder()
                     ),
                     onPressed: () async {
                       int response = 0;
@@ -60,7 +63,7 @@ class _PerfilState extends State<Perfil> {
                       }
                       }
                     },
-                    child: const Icon(LineAwesomeIcons.alternate_sign_out),
+                    icon: Icon(LineAwesomeIcons.alternate_sign_out, color: Colors.black),
                   )
                   ),
                 ],
@@ -122,7 +125,7 @@ class ProfileWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(100),
           color: Colors.orange
         ),
-        child: Icon(icon),
+        child: Icon(icon), 
       ),
       title: Text (title, style:TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
       trailing: SizedBox (
