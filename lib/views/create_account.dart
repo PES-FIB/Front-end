@@ -94,8 +94,8 @@ class MyCustomFormState extends State<MyCustomForm> {
             if (value == null || value.isEmpty) {
               return '';
             }
-            else {
-
+            else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+              return 'Introdueixi un correu vàlid.';
             }
             return null;
           },
