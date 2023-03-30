@@ -20,6 +20,10 @@ class _RegisterPageState extends State<CreateAccount> {
         appBar: AppBar(
           title: Text('Culturica\'t'),
           centerTitle: true,
+          leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ), 
         ),
         body: Center(
           child: Column(
@@ -91,4 +95,82 @@ class MyCustomFormState extends State<MyCustomForm> {
             if (value == null || value.isEmpty) {
               return '';
             }
+<<<<<<< HEAD
             else {
+=======
+            else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+              return 'Introdueixi un correu vàlid.';
+            }
+            return null;
+          },
+          decoration: const InputDecoration(labelText: 'Email'),
+        ),
+        TextFormField(
+          controller: _passwordController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return '';
+            }
+            else if(value.isNotEmpty && value !=_password2Controller.text) {
+              _passwordController.clear();
+            }
+            return null;
+          },
+          decoration: const InputDecoration(labelText: 'Contrasenya'),
+          obscureText: true,
+        ),
+        TextFormField(
+          controller: _password2Controller,
+          validator: (value) {
+            if (value != _passwordController.text && !((value == null || value.isEmpty)) ) {
+              _password2Controller.clear();
+              return 'La contrasenya indicada no coincideix';
+            }
+            else if ((value == null || value.isEmpty) && _passwordController.text.isNotEmpty ) {
+              return 'Siusplau, confirmi la seva contrasenya';
+            } 
+            else if ((value == null || value.isEmpty) && _passwordController.text.isEmpty) {
+              return '';
+            }
+            return null;
+          },
+          decoration: const InputDecoration(labelText: 'Repeteixi la seva contrasenya'),
+          obscureText: true,
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              int response = 0;
+              try {
+                response = await userController.signUp(_nameController.text, _emailController.text, _passwordController.text);
+              }
+              catch (error) { 
+               print('error');
+              }
+              finally {
+                if (response == 201) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                );
+              }
+            }
+          }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+            child: Text('Crear un nou Compte'),
+          ),
+        ),
+      ],
+      ),
+    );
+  }
+}
+>>>>>>> 9366460775f0b4dd6214a36330ba76db3db353c2

@@ -1,6 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'main_screen.dart';
-import 'create_account.dart';
+
+import '../controllers/login_page_controller.dart';
+
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+import 'styles/custom_snackbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,28 +20,10 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
-    // Implementación del inicio de sesión aquí
-
-    // Después de iniciar sesión, navegar a la siguiente pantalla
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainScreen()),
-    );
-  }
-
-  void _singUp() {
-    // Implementación de la creación de una nueva cuenta aquí
-
-    // Después de crear una nueva cuenta, navegar a la siguiente pantalla
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CreateAccount()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final LoginPageController loginPageController = LoginPageController(context);
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -48,11 +36,12 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     const Text(
-                      'Email',
+                      'Inicia Sessió',
                       style: TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 10),
-                    MyTextField(
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: 'Email'),
                       controller: _emailController,
                     ),
                     TextFormField(
@@ -67,44 +56,57 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {
-                          _login();
+                      onPressed: () async {
+                        //obtengo los valores de los campos
+                        String email = _emailController.text;
+                        String password = _passwordController.text;
+                        try {
+                          //llamo a la funcion de login
+                          int statusCode = await loginPageController.loginUser(email, password);
+                          if (statusCode == 200) {
+                            loginPageController.realize_login();
+                          }
+                          else {
+                            ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Usuario i/o contraseña incorrectos'));
+                          }
+                        }
+                        catch(error) {
+                          print(error);
+                          ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Fallo de connexión al intentar iniciar sesión'));
+                        }
                       },
-                      child: Text('Login'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 8, height: 30),
+                          const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                     TextButton(
                       child: Text('Crear una nueva cuenta'),
                       onPressed: () {
-                        _singUp();
+                        loginPageController.to_signUp();
                       },
-                    )
+                    ),
+                    //espacio para el boton de google
+                    const SizedBox(height: 20),
+                    //un flatbutton para el boton de google
+                    SignInButton(
+                      Buttons.Google,
+                      onPressed: () {
+                        //loginPageController.googleLogin();
+                      },
+                    ),
                   ],
                 ),
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class MyTextField extends StatelessWidget {
-  final TextEditingController controller;
-
-  const MyTextField({super.key, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      style: TextStyle(fontSize: 14),
-      controller: controller,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        hintText: 'Insereixi el seu correu electrònic',
       ),
     );
   }

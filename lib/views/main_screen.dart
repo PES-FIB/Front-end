@@ -44,6 +44,7 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     return Scaffold(
+<<<<<<< HEAD
       appBar: AppBar(
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
@@ -56,6 +57,13 @@ class _MainScreenState extends State<MainScreen> {
             color:Colors.white,
             fontWeight: FontWeight.bold),
         ),
+=======
+      appBar: AppBar( 
+        toolbarHeight: 70,
+        automaticallyImplyLeading: false,
+        elevation: 10,
+        title: Text(headerPage, style: TextStyle(color: Colors.white))
+>>>>>>> 9366460775f0b4dd6214a36330ba76db3db353c2
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

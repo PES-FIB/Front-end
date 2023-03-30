@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.prova_login">
+    package="com.example.culturicat">
    <application
         android:label="prova_login"
         android:name="${applicationName}"
