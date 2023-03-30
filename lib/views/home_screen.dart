@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import './styles/search_bar.dart';
+import './styles/custom_dropdownbutton.dart';
+import '../controllers/filter_controller.dart';
 
-class Home extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
-  
+class Home extends StatefulWidget {
+  @override
+  HomeState createState() => HomeState();
+}
+
+class HomeState extends State<Home> {
+  FilterController filterController = FilterController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //una barra de búsqueda
       body: Container(
         color: Colors.white,
         child: Column(
@@ -15,45 +23,28 @@ class Home extends StatelessWidget {
               children: [
                 Container(
                   margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
+                  child: searchBar(),
                 ),
                 Column(
                   children: [
-                      Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: Text('Filtrar per:'),
-                      ),
-                    //caja para seleccionar el tipo de filtro
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: Text('Filtrar per:'),
+                    ),
                     Container(
                       margin: EdgeInsets.only(top: 5),
-                      child: DropdownButton(
-                        hint: Text('Selecciona un filtre', style: TextStyle(fontSize: 16)),
-
-                        items: [
-                          DropdownMenuItem(
-                            value: 1,
-                            child: Text('Data'),
-                          ),
-                          DropdownMenuItem(
-                            value: 2,
-                            child: Text('Hora'),
-                          ),
-                          DropdownMenuItem(
-                            value: 3,
-                            child: Text('Localització'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          //cambiar hint
+                      child: FutureBuilder<List<String>>(
+                        future: filterController.getFilters(),
+                        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                          if (snapshot.hasData) {
+                            return CustomDropdownButton(
+                              dropdownValues: snapshot.data!,
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return CircularProgressIndicator();
+                          }
                         },
                       ),
                     ),
@@ -66,4 +57,6 @@ class Home extends StatelessWidget {
       ),
     );
   }
+
 }
+

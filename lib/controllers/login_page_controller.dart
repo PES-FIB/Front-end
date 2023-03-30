@@ -1,21 +1,20 @@
-// ignore_for_file: non_constant_identifier_names
-
-import 'dart:js';
+// ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../views/main_screen.dart';
-import '../views/create_account_google.dart';
 import '../views/create_account.dart';
 
-import '../APIs/userApis.dart';
+import '../APIs/users_apis.dart';
 
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+
+//import 'package:google_sign_in/google_sign_in.dart';
 
 
 class LoginPageController {
@@ -23,22 +22,17 @@ class LoginPageController {
 
   LoginPageController(this.context);
   
-  //needed for google login
-
-
   Future<int> loginUser(String email, String password) async {
-    final http.Response response = await
-    http.post(
-      Uri.parse(UserApis.getLoginUrl()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
+    final dio = Dio();
+    final cookieJar = CookieJar();
+    dio.interceptors.add(CookieManager(cookieJar));
+    final response = await dio.post(UserApis.getLoginUrl(),   
+    data: {
       'email': email,
       'password': password,
-    }),
+    }
     ); 
-    return response.statusCode;
+    return response.statusCode!;
   }
 
   Future<void> realize_login() async { 
@@ -61,13 +55,6 @@ class LoginPageController {
   }
   
 /*
-  void to_signUpGoogle(String email,String? username) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CreateAccountWithGoogle(username: username, email: email)),
-    );
-  }
- 
  
   Future<void> googleLogin() async {
     try {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../APIs/userAPIs.dart';
+import '../APIs/users_apis.dart';
 
 import 'dart:async';
 

@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../views/login_page.dart';
-import '../views/main_screen.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import '../controllers/dioController.dart';
+
 
 void main() async {
-  final prefs = await SharedPreferences.getInstance();
-  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-  runApp(MyApp(isLoggedIn: isLoggedIn));
+  final cookieJar = CookieJar();
+  dio.interceptors.add(CookieManager(cookieJar));
+  runApp(MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
-
-  MyApp({required this.isLoggedIn});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Culturica't",
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.red,
       ),
-      home: isLoggedIn ? MainScreen() : LoginPage(),
+      home: LoginPage(),
     );
   }
 }

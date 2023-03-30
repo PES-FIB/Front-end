@@ -1,4 +1,4 @@
-package com.example.prova_login
+package com.example.culturicat
 
 import io.flutter.embedding.android.FlutterActivity
 

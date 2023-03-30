@@ -51,7 +51,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar( 
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.orange,
         elevation: 10,
         title: Text(headerPage, style: TextStyle(color: Colors.white))
       ),

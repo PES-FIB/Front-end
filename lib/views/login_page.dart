@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 
 import '../controllers/login_page_controller.dart';
 
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
+import 'styles/custom_snackbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -64,21 +67,12 @@ class _LoginPageState extends State<LoginPage> {
                             loginPageController.realize_login();
                           }
                           else {
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Usuario i/o contraseña incorrectos', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
-                              ),
-                            );
+                            ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Usuario i/o contraseña incorrectos'));
                           }
                         }
                         catch(error) {
                           print(error);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Error al intentar iniciar sesión', style: TextStyle(fontSize: 20 ,color: Colors.red), ),
-                            ),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Fallo de connexión al intentar iniciar sesión'));
                         }
                       },
                       child: Row(
