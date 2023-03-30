@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'main_screen.dart';
 import 'create_account.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import '../controllers/dioController.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,9 +18,17 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
+  void _login() async {
     // Implementación del inicio de sesión aquí
-
+    //Login mentre no esta tot a prod
+    // try {
+    // await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', 
+    // data: {'email':'gerard.g@gmail.com', 'password':'gerard1234'});
+    // }
+    // on DioError catch (e) {
+    //   print(e.message);
+    // }
+    //
     // Después de iniciar sesión, navegar a la siguiente pantalla
     Navigator.push(
       context,
@@ -67,8 +79,8 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {
-                          _login();
+                      onPressed: () async {
+                          _login() ;
                       },
                       child: Text('Login'),
                     ),
