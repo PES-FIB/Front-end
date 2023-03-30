@@ -155,7 +155,7 @@ class _EventsState extends State<Events> {
                           Icon(Icons.link),
                           SizedBox(width: 10.0),
                           Text(
-                            'https://lapassio.net/https://lapassio.net/',
+                            "https://lapassio.net/https://lapassio.net/",
                             style: TextStyle(
                               fontSize: 15.0,
                               color: Colors.black

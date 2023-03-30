@@ -17,23 +17,18 @@ class _MainScreenState extends State<MainScreen> {
     var colorScheme = Theme.of(context).colorScheme;
 
     Widget page;
-    String headerPage;
 
     switch (selectedIndex) {
       case 0:
-        headerPage = 'Home';
         page = Home();
         break;
       case 1:
-        headerPage = 'Map';
         page = Map();
         break;
       case 2:
-        headerPage = 'Favorites';
         page = Favorites();
         break;
       case 3:
-        headerPage = 'Perfil';
         page = Perfil();
         break;
       default:
@@ -50,8 +45,9 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 70,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.orange,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -76,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: BottomNavigationBar(
                         elevation: 4,
                         unselectedItemColor: Colors.black,
-                        selectedItemColor: Colors.red,
+                        selectedItemColor: Colors.orange,
                         items: [
                           BottomNavigationBarItem(
                             icon: Icon(Icons.calendar_month),
@@ -87,7 +83,7 @@ class _MainScreenState extends State<MainScreen> {
                             label: 'map',
                           ),
                           BottomNavigationBarItem(
-                            icon: Icon(Icons.star),
+                            icon: Icon(Icons.favorite),
                             label: 'favs',
                           ),
                           BottomNavigationBarItem(
