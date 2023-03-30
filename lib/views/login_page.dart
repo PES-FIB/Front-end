@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     const Text(
-                      'Email',
+                      'Inicia Sessió',
                       style: TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 10),
