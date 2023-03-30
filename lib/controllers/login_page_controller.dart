@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
 
-import '../APIs/users_apis.dart';
+import '../APIs/userApis.dart';
 
 import 'dart:async';
 
@@ -23,7 +23,7 @@ class LoginPageController {
   LoginPageController(this.context);
   
   Future<int> loginUser(String email, String password) async {
-    final response = await dio.post(UserApis.getLoginUrl(),   
+    final response = await dio.post(userApis.getLoginUrl(),   
     data: {
       'email': email,
       'password': password,
