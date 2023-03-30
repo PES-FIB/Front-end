@@ -52,7 +52,6 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar( 
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.orange,
         elevation: 10,
         title: Text(headerPage, style: TextStyle(color: Colors.white))
       ),
