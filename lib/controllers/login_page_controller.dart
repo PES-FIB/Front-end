@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
@@ -13,6 +12,7 @@ import 'dart:async';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'dioController.dart';
 
 //import 'package:google_sign_in/google_sign_in.dart';
 
@@ -23,9 +23,6 @@ class LoginPageController {
   LoginPageController(this.context);
   
   Future<int> loginUser(String email, String password) async {
-    final dio = Dio();
-    final cookieJar = CookieJar();
-    dio.interceptors.add(CookieManager(cookieJar));
     final response = await dio.post(UserApis.getLoginUrl(),   
     data: {
       'email': email,
@@ -36,9 +33,6 @@ class LoginPageController {
   }
 
   Future<void> realize_login() async { 
-    //cambiar IsLoggedIn a true
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLoggedIn', true);   
 
     // ignore: use_build_context_synchronously
     Navigator.push(
