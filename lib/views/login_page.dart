@@ -21,21 +21,19 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     // Implementación del inicio de sesión aquí
     //Login mentre no esta tot a prod
-    try {
-    await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', 
-    data: {'email':'gerard.g@gmail.com', 'password':'gerard1234'});
-    }
-    on DioError catch (e) {
-      print(e.message);
-    }
+    // try {
+    // await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', 
+    // data: {'email':'gerard.g@gmail.com', 'password':'gerard1234'});
+    // }
+    // on DioError catch (e) {
+    //   print(e.message);
+    // }
     //
-   finally {
     // Después de iniciar sesión, navegar a la siguiente pantalla
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
     );
-   }
   }
 
   void _singUp() {
