@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'EventList.dart';
+
 
 class Home extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
+   //final TextEditingController _searchController = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        body: 
+        EventList(),
+    );
+
+
+
       //una barra de búsqueda
+      /*
       body: Container(
         color: Colors.white,
         child: Column(
@@ -65,7 +74,6 @@ class Home extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      ), */
   }
 }

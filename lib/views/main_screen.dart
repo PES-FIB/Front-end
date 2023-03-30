@@ -17,23 +17,18 @@ class _MainScreenState extends State<MainScreen> {
     var colorScheme = Theme.of(context).colorScheme;
 
     Widget page;
-    String headerPage;
 
     switch (selectedIndex) {
       case 0:
-        headerPage = 'Home';
         page = Home();
         break;
       case 1:
-        headerPage = 'Map';
         page = Map();
         break;
       case 2:
-        headerPage = 'Favorites';
         page = Favorites();
         break;
       case 3:
-        headerPage = 'Perfil';
         page = Perfil();
         break;
       default:
@@ -49,11 +44,18 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
+        toolbarHeight: 70,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.orange,
-        elevation: 10,
-        title: Text(headerPage, style: TextStyle(color: Colors.white))
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "C U L T U R I C A 'T",
+          style: TextStyle(
+            color:Colors.white,
+            fontWeight: FontWeight.bold),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -74,19 +76,19 @@ class _MainScreenState extends State<MainScreen> {
                         items: [
                           BottomNavigationBarItem(
                             icon: Icon(Icons.calendar_month),
-                            label: 'Home',
+                            label: 'events',
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.place),
-                            label: 'Map',
+                            label: 'map',
                           ),
                           BottomNavigationBarItem(
-                            icon: Icon(Icons.star),
-                            label: 'Favorites',
+                            icon: Icon(Icons.favorite),
+                            label: 'favs',
                           ),
                           BottomNavigationBarItem(
                             icon: Icon(Icons.person),
-                            label: 'Perfil', 
+                            label: 'perfil' 
                           ),
                         ],
                         currentIndex: selectedIndex,
@@ -96,8 +98,8 @@ class _MainScreenState extends State<MainScreen> {
                           });
                         },
                         selectedLabelStyle: TextStyle(
-                          color: Colors.orange,
-                          fontSize: 16,
+                          color: Colors.redAccent,
+                          fontSize: 16, 
                         ),
                         iconSize: 30,
                       ),
