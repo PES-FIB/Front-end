@@ -95,9 +95,6 @@ class MyCustomFormState extends State<MyCustomForm> {
             if (value == null || value.isEmpty) {
               return '';
             }
-<<<<<<< HEAD
-            else {
-=======
             else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
               return 'Introdueixi un correu vàlid.';
             }
@@ -173,4 +170,3 @@ class MyCustomFormState extends State<MyCustomForm> {
     );
   }
 }
->>>>>>> 9366460775f0b4dd6214a36330ba76db3db353c2
