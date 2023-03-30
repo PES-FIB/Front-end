@@ -31,6 +31,7 @@ class userController{
       print(e.message);
       return -1;
     }
+    await getUserInfo();
     return response.statusCode!;
   }
   
@@ -47,17 +48,16 @@ class userController{
     return response.statusCode!;
   } 
 
-  static Future<User> getUserInfo() async {
+  static Future<void> getUserInfo() async {
     Response response;
     try {
       response = await dio.get(userApis.getshowMe());
     }
     on DioError catch (e) {
       print(e.message);
-      return User(-1, 'null', 'null');
+      return;
     }
     print(response.data['user']);
-    User u = User(response.data['user']['id'], response.data['user']['name'], response.data['user']['email']);
-    return u;
+    User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email']);
   }
 }

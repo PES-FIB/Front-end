@@ -11,23 +11,6 @@ class Perfil extends StatefulWidget {
   }
 }
 class _PerfilState extends State<Perfil> {
-   List<User> lu = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadUser();
-  }
-
-
-  Future<void> loadUser() async {
-    User CurrentUser = await userController.getUserInfo();
-    setState(() {
-      lu.add(CurrentUser);
-      print('User loaded');
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,19 +59,9 @@ class _PerfilState extends State<Perfil> {
                   child: const Image(image: AssetImage('assets/userImage.jpg')),
                 ),
               ),
-              const SizedBox(height: 10),
-              Container(
-                child: lu.isEmpty?
-                CircularProgressIndicator():
-                Text(lu[0].name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30))
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-                child: lu.isEmpty?
-                //Text("hola"/*lu[0].email*/),
-                CircularProgressIndicator():
-                Text(lu[0].email)
-              ),
+              const SizedBox(height: 10),  
+                Text(User.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                Text(User.email),
               const Divider(),
               const SizedBox(height: 20),
               ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){}),

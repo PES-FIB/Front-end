@@ -1,8 +1,11 @@
 class User {
-  int id;
-  String name;
-  String email;
-  User(this.id, this.name, this.email);
+  static int id = -1;
+  static String name = '';
+  static String email = '';
 
-  String getEmail() {return email;}
+  static void setValues(int newId, String newName, String newEmail) {
+    id = newId;
+    name = newName;
+    email = newEmail;
+  }
 }

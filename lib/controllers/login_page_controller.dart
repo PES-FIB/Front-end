@@ -13,6 +13,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'dioController.dart';
+import 'userController.dart';
 
 //import 'package:google_sign_in/google_sign_in.dart';
 
@@ -29,6 +30,7 @@ class LoginPageController {
       'password': password,
     }
     ); 
+    await userController.getUserInfo();
     return response.statusCode!;
   }
 
