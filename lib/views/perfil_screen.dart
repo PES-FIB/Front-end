@@ -3,6 +3,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
+import 'perfil_config.dart';
 
 class Perfil extends StatefulWidget {
    @override
@@ -21,7 +22,9 @@ class _PerfilState extends State<Perfil> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  CircleAvatar(
+                  Column(
+                    children: <Widget>[
+                      CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.orange,
                    child: IconButton (
@@ -47,10 +50,30 @@ class _PerfilState extends State<Perfil> {
                       }
                     },
                     icon: Icon(LineAwesomeIcons.alternate_sign_out, color: Colors.black),
+                  ),
+                  ),
+                  SizedBox(height: 5),
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.orange,
+                   child: IconButton (
+                    tooltip: 'Configuració',
+                    style: IconButton.styleFrom(
+                        shape: CircleBorder()
+                    ),
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PerfilConfig()),
+                      );
+                    },
+                    icon: Icon(LineAwesomeIcons.cog, color: Colors.black),
                   )
                   ),
-                ],
-              ),
+                  ],
+                )
+              ],
+            ),
               SizedBox(
                 width: 180,
                 height: 180,
