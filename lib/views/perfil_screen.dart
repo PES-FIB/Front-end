@@ -45,10 +45,8 @@ class _PerfilState extends State<Perfil> {
                         }
                         finally {
                           if (response == 200) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginPage()),
-                          );
+                          Navigator.of(context, rootNavigator: true).pushReplacement(                          
+                          MaterialPageRoute(builder: (context) => LoginPage()));
                         }
                         else {
                           ScaffoldMessenger.of(context).showSnackBar(

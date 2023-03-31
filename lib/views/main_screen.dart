@@ -12,38 +12,24 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var selectedIndex = 0;
+  var index = 0;
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-
-    Widget page;
-
-    switch (selectedIndex) {
-      case 0:
-        page = Home();
-        break;
-      case 1:
-        page = Map();
-        break;
-      case 2:
-        page = Favorites();
-        break;
-      case 3:
-        page = Perfil();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
+    
+   final List<Widget> _pages = [
+    Home(),
+    Map(),
+    Favorites(),
+    Perfil()];
     // The container for the current page, with its background color
-    var mainArea = ColoredBox(
-      color: colorScheme.surfaceVariant,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
-        child: page,
-      ),
-    );
+    // var mainArea = ColoredBox(
+    //   color: Colors.redAccent,
+    //   child: AnimatedSwitcher(
+    //     duration: Duration(milliseconds: 200),
+    //     child: page,
+    //   ),
+    // );
 
     return Scaffold(
       appBar: AppBar(
@@ -59,7 +45,41 @@ class _MainScreenState extends State<MainScreen> {
             fontWeight: FontWeight.bold),
         ),
       ),
-      body : CupertinoStoreHomePage()
+      body : CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: const <BottomNavigationBarItem> [
+          BottomNavigationBarItem(
+            icon: Icon(LineAwesomeIcons.calendar),
+            label: 'events',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(LineAwesomeIcons.map_marker),
+            label: 'map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(LineAwesomeIcons.heart),
+            label: 'favs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(LineAwesomeIcons.user),
+            label: 'perfil' 
+          ),
+        ],
+        activeColor: Colors.redAccent,
+        onTap: (ind) {
+          setState(() {
+            index = ind;
+          });
+        },
+      ),
+      
+        tabBuilder: (context, i) {
+          return CupertinoTabView(builder: (context) {
+            return _pages[i];
+          }
+          );
+        },
+    ),
     );
   }
 }
@@ -155,53 +175,3 @@ class _MainScreenState extends State<MainScreen> {
 // }
 
 
-class CupertinoStoreHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: const <BottomNavigationBarItem> [
-          BottomNavigationBarItem(
-            icon: Icon(LineAwesomeIcons.calendar),
-            label: 'events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(LineAwesomeIcons.map_marker),
-            label: 'map',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(LineAwesomeIcons.heart),
-            label: 'favs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(LineAwesomeIcons.user),
-            label: 'perfil' 
-          ),
-        ]
-        ), 
-      tabBuilder: (context, index) {
-        switch(index) {
-          case 0:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(
-                child: Home(),
-                ); 
-            });
-          case 1:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: Map()); 
-            });
-          case 2:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: Favorites()); 
-            });
-          case 3:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: Perfil()); 
-            });
-            default: throw UnimplementedError('no widget for $index');
-        }
-      }
-      );
-  }
-}
