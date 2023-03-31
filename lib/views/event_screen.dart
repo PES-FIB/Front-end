@@ -72,19 +72,7 @@ class _EventsState extends State<Events> {
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
           ), 
-          toolbarHeight: 70,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.orange,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "C U L T U R I C A 'T",
-            style: TextStyle(
-              color:Colors.white,
-              fontWeight: FontWeight.bold),
-          ),
         ),
-        
         //body
         body: Container(
           margin: EdgeInsets.all(16.0),

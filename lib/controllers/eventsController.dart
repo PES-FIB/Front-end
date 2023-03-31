@@ -30,82 +30,85 @@ class EventsController {
       //print(response.statusCode);
   
       if (response.statusCode == 200) {
-        for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+        if(response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
         
-        //images can be empty 
-        String image;
-        if (response.data['data'][i]['images'].isEmpty) {
-          image = "";
-        } else {
-          image = response.data['data'][i]['images'][0];
+          //images can be empty 
+          String image;
+          if (response.data['data'][i]['images'].isEmpty) {
+            image = "";
+          } else {
+            image = response.data['data'][i]['images'][0];
+          }
+
+          //url can be null 
+          String url;
+          if (response.data['data'][i]['url'] == null) {
+            url = "";
+          } else { url = response.data['data'][i]['url']; }
+
+          String initD;
+          if (response.data['data'][i]['initial_date'] == null) {
+            initD = "";
+          } else {
+            initD = response.data['data'][i]['initial_date'];
+          }
+          
+          String finalD;
+          if (response.data['data'][i]['final_date'] == null) {
+            finalD = "";
+          } else {
+            finalD = response.data['data'][i]['final_date'];
+          }
+
+          String schedule;
+          if (response.data['data'][i]['schedule'] == null) {
+            schedule = "";
+          } else {
+            schedule = response.data['data'][i]['schedule'];
+          }
+
+          String city;
+          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+              city = "";
+          } else {
+            city = response.data['data'][i]['region'][2];
+          }
+
+          String adress;
+          if (response.data['data'][i]['address'] == null) {
+            adress = "";
+          } else {
+            adress = response.data['data'][i]['address'];
+          }
+          
+          String tickets;
+          if (response.data['data'][i]['tickets'] == null) {
+            tickets = "";
+          } else {
+            tickets = response.data['data'][i]['tickets'];
+          }
+
+          Event event = Event(
+            response.data['data'][i]['code'],
+            response.data['data'][i]['denomination'],
+            response.data['data'][i]['description'],
+            image,
+            url,
+            initD,
+            finalD,
+            schedule,
+            city,
+            adress,
+            tickets,
+          );
+          
+          allEvents.add(event);
+          }
+          return allEvents;
         }
 
-        //url can be null 
-        String url;
-        if (response.data['data'][i]['url'] == null) {
-          url = "";
-        } else { url = response.data['data'][i]['url']; }
-
-         String initD;
-        if (response.data['data'][i]['initial_date'] == null) {
-          initD = "";
-        } else {
-          initD = response.data['data'][i]['initial_date'];
         }
-        
-        String finalD;
-        if (response.data['data'][i]['final_date'] == null) {
-          finalD = "";
-        } else {
-          finalD = response.data['data'][i]['final_date'];
-        }
-
-        String schedule;
-        if (response.data['data'][i]['schedule'] == null) {
-          schedule = "";
-        } else {
-          schedule = response.data['data'][i]['schedule'];
-        }
-
-        String city;
-        if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
-            city = "";
-        } else {
-          city = response.data['data'][i]['region'][2];
-        }
-
-        String adress;
-        if (response.data['data'][i]['address'] == null) {
-          adress = "";
-        } else {
-          adress = response.data['data'][i]['address'];
-        }
-        
-        String tickets;
-        if (response.data['data'][i]['tickets'] == null) {
-          tickets = "";
-        } else {
-          tickets = response.data['data'][i]['tickets'];
-        }
-
-        Event event = Event(
-          response.data['data'][i]['code'],
-          response.data['data'][i]['denomination'],
-          response.data['data'][i]['description'],
-          image,
-          url,
-          initD,
-          finalD,
-          schedule,
-          city,
-          adress,
-          tickets,
-        );
-        
-        allEvents.add(event);
-        }
-        return allEvents;
-      }
       return []; // return an empty list if there was an error
     } catch (error) {
       print(error.toString());
@@ -133,74 +136,77 @@ class EventsController {
       print(response.statusCode);
   
       if (response.statusCode == 200) {
-        for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-        String image;
-        if (response.data['data'][i]['images'].isEmpty) {
-          image = "";
-        } else {
-          image = response.data['data'][i]['images'][0];
-        }
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+          String image;
+          if (response.data['data'][i]['images'].isEmpty) {
+            image = "";
+          } else {
+            image = response.data['data'][i]['images'][0];
+          }
 
-        String initD;
-        if (response.data['data'][i]['initial_date'] == null) {
-          initD = "";
-        } else {
-          initD = response.data['data'][i]['initial_date'];
-        }
-        
-        String finalD;
-        if (response.data['data'][i]['final_date'] == null) {
-          finalD = "";
-        } else {
-          finalD = response.data['data'][i]['final_date'];
-        }
+          String initD;
+          if (response.data['data'][i]['initial_date'] == null) {
+            initD = "";
+          } else {
+            initD = response.data['data'][i]['initial_date'];
+          }
+          
+          String finalD;
+          if (response.data['data'][i]['final_date'] == null) {
+            finalD = "";
+          } else {
+            finalD = response.data['data'][i]['final_date'];
+          }
 
-        String schedule;
-        if (response.data['data'][i]['schedule'] == null) {
-          schedule = "";
-        } else {
-          schedule = response.data['data'][i]['schedule'];
-        }
+          String schedule;
+          if (response.data['data'][i]['schedule'] == null) {
+            schedule = "";
+          } else {
+            schedule = response.data['data'][i]['schedule'];
+          }
 
-        String city;
-        if (response.data['data'][i]['region'][2] == null) {
-          city = "";
-        } else {
-          city = response.data['data'][i]['region'][2];
-        }
+          String city;
+          if (response.data['data'][i]['region'][2] == null) {
+            city = "";
+          } else {
+            city = response.data['data'][i]['region'][2];
+          }
 
-        String adress;
-        if (response.data['data'][i]['adress'] == null) {
-          adress = "";
-        } else {
-          adress = response.data['data'][i]['adress'];
-        }
-        
-        String tickets;
-        if (response.data['data'][i]['tickets'] == null) {
-          tickets = "";
-        } else {
-          tickets = response.data['data'][i]['tickets'];
-        }
+          String adress;
+          if (response.data['data'][i]['adress'] == null) {
+            adress = "";
+          } else {
+            adress = response.data['data'][i]['adress'];
+          }
+          
+          String tickets;
+          if (response.data['data'][i]['tickets'] == null) {
+            tickets = "";
+          } else {
+            tickets = response.data['data'][i]['tickets'];
+          }
 
-        Event event = Event(
-          response.data['data'][i]['denomination'],
-          response.data['data'][i]['description'],
-          response.data['data'][i]['code'],
-          image,
-          response.data['data'][i]['url'],
-          initD,
-          finalD,
-          schedule,
-          city,
-          adress,
-          tickets
-        );
-        savedEvents[response.data['data'][i]['code']] = event;
+          Event event = Event(
+            response.data['data'][i]['denomination'],
+            response.data['data'][i]['description'],
+            response.data['data'][i]['code'],
+            image,
+            response.data['data'][i]['url'],
+            initD,
+            finalD,
+            schedule,
+            city,
+            adress,
+            tickets
+          );
+          savedEvents[response.data['data'][i]['code']] = event;
+          }
+          return savedEvents;
         }
-        return savedEvents;
       }
-      return savedEvents; // return an empty list if there was an error
+        return savedEvents; // return an empty list if there was an error
+        
     } catch (error) {
       print(error.toString());
       return savedEvents; // return an empty list if there was an error

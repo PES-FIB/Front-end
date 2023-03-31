@@ -13,6 +13,7 @@ class _FavoritesState extends State<Favorites> {
   
   Map<String, Event> mapSavedEvents = {};
   List<Event> savedEvents = [];
+  int length = 0;
 
   @override
   void initState() {
@@ -23,6 +24,8 @@ class _FavoritesState extends State<Favorites> {
   Future<void> loadEvents() async {
     mapSavedEvents = await EventsController.getSavedEvents();
     savedEvents = mapSavedEvents.values.toList();
+    length = savedEvents.length;
+
   }
 
   void pushEventScreen(int clickedEvent) async {

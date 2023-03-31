@@ -21,6 +21,7 @@ class _EventListState extends State<EventList> {
   Map<String,Event> saved = {};
   List<Event> _foundEvents = [];
   List<Event> result = [];
+  int length = 0;
 
 
   Future<void> loadEvents() async {
