@@ -7,6 +7,7 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import '../APIs/userApis.dart';
 import '../models/User.dart';
 import 'dioController.dart';
+import '../APIs/userApis.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -59,5 +60,22 @@ class userController{
     }
     print(response.data['user']);
     User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email']);
+  }
+
+  static Future<void> updateUserInfo(String name, String email) async {
+    try {
+      await dio.patch(userApis.getupdateUser(),
+      data: {
+        'name': name,
+        'email': email
+      }
+      );
+    }
+    on DioError catch (e) {
+      print(e.message);
+      throw Exception(e.message);
+    } 
+    User.setValues(User.id, name, email);
+
   }
 }

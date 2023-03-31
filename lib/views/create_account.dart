@@ -18,24 +18,31 @@ class _RegisterPageState extends State<CreateAccount> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Culturica\'t'),
+          toolbarHeight: 70,
+          title: Text(
+          "C U L T U R I C A 'T",
+          style: TextStyle(
+            color:Colors.white,
+            fontWeight: FontWeight.bold),
+        ),
           centerTitle: true,
           leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ), 
         ),
-        body: Center(
-          child: Column(
-            children:<Widget> [
-              Flexible(
-                child: Image.asset('assets/culturicat-removebg-preview.png', height: 200.0)),
-              SizedBox(height: 20),
-              Container (
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
-                child: MyCustomForm()
-              ),
-            ],
+        body: SingleChildScrollView (
+          child :Center(
+            child: Column(
+              children:<Widget> [
+                Image.asset('assets/culturicat-removebg-preview.png', height: 240.0),
+                SizedBox(height: 20),
+                Container (
+                  padding: EdgeInsets.symmetric(horizontal: 40.0),
+                  child: MyCustomForm()
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -134,12 +141,15 @@ class MyCustomFormState extends State<MyCustomForm> {
           decoration: const InputDecoration(labelText: 'Repeteixi la seva contrasenya'),
           obscureText: true,
         ),
-        const SizedBox(height: 20),
-        ElevatedButton(
+        const SizedBox(height: 30),
+        Container(
+          padding: EdgeInsets.only(left:60, right: 60),
+        child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
+            fixedSize:Size(60, 40)
           ),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
@@ -160,8 +170,6 @@ class MyCustomFormState extends State<MyCustomForm> {
             }
           }
           },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 30.0),
             child: Text('Crear un nou Compte'),
           ),
         ),
