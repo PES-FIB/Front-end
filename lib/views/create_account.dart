@@ -29,7 +29,7 @@ class _RegisterPageState extends State<CreateAccount> {
           child: Column(
             children:<Widget> [
               Flexible(
-                child: Image.asset('assets/Captura.png', height: 200.0)),
+                child: Image.asset('assets/culturicat-removebg-preview.png', height: 200.0)),
               SizedBox(height: 20),
               Container (
                 padding: EdgeInsets.symmetric(horizontal: 40.0),
@@ -161,7 +161,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           }
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 30.0),
             child: Text('Crear un nou Compte'),
           ),
         ),

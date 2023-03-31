@@ -3,6 +3,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
+import 'perfil_screen.dart';
 
 class PerfilConfig extends StatefulWidget {
    @override

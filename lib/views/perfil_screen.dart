@@ -4,6 +4,7 @@ import 'package:prova_login/controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 import 'perfil_config.dart';
+import 'styles/custom_snackbar.dart';
 
 class Perfil extends StatefulWidget {
    @override
@@ -19,61 +20,68 @@ class _PerfilState extends State<Perfil> {
             child: Column (
             children: <Widget> [
               const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.orange,
-                   child: IconButton (
-                    tooltip: 'Tanca Sessió',
-                    style: IconButton.styleFrom(
-                        shape: CircleBorder()
+              Padding(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.redAccent,
+                    child: IconButton (
+                      tooltip: 'Tanca Sessió',
+                      style: IconButton.styleFrom(
+                          shape: CircleBorder()
+                      ),
+                      onPressed: () async {
+                        int response = 0;
+                        try {
+                          response = await userController.logOut();
+                        }
+                        catch(e) {
+                          print(e);
+                        }
+                        finally {
+                          if (response == 200) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                          );
+                        }
+                        else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            customSnackbar(context, 'Usuario i/o contraseña incorrectos'));      
+                        }
+                        }
+                      },
+                      icon: Icon(LineAwesomeIcons.alternate_sign_out, color: Colors.white),
                     ),
-                    onPressed: () async {
-                      int response = 0;
-                      try {
-                        response = await userController.logOut();
-                      }
-                      catch(e) {
-                        print(e);
-                      }
-                      finally {
-                        if (response == 200) {
+                    ),
+                    SizedBox(height: 5),
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.redAccent,
+                    child: IconButton (
+                      tooltip: 'Configuració',
+                      style: IconButton.styleFrom(
+                          shape: CircleBorder()
+                      ),
+                      onPressed: () async {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          MaterialPageRoute(builder: (context) => PerfilConfig()),
                         );
-                      }
-                      }
-                    },
-                    icon: Icon(LineAwesomeIcons.alternate_sign_out, color: Colors.black),
-                  ),
-                  ),
-                  SizedBox(height: 5),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.orange,
-                   child: IconButton (
-                    tooltip: 'Configuració',
-                    style: IconButton.styleFrom(
-                        shape: CircleBorder()
+                      },
+                      icon: Icon(LineAwesomeIcons.cog, color: Colors.white),
+                    )
                     ),
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PerfilConfig()),
-                      );
-                    },
-                    icon: Icon(LineAwesomeIcons.cog, color: Colors.black),
+                    ],
                   )
-                  ),
-                  ],
-                )
-              ],
-            ),
+                ],
+              ),
+              ),
               SizedBox(
                 width: 180,
                 height: 180,
@@ -119,9 +127,9 @@ class ProfileWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration (
           borderRadius: BorderRadius.circular(100),
-          color: Colors.orange
+          color: Colors.redAccent
         ),
-        child: Icon(icon), 
+        child: Icon(icon, color: Colors.white), 
       ),
       title: Text (title, style:TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
       trailing: SizedBox (
