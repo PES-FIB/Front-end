@@ -25,19 +25,19 @@ class _LoginPageState extends State<LoginPage> {
     final LoginPageController loginPageController = LoginPageController(context);
 
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+      body: SingleChildScrollView(
+        child:Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 120),
             child: Center(
               child: Form(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    Image.asset('assets/culturicat-removebg-preview.png', height: 270),
                     const Text(
                       'Inicia Sessió',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
@@ -52,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     TextButton(
-                      child: Text('Crear una nueva cuenta'),
+                      child: Text('Crear una nueva cuenta', style: TextStyle(color: Colors.redAccent) ),
                       onPressed: () {
                         loginPageController.to_signUp();
                       },
@@ -105,9 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-          );
-        },
+          ),
       ),
-    );
+      );
   }
 }

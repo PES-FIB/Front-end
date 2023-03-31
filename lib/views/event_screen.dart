@@ -62,9 +62,7 @@ class _EventsState extends State<Events> {
         month = "";
     }
 
-    return Expanded
-    (
-      child: Scaffold(
+    return  Scaffold(
     
         //AppBar
         appBar: AppBar(
@@ -276,8 +274,6 @@ class _EventsState extends State<Events> {
                   ),
           ),
         ),
-    
-      ),
     );
   }
 }
