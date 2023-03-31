@@ -11,6 +11,7 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   
+  Map<String, Event> mapSavedEvents = {};
   List<Event> savedEvents = [];
 
   @override
@@ -20,11 +21,8 @@ class _FavoritesState extends State<Favorites> {
   }
 
   Future<void> loadEvents() async {
-    List<Event> loadedEvents = await EventsController.getSavedEvents();
-    setState(() {
-      savedEvents = loadedEvents;
-      print('saved events loaded');
-    });
+    mapSavedEvents = await EventsController.getSavedEvents();
+    savedEvents = mapSavedEvents.values.toList();
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -59,12 +57,13 @@ class _FavoritesState extends State<Favorites> {
                     trailing: IconButton(
                       iconSize: 25,
                       icon: Icon(Icons.favorite,
-                          color: savedEvents[index].fav
-                              ? Colors.redAccent
-                              : Color.fromARGB(255, 182, 179, 179)),
+                          color: Colors.redAccent),
                       onPressed: () {
                         setState(() {
-                          savedEvents[index].fav = !savedEvents[index].fav;
+                          mapSavedEvents.remove(savedEvents[index].code);
+                          EventsController controller = EventsController(context);
+                          controller.unsaveEvent(savedEvents[index].code);
+                          loadEvents();
                         });
                       },
                     ),
