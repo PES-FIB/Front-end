@@ -62,20 +62,30 @@ class userController{
     User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email']);
   }
 
-  static Future<void> updateUserInfo(String name, String email) async {
-    try {
-      await dio.patch(userApis.getupdateUser(),
+  static Future<bool> updateUserInfo(String name, String email) async {
+    Response r;
+      r = await dio.patch(userApis.getupdateUser(),
       data: {
         'name': name,
         'email': email
-      }
-      );
+      },
+      options: Options(
+            followRedirects: false,
+            validateStatus: (status) {
+              return status != 200;
+            },
+      ));
+    if (r.statusCode != 200) {
+      return false;
+      
     }
-    on DioError catch (e) {
-      print(e.message);
-      throw Exception(e.message);
-    } 
+    else {
     User.setValues(User.id, name, email);
+    return true;
+    }
+  }
 
+  static Future<bool> deleteUser(int id) async {
+    return true;
   }
 }

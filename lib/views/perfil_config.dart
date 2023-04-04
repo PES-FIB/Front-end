@@ -17,6 +17,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
   bool editEmail = false;
   bool editPassword = false;
   bool loadingUpdate = false;
+  bool baixaCheck = false;
   TextEditingController _nameController = TextEditingController(text: User.name);
   TextEditingController _emailController = TextEditingController(text: User.email);
   TextEditingController _passwordController = TextEditingController();
@@ -43,9 +44,108 @@ class _PerfilConfigState extends State<PerfilConfig> {
                 },
                 icon: Icon(Icons.arrow_back, color: Colors.black),
               ),
+              SizedBox(width: 300),
+              Padding(padding: EdgeInsets.only(top: 10), 
+              child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.redAccent,
+                      child: IconButton (
+                        tooltip: 'Donar-se de baixa',
+                        style: IconButton.styleFrom(
+                            shape: CircleBorder()
+                        ),
+                        onPressed:() {
+                          setState(() {
+                            baixaCheck = true;
+                          });
+                        },
+                        icon: Icon(LineAwesomeIcons.user_minus, color: Colors.white),
+                      )
+                  ),)
             ],
           ),
-          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.only(right:11),
+              child:
+              Row( 
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('Donar-se \nde baixa')
+                ],
+                )
+            ),
+          baixaCheck?
+          Column(
+            children: [
+              SizedBox(height: 100),
+              Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('Està segur que vol donar-se de baixa?'),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(50, 50),
+                  backgroundColor: Colors.redAccent
+                ),
+                onPressed: () async {
+                  bool check = false;
+                  try {
+                  check = await userController.deleteUser(User.id);
+                  }
+                  catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
+                  }
+                  finally {
+                  if (check) {
+                    Navigator.of(context, rootNavigator: true).pushReplacement(                          
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                  }
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
+                  }
+                  setState(() {
+                    baixaCheck = false;
+                  });
+                  }
+                },
+                child: Text('Si')
+                ),
+                SizedBox(width: 40),
+                ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(50, 50),
+                  backgroundColor: Colors.redAccent
+                ),
+                onPressed: () {
+                  setState(() {
+                    baixaCheck = false;
+                  });
+                },
+                child: Text('No')
+                ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          )
+            ],
+          ):
+          Expanded(
+            child: Column(
+              children: [
+                SizedBox(height: 20),
           Text('Configuració', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
           SizedBox(height: 70),
           Row(
@@ -147,7 +247,9 @@ class _PerfilConfigState extends State<PerfilConfig> {
             ]
           ),
           SizedBox(height: 40),
-          ElevatedButton(
+          loadingUpdate?
+            CircularProgressIndicator():
+            ElevatedButton(
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
@@ -159,21 +261,29 @@ class _PerfilConfigState extends State<PerfilConfig> {
               loadingUpdate = true;
             });
             if(_nameController.text.isNotEmpty && _emailController.text.isNotEmpty && !(_nameController.text == User.name) && !(_emailController.text == User.email)) {
+              bool b = false;
               try {
-
-                await userController.updateUserInfo(_nameController.text,_emailController.text);
+               b = await userController.updateUserInfo(_nameController.text,_emailController.text);
               }
-              catch(error) {
+              catch(e) {
                 setState(() {
                   loadingUpdate = false;
                 });
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No s\'han pogut actualitzar les dades, reviseu-les.'));
               }
-              finally {
-                setState(() {
-                  loadingUpdate = false;
-                });
-              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Dades Actualitzades correctament'));
+              finally { 
+                if (b) {
+                  setState(() {
+                    loadingUpdate = false;
+                  });
+                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Dades Actualitzades correctament'));
+                }
+                else {
+                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No s\'han pogut actualitzar les dades, reviseu-les.'));
+                  setState(() {
+                    loadingUpdate = false;
+                  });
+                }
               }
             }
             else {
@@ -183,9 +293,11 @@ class _PerfilConfigState extends State<PerfilConfig> {
               });
             }
           },
-            child: loadingUpdate?
-            CircularProgressIndicator():
-            Text('Actualitza les meves dades'),
+            child: Text('Actualitza les meves dades'),
+          ),
+          SizedBox(height: 30),
+          ],
+            )
           ),
         ],
       )
