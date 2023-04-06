@@ -31,6 +31,7 @@ class LoginPageController {
     }
     ); 
     await userController.getUserInfo();
+    realize_login();
     return response.statusCode!;
   }
 

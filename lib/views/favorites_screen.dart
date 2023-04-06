@@ -13,19 +13,23 @@ class _FavoritesState extends State<Favorites> {
   
   Map<String, Event> mapSavedEvents = {};
   List<Event> savedEvents = [];
-  int length = 0;
+
+  Future<Map<String,Event>> loadSavedEvents() async {
+    return await EventsController.getSavedEvents();
+  }
+
+  void refresh() {
+    initState();
+  }
 
   @override
   void initState() {
     super.initState();
-    loadEvents();
-  }
-
-  Future<void> loadEvents() async {
-    mapSavedEvents = await EventsController.getSavedEvents();
-    savedEvents = mapSavedEvents.values.toList();
-    length = savedEvents.length;
-
+     loadSavedEvents().then((value){
+       setState(() {
+        savedEvents.addAll(value.values.toList());
+      });
+    });
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -54,7 +58,6 @@ class _FavoritesState extends State<Favorites> {
                     key: ValueKey(savedEvents[index].title),
                     contentPadding: EdgeInsets.all(20.0),
                     title: Text(savedEvents[index].title),
-                    subtitle: Text(savedEvents[index].description),
                     leading:
                         Icon(Icons.event, color: Colors.black, size: 30),
                     trailing: IconButton(
@@ -66,7 +69,7 @@ class _FavoritesState extends State<Favorites> {
                           mapSavedEvents.remove(savedEvents[index].code);
                           EventsController controller = EventsController(context);
                           controller.unsaveEvent(savedEvents[index].code);
-                          loadEvents();
+                          initState();
                         });
                       },
                     ),

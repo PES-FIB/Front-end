@@ -16,19 +16,10 @@ class EventsController {
     List<Event> allEvents = []; //initialize empty event list.
 
     try {
-      //login for accessing events.
-      final authLogin = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', data: {'email':'cbum@gmail.com', 'password':'cbumpostman'});
-      
-      //checking login response
-      //print(authLogin.statusCode);
 
       //request events 
       final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events');
        
-      //cheking events response
-      //print("no ha saltat error al demanar els events.");
-      //print(response.statusCode);
-  
       if (response.statusCode == 200) {
         if(response.data['data'] != null) {
           for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
@@ -102,7 +93,6 @@ class EventsController {
             adress,
             tickets,
           );
-          
           allEvents.add(event);
           }
           return allEvents;
@@ -123,12 +113,6 @@ class EventsController {
     Map<String,Event> savedEvents = {}; //initialize empty event list.
 
     try {
-      //login for accessing events.
-      final authLogin = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', data: {'email':'cbum@gmail.com', 'password':'cbumpostman'});
-      
-      //checking login response
-      //print(authLogin.statusCode);
-
       //request current user saved events
       final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/users/savedEvents');
        
@@ -136,63 +120,68 @@ class EventsController {
       print(response.statusCode);
   
       if (response.statusCode == 200) {
-        if (response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+        if (response.data['events'] != null) {
+          for (int i = 0; i < response.data['events'].length; ++i) { //response is already decoded. 
           String image;
-          if (response.data['data'][i]['images'].isEmpty) {
+          if (response.data['events'][i]['images'].isEmpty) {
             image = "";
           } else {
-            image = response.data['data'][i]['images'][0];
+            image = response.data['events'][i]['images'][0];
           }
 
+          String url;
+          if (response.data['events'][i]['url'] == null) {
+            url = "";
+          } else { url = response.data['events'][i]['url']; }
+
           String initD;
-          if (response.data['data'][i]['initial_date'] == null) {
+          if (response.data['events'][i]['initial_date'] == null) {
             initD = "";
           } else {
-            initD = response.data['data'][i]['initial_date'];
+            initD = response.data['events'][i]['initial_date'];
           }
           
           String finalD;
-          if (response.data['data'][i]['final_date'] == null) {
+          if (response.data['events'][i]['final_date'] == null) {
             finalD = "";
           } else {
-            finalD = response.data['data'][i]['final_date'];
+            finalD = response.data['events'][i]['final_date'];
           }
 
           String schedule;
-          if (response.data['data'][i]['schedule'] == null) {
+          if (response.data['events'][i]['schedule'] == null) {
             schedule = "";
           } else {
-            schedule = response.data['data'][i]['schedule'];
+            schedule = response.data['events'][i]['schedule'];
           }
 
           String city;
-          if (response.data['data'][i]['region'][2] == null) {
+          if (response.data['events'][i]['region'][2] == null) {
             city = "";
           } else {
-            city = response.data['data'][i]['region'][2];
+            city = response.data['events'][i]['region'][2];
           }
 
           String adress;
-          if (response.data['data'][i]['adress'] == null) {
+          if (response.data['events'][i]['adress'] == null) {
             adress = "";
           } else {
-            adress = response.data['data'][i]['adress'];
+            adress = response.data['events'][i]['adress'];
           }
           
           String tickets;
-          if (response.data['data'][i]['tickets'] == null) {
+          if (response.data['events'][i]['tickets'] == null) {
             tickets = "";
           } else {
-            tickets = response.data['data'][i]['tickets'];
+            tickets = response.data['events'][i]['tickets'];
           }
 
           Event event = Event(
-            response.data['data'][i]['denomination'],
-            response.data['data'][i]['description'],
-            response.data['data'][i]['code'],
+            response.data['events'][i]['code'],
+            response.data['events'][i]['denomination'],
+            response.data['events'][i]['description'],
             image,
-            response.data['data'][i]['url'],
+            url,
             initD,
             finalD,
             schedule,
@@ -200,7 +189,7 @@ class EventsController {
             adress,
             tickets
           );
-          savedEvents[response.data['data'][i]['code']] = event;
+          savedEvents[response.data['events'][i]['code']] = event;
           }
           return savedEvents;
         }
@@ -220,7 +209,7 @@ class EventsController {
 
       //save event 
       final response = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/users/saveEvent/$codeEvent');
-  
+      print("SAVED");
       //cheking response
       print(response.statusCode);
 

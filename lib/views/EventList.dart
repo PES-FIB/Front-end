@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
+import 'favorites_screen.dart';
 
 class Event {
   String code, title, description, imageLink, url, initialDate, finalDate, schedule, city, adress, tickets; // startDate, endDate, tickets, link, adress, location, placeOnLocation, email;
@@ -17,16 +18,19 @@ class EventList extends StatefulWidget {
 
 class _EventListState extends State<EventList> {
 
-  List<Event> events = []; 
+  List<Event> events = [];
   Map<String,Event> saved = {};
   List<Event> _foundEvents = [];
   List<Event> result = [];
   int length = 0;
 
 
-  Future<void> loadEvents() async {
-    events = await EventsController.getAllEvents();
-    saved = await EventsController.getSavedEvents();
+  Future<List<Event>> loadAllEvents() async {
+    return await EventsController.getAllEvents();
+  }
+
+  Future<Map<String,Event>> loadSavedEvents() async {
+    return await EventsController.getSavedEvents();
   }
 
   
@@ -46,9 +50,19 @@ class _EventListState extends State<EventList> {
   
   @override
   void initState() {
-    loadEvents();
     //_foundEvents = events;
     super.initState();
+    loadAllEvents().then((value){
+       setState(() {
+        events.addAll(value);
+      });
+    });
+
+    loadSavedEvents().then((value){
+       setState(() {
+        saved.addAll(value);
+      });
+    });
   } 
 
   bool inSaved(String codeEvent){
@@ -79,7 +93,6 @@ class _EventListState extends State<EventList> {
                   key: ValueKey(events[index].title),
                   contentPadding: EdgeInsets.all(20.0),
                   title: Text(events[index].title),
-                  //subtitle: Text(events[index].description),
                   leading:  Icon(Icons.event, color: Colors.black, size: 30),
                   trailing: IconButton(
                     iconSize: 25,
@@ -90,6 +103,7 @@ class _EventListState extends State<EventList> {
                       if (inSaved(events[index].code)){
                         saved.remove(events[index].code);
                         controller.unsaveEvent(events[index].code);
+                        //favorites_screen.refresh();
                       }//remove
                       else {
                         saved[events[index].code] = events[index];
