@@ -35,8 +35,7 @@ class _RegisterPageState extends State<CreateAccount> {
           child :Center(
             child: Column(
               children:<Widget> [
-                Image.asset('assets/culturicat-removebg-preview.png', height: 240.0),
-                SizedBox(height: 20),
+                Image.asset('assets/cultura_c2.png', height: 250.0, width: 300),
                 Container (
                   padding: EdgeInsets.symmetric(horizontal: 40.0),
                   child: MyCustomForm()

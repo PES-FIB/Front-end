@@ -34,7 +34,8 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Image.asset('assets/culturicat-removebg-preview.png', height: 270),
+                    Image.asset('assets/cultura_c2.png', height: 250),
+                    SizedBox(height: 30),
                     const Text(
                       'Inicia Sessió',
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
