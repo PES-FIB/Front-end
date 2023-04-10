@@ -1,42 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'EventList.dart';
+import '../models/Event.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 
 class Favorites extends StatefulWidget {
+  final Map<dynamic, dynamic> savedEvents;
+  //final VoidCallback onNavigate;
+
+  const Favorites({
+    Key? key,
+    required this.savedEvents,
+    //required this.onNavigate,
+  }) : super(key: key);
+
   @override
   _FavoritesState createState() => _FavoritesState();
 }
 
 class _FavoritesState extends State<Favorites> {
   
-  Map<String, Event> mapSavedEvents = {};
-  List<Event> savedEvents = [];
+  //Map<String, Event> mapSavedEvents = {};
+  List<dynamic> savedEventsList = [];
 
-  Future<Map<String,Event>> loadSavedEvents() async {
+
+  Future<Map<dynamic,dynamic>> loadSavedEvents() async {
     return await EventsController.getSavedEvents();
   }
 
-  void refresh() {
-    initState();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-     loadSavedEvents().then((value){
+/*
+void initEvents() {
+  loadSavedEvents().then((value){
        setState(() {
         savedEvents.addAll(value.values.toList());
       });
     });
+}
+*/
+
+  @override
+  void initState() {
+    super.initState();
+    savedEventsList.addAll(widget.savedEvents.values.toList());
   }
 
   void pushEventScreen(int clickedEvent) async {
-    final updatedEvent = await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: savedEvents[clickedEvent])));
+    final updatedEvent = await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: savedEventsList[clickedEvent])));
     if (updatedEvent != null) {
       setState(() {
-        savedEvents[clickedEvent] = updatedEvent; //for favourite coherence between views.
+        savedEventsList[clickedEvent] = updatedEvent; //for favourite coherence between views.
       });
     }
   }
@@ -52,12 +64,12 @@ class _FavoritesState extends State<Favorites> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: savedEvents.length,
+              itemCount: savedEventsList.length,
               itemBuilder: (context, index) => Card(
                 child: ListTile(
-                    key: ValueKey(savedEvents[index].title),
+                    key: ValueKey(savedEventsList[index].title),
                     contentPadding: EdgeInsets.all(20.0),
-                    title: Text(savedEvents[index].title),
+                    title: Text(savedEventsList[index].title),
                     leading:
                         Icon(Icons.event, color: Colors.black, size: 30),
                     trailing: IconButton(
@@ -66,10 +78,15 @@ class _FavoritesState extends State<Favorites> {
                           color: Colors.redAccent),
                       onPressed: () {
                         setState(() {
-                          mapSavedEvents.remove(savedEvents[index].code);
+                          widget.savedEvents.remove(savedEventsList[index].code);
                           EventsController controller = EventsController(context);
-                          controller.unsaveEvent(savedEvents[index].code);
-                          initState();
+                          controller.unsaveEvent(savedEventsList[index].code);
+                        });
+                        loadSavedEvents().then((value){
+                          savedEventsList.clear();
+                          setState(() {
+                            savedEventsList.addAll(value.values.toList());
+                          });
                         });
                       },
                     ),

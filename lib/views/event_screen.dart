@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'EventList.dart';
+import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Events extends StatefulWidget {
@@ -64,13 +64,6 @@ class _EventsState extends State<Events> {
 
     return  Scaffold(
     
-        //AppBar
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
-          ), 
-        ),
         //body
         body: Container(
           margin: EdgeInsets.all(16.0),
@@ -83,6 +76,11 @@ class _EventsState extends State<Events> {
                 Row( // date, title
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 40,),
+                      onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
+                    ), 
+                    SizedBox(width: 16.0),
                     Expanded(
                       flex: 1,
                       child: Column(
@@ -99,7 +97,7 @@ class _EventsState extends State<Events> {
                           Text(
                             month,
                             style: TextStyle(
-                              fontSize: 25.0,
+                              fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -116,7 +114,7 @@ class _EventsState extends State<Events> {
                           Text(
                             widget.event.title,
                             style: TextStyle(
-                              fontSize: 40.0,
+                              fontSize: 35.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -125,7 +123,6 @@ class _EventsState extends State<Events> {
                       ),
                     ),
                     SizedBox(width: 30.0),
-                    
                   ],
                 ),
                

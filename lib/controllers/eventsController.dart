@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 
-import '../views/EventList.dart';
+import '../models/Event.dart';
 import 'dioController.dart';
 
 
