@@ -69,12 +69,7 @@ class userController{
         'name': name,
         'email': email
       },
-      options: Options(
-            followRedirects: false,
-            validateStatus: (status) {
-              return status != 200;
-            },
-      ));
+      );
     if (r.statusCode != 200) {
       return false;
       
@@ -83,6 +78,20 @@ class userController{
     User.setValues(User.id, name, email);
     return true;
     }
+  }
+
+  static Future<bool> updateUserPassword(String oldPassword, String newPassword) async {
+    Response r;
+      r = await dio.patch(userApis.getupdatePassword(),
+      data: {
+        'oldPassword': oldPassword,
+        'newPassword': newPassword
+      },
+      );
+      if (r.statusCode != 200) {
+        return false;
+      }
+      return true;
   }
 
   static Future<bool> deleteUser(int id) async {

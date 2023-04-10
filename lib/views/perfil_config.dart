@@ -17,10 +17,14 @@ class _PerfilConfigState extends State<PerfilConfig> {
   bool editEmail = false;
   bool editPassword = false;
   bool loadingUpdate = false;
+  int pageStatus = 0;
   bool baixaCheck = false;
   TextEditingController _nameController = TextEditingController(text: User.name);
   TextEditingController _emailController = TextEditingController(text: User.email);
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _newPasswordController = TextEditingController();
+  TextEditingController _newPasswordControllerRepeat = TextEditingController();
+
 
 
 
@@ -56,7 +60,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
                         ),
                         onPressed:() {
                           setState(() {
-                            baixaCheck = true;
+                            pageStatus = 1;
                           });
                         },
                         icon: Icon(LineAwesomeIcons.user_minus, color: Colors.white),
@@ -74,74 +78,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
                 ],
                 )
             ),
-          baixaCheck?
-          Column(
-            children: [
-              SizedBox(height: 100),
-              Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text('Està segur que vol donar-se de baixa?'),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  fixedSize:Size(50, 50),
-                  backgroundColor: Colors.redAccent
-                ),
-                onPressed: () async {
-                  bool check = false;
-                  try {
-                  check = await userController.deleteUser(User.id);
-                  }
-                  catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
-                  }
-                  finally {
-                  if (check) {
-                    Navigator.of(context, rootNavigator: true).pushReplacement(                          
-                          MaterialPageRoute(builder: (context) => LoginPage()));
-                  }
-                  else {
-                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
-                  }
-                  setState(() {
-                    baixaCheck = false;
-                  });
-                  }
-                },
-                child: Text('Si')
-                ),
-                SizedBox(width: 40),
-                ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  fixedSize:Size(50, 50),
-                  backgroundColor: Colors.redAccent
-                ),
-                onPressed: () {
-                  setState(() {
-                    baixaCheck = false;
-                  });
-                },
-                child: Text('No')
-                ),
-                    ],
-                  )
-                ],
-              )
-            ],
-          )
-            ],
-          ):
+          pageStatus == 0?
           Expanded(
             child: Column(
               children: [
@@ -217,28 +154,13 @@ class _PerfilConfigState extends State<PerfilConfig> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-                  Text('Nova \nContrasenya:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text('Canviar la contrasenya', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   SizedBox(width: 5),
-                  SizedBox(
-                    width: 200,
-                    height:20,
-                  child : TextField(
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
-                    ),
-                    controller: _passwordController,
-                    enabled: editPassword,
-                    obscureText: true,
-                  ),
-                  ),
-                  SizedBox(width: 20),
                   Flexible(
                   child: IconButton(
                     onPressed: () {
                     setState(() {
-                      editPassword = true;
+                      pageStatus= 2;
                     });
                     },
                     icon: Icon(Icons.edit)
@@ -260,7 +182,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
             setState(() {
               loadingUpdate = true;
             });
-            if(_nameController.text.isNotEmpty && _emailController.text.isNotEmpty && !(_nameController.text == User.name) && !(_emailController.text == User.email)) {
+            if(_nameController.text.isNotEmpty && _emailController.text.isNotEmpty && (!(_nameController.text == User.name) || !(_emailController.text == User.email))) {
               bool b = false;
               try {
                b = await userController.updateUserInfo(_nameController.text,_emailController.text);
@@ -294,11 +216,208 @@ class _PerfilConfigState extends State<PerfilConfig> {
             }
           },
             child: Text('Actualitza les meves dades'),
-          ),
+                     ),
           SizedBox(height: 30),
           ],
             )
+          ):
+          pageStatus == 1 ?
+          Column(
+            children: [
+              SizedBox(height: 90),
+              Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('Està segur que vol donar-se de baixa?'),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(50, 50),
+                  backgroundColor: Colors.redAccent
+                ),
+                onPressed: () async {
+                  bool check = false;
+                  try {
+                  check = await userController.deleteUser(User.id);
+                  }
+                  catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
+                  }
+                  finally {
+                  if (check) {
+                    Navigator.of(context, rootNavigator: true).pushReplacement(                          
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                  }
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
+                  }
+                  setState(() {
+                    pageStatus= 0;
+                  });
+                  }
+                },
+                child: Text('Si')
+                ),
+                SizedBox(width: 40),
+                ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(50, 50),
+                  backgroundColor: Colors.redAccent
+                ),
+                onPressed: () {
+                  setState(() {
+                    pageStatus = 0;
+                  });
+                },
+                child: Text('No')
+                ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          )
+            ],
+          ):
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 140),
+              Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+                  Text('Contrasenya antiga:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  SizedBox(width: 20),
+                  SizedBox(
+                    width: 150,
+                    height:20,
+                  child : TextField(
+                    obscureText: true,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    ),
+                    controller: _passwordController,
+                  ),
+                  ),
+            ]
           ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+                  Text('Nova Contrasenya:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  SizedBox(width: 20),
+                  SizedBox(
+                    width: 150,
+                    height:20,
+                  child : TextField(
+                    obscureText: true,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    ),
+                    controller: _newPasswordController,
+                  ),
+                  ),
+            ]
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+                  Text('Repeteixi la \nnova contrasenya:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  SizedBox(width: 20),
+                  SizedBox(
+                    width: 150,
+                    height:20,
+                  child : TextField(
+                    obscureText: true,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    ),
+                    controller: _newPasswordControllerRepeat,
+                  ),
+                  ),
+            ]
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(120, 50),
+                  backgroundColor: Colors.redAccent,
+                ),
+                onPressed: () async {
+                  if (_newPasswordController.text == _newPasswordControllerRepeat.text) {
+                    bool res = false;
+                    try {
+                      res = await userController.updateUserPassword(_passwordController.text, _newPasswordController.text);
+                    }
+                    catch (error){
+                      ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en canviar la contrasenya'));
+                    }
+                    finally {
+                      if (res) {
+                        ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'S\'ha actualitzat correctament la contrasenya'));
+                        setState(() {
+                          pageStatus = 0;
+                        });
+                      }
+                      else {
+                        ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en canviar la contrasenya'));
+                      }
+                    }
+                  }
+                  else if(_passwordController.text.isEmpty || _newPasswordController.text.isEmpty || _newPasswordController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Ompli tots els camps correctament'));
+                  }
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La nova contrasenya no coincideix'));
+                  }
+                },
+                child: Text('Canviar Contrasenya')
+              ),
+              SizedBox(width: 30),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(100, 50),
+                  backgroundColor: Colors.redAccent
+                ),
+                onPressed: (){
+                  setState(() {
+                    pageStatus = 0;
+                  });
+                },
+                child: Text('Cancel·lar')
+          )
+            ],)
+          ],)
         ],
       )
     );
