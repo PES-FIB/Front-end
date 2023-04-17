@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:prova_login/views/EventList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
 import 'event_screen.dart';
@@ -103,7 +104,7 @@ void initEvents() {
               onDaySelected: _onDaySelected,
               calendarStyle: CalendarStyle(
                 selectedDecoration: BoxDecoration(
-                    color: Colors.redAccent, shape: BoxShape.circle),
+                    color: Colors.redAccent, shape: BoxShape.circle,),
                 todayDecoration: BoxDecoration(
                     color: Colors.blueGrey, shape: BoxShape.circle),
                 todayTextStyle: TextStyle(color: Colors.white, fontSize: 16)
@@ -111,11 +112,14 @@ void initEvents() {
               
               calendarBuilders: CalendarBuilders(
                 markerBuilder:(context, day, focusedDay) {
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: savedEventsList.isNotEmpty?
-                      Text(savedEventsList.length.toString()):
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 30), 
+                      child: Align (
+                      alignment: Alignment.center,
+                      child: widget.savedEvents.containsKey(DateUtils.dateOnly(day)) && widget.savedEvents[DateUtils.dateOnly(day)].isNotEmpty?
+                      Icon(Icons.circle, color: Colors.black, size: 8):
                       SizedBox(height: 0,width: 0,)
+                      ),
                     );
                   },
                   ),
@@ -126,20 +130,46 @@ void initEvents() {
                 itemCount: savedEventsList.length,
                 itemBuilder: (context, index) => Card(
                   child: ListTile(
-                      key: ValueKey(savedEventsList[index].title),
+                    tileColor: Colors.redAccent,
+                      key: ValueKey(savedEventsList[index].code),
                       contentPadding: EdgeInsets.all(20.0),
-                      title: Text(savedEventsList[index].title),
-                      leading: Icon(Icons.event, color: Colors.black, size: 30),
+                      title: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(savedEventsList[index].title, style: TextStyle(color: Colors.white, fontSize: 20)),
+                            SizedBox(height: 5),
+                            Text(savedEventsList[index].city,style:TextStyle(color: Colors.white, fontSize: 15)),
+                            SizedBox(height: 5),
+                            Row(
+                              children: [
+                                savedEventsList[index].initialDate != savedEventsList[index].finalDate?
+                                Row (
+                                  children: [
+                                Text(savedEventsList[index].initialDate.substring(0,10), style:TextStyle(color: Colors.white, fontSize: 15)),
+                                Text(' - ', style:TextStyle(color: Colors.white, fontSize: 15)),
+                                Text(savedEventsList[index].finalDate.substring(0,10), style:TextStyle(color: Colors.white, fontSize: 15)),
+                                ]
+                                ):
+                                Text(savedEventsList[index].initialDate.substring(0,10), style:TextStyle(color: Colors.white, fontSize: 15)),
+            
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      leading: Icon(Icons.event, color: Colors.white, size: 30),
                       trailing: IconButton(
                         iconSize: 25,
-                        icon: Icon(Icons.favorite, color: Colors.redAccent),
-                        onPressed: () {
-                          setState(() {
-                            widget.savedEvents[DateUtils.dateOnly(today)]
-                                .remove(savedEventsList[index]);
-                            EventsController controller =
+                        icon: Icon(Icons.favorite, color: Colors.white),
+                        onPressed: () async{
+                          EventsController controller =
                                 EventsController(context);
-                            controller.unsaveEvent(savedEventsList[index].code);
+                           controller.unsaveEvent(savedEventsList[index].code);
+                          setState(() {
+                             widget.savedEvents[DateUtils.dateOnly(today)].remove(savedEventsList[index]);
+                             //print('saved event list dia 8 = ${savedEventsList[index].code}');
+                            //savedEventsList.remove(savedEventsList[index]);
                           });
                           loadSavedEvents().then((value) {
                             setState(() {
