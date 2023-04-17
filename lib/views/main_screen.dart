@@ -61,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
             // If we have the data, construct the pages
             final allEvents = events.allEvents;
             final savedEvents = events.savedEvents;
+            final calendarEvents = events.calendarEvents;
             final pages = [
               EventList(
                 events: allEvents,
@@ -68,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               Map(),
               Favorites(
-                savedEvents: savedEvents,
+                savedEvents: calendarEvents,
               ),
               Perfil()
             ];
@@ -121,9 +122,11 @@ class _MainScreenState extends State<MainScreen> {
 class EventData {
   List<Event> allEvents = [];
   var savedEvents = {};
+  var calendarEvents = {};
   
   Future<void> fetchData() async {
     allEvents = await EventsController.getAllEvents();
     savedEvents = await EventsController.getSavedEvents();
+    calendarEvents = await EventsController.getSavedEventsCalendar();
   }
 }
