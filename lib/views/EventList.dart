@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:prova_login/views/main_screen.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
+import '../controllers/ambitsController.dart';
 import '../models/Event.dart';
 
 
 class EventList extends StatefulWidget {
   final List<Event> events;
   final Map<dynamic, dynamic> savedEvents;
+  
   //final VoidCallback onNavigate;
   
   const EventList({
@@ -31,17 +33,14 @@ class _EventListState extends State<EventList> {
   Map<dynamic,dynamic> saved = {};
   List<Event> _foundEvents = [];
   List<Event> result = [];
+  List<String> ambits = [];
 
-/*
-  Future<List<Event>> loadAllEvents() async {
-    return await EventsController.getAllEvents();
+  Future<List<String>> fetchAmbits() async {
+    List<String> result = await AmbitsController.getAllAmbits();
+    print(result.length);
+    return result;
   }
 
-  Future<Map<String,Event>> loadSavedEvents() async {
-    return await EventsController.getSavedEvents();
-  }
-
-*/
   
   @override
   void initState() {
@@ -50,22 +49,7 @@ class _EventListState extends State<EventList> {
       events.addAll(widget.events);
       _foundEvents.addAll(widget.events);
       saved.addAll(widget.savedEvents);
-      print(_foundEvents.isEmpty);
-      print(widget.events.isEmpty);
     });
-    /*
-    loadAllEvents().then((value){
-       setState(() {
-        events.addAll(value);
-        _foundEvents.addAll(value);
-      });
-    });
-
-    loadSavedEvents().then((value){
-       setState(() {
-        saved.addAll(value);
-      });
-    });*/
   } 
 
 
@@ -100,6 +84,55 @@ class _EventListState extends State<EventList> {
                 hintText: "busca un event" ,suffixIcon: Icon(Icons.search), contentPadding: EdgeInsets.all(20.0),
               ),
             ),
+          ),
+         
+         
+          FutureBuilder<List<String>>(
+            future: fetchAmbits(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                width: 130,
+                                margin: EdgeInsets.all(5.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 1,
+                                      offset: Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    snapshot.data![index],
+                                    textAlign: TextAlign.center,
+                                    
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
           ),
           Expanded(
             child: ListView.builder(
