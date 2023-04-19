@@ -5,17 +5,14 @@ import 'package:prova_login/views/main_screen.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../models/Event.dart';
+import '../models/AppEvents.dart';
 
 
 class EventList extends StatefulWidget {
-  final List<Event> events;
-  final Map<dynamic, dynamic> savedEvents;
   //final VoidCallback onNavigate;
   
   const EventList({
     Key? key,
-    required this.events,
-    required this.savedEvents,
     //required this.onNavigate,
   }) : super(key: key);
 
@@ -47,11 +44,6 @@ class _EventListState extends State<EventList> {
   void initState() {
     super.initState();
     setState(() {
-      events.addAll(widget.events);
-      _foundEvents.addAll(widget.events);
-      saved.addAll(widget.savedEvents);
-      print(_foundEvents.isEmpty);
-      print(widget.events.isEmpty);
     });
     /*
     loadAllEvents().then((value){
@@ -70,20 +62,20 @@ class _EventListState extends State<EventList> {
 
 
   bool inSaved(String codeEvent){
-    return widget.savedEvents.containsKey(codeEvent);
+    return AppEvents.savedEvents.containsKey(codeEvent);
   }
 
   void _runFilter(String enteredTitle) {
     if(enteredTitle.isEmpty) {
-      result = widget.events;
+      result = AppEvents.eventsList;
     } else {
-      result = widget.events.where((event) => event.title.toLowerCase().contains(enteredTitle.toLowerCase())).toList();
+      result = AppEvents.eventsList.where((event) => event.title.toLowerCase().contains(enteredTitle.toLowerCase())).toList();
     }
     setState(() {_foundEvents = result;});
   }
 
   void pushEventScreen(int clickedEvent) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: widget.events[clickedEvent])));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: AppEvents.eventsList[clickedEvent])));
   }
 
   @override
@@ -117,11 +109,13 @@ class _EventListState extends State<EventList> {
                     setState(() {
                       EventsController controller = EventsController(context);
                       if (inSaved(_foundEvents[index].code)){
-                        widget.savedEvents.remove(_foundEvents[index].code);
+                        AppEvents.savedEvents.remove(_foundEvents[index].code);
+                        AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]?.remove(_foundEvents[index]);
                         controller.unsaveEvent(_foundEvents[index].code);
                       }//remove
                       else {
-                        widget.savedEvents[_foundEvents[index].code] = _foundEvents[index];
+                        AppEvents.savedEvents[_foundEvents[index].code] = _foundEvents[index];
+                        AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]?.add(_foundEvents[index]);
                         controller.saveEvent(_foundEvents[index].code);
                       }//add
                     });

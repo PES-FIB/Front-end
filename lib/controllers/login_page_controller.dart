@@ -14,6 +14,8 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'dioController.dart';
 import 'userController.dart';
+import 'eventsController.dart';
+import '../models/AppEvents.dart';
 
 //import 'package:google_sign_in/google_sign_in.dart';
 
@@ -36,19 +38,34 @@ class LoginPageController {
   }
 
   Future<void> realize_login() async { 
-
+    try {
+      AppEvents.eventsList = await EventsController.getAllEvents();
+      print('numero de events =  ${AppEvents.eventsList.length}');
+      AppEvents.savedEvents = await EventsController.getSavedEvents();
+      print('numero de events guardats =  ${AppEvents.savedEvents.length}');
+      AppEvents.savedEventsCalendar = await EventsController.getSavedEventsCalendar();
+      print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
+    } catch (e) {
+      print(e);
+      return;
+    }
+    finally {
+      print('S\'ha omplert el map? = ${AppEvents.eventsList.isNotEmpty}');
+      print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.isNotEmpty}');
     // ignore: use_build_context_synchronously
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
     );
+    }
   }
 
-  void to_signUp() {
+  void to_signUp() async {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateAccount()),
     );
+    }
   }
   
 /*
@@ -75,4 +92,3 @@ class LoginPageController {
     }
   }
   */
-}

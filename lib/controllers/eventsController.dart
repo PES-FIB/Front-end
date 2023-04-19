@@ -95,10 +95,12 @@ class EventsController {
           );
           allEvents.add(event);
           }
+          print('he tornat events!!! num: ${allEvents.length}');
           return allEvents;
         }
 
         }
+        print(' no he tornat events :((((');
       return []; // return an empty list if there was an error
     } catch (error) {
       print(error.toString());

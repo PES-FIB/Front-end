@@ -6,14 +6,13 @@ import '../models/Event.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../models/Event.dart';
+import '../models/AppEvents.dart';
 
 class Favorites extends StatefulWidget {
-  final Map<dynamic, dynamic> savedEvents;
   //final VoidCallback onNavigate;
 
   const Favorites({
     Key? key,
-    required this.savedEvents,
     //required this.onNavigate,
   }) : super(key: key);
 
@@ -30,8 +29,8 @@ class _FavoritesState extends State<Favorites> {
   void _onDaySelected(DateTime day, DateTime _focusedDay) {
     setState(() {
       today = day;
-      if (widget.savedEvents.containsKey(DateUtils.dateOnly(today))) {
-      savedEventsList = widget.savedEvents[DateUtils.dateOnly(today)];
+      if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
+      savedEventsList = AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
       print('tamany de la llista = ${savedEventsList.length}');
       }
       else  {
@@ -49,7 +48,7 @@ class _FavoritesState extends State<Favorites> {
 void initEvents() {
   loadSavedEvents().then((value){
        setState(() {
-        savedEvents.addAll(value.values.toList());
+        savedEventsCalendar.addAll(value.values.toList());
       });
     });
 }
@@ -58,9 +57,9 @@ void initEvents() {
   @override
   void initState() {
     super.initState();
-    print('LLista inicial, map = ${widget.savedEvents}');
-    if (widget.savedEvents.containsKey(DateUtils.dateOnly(today))) {
-      savedEventsList = widget.savedEvents[DateUtils.dateOnly(today)];
+    print('LLista inicial, map = ${AppEvents.savedEventsCalendar}');
+    if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
+      savedEventsList = AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
     }
     print('tamany de la llista = ${savedEventsList.length}');
   }
@@ -116,7 +115,7 @@ void initEvents() {
                       padding: const EdgeInsets.only(top: 30), 
                       child: Align (
                       alignment: Alignment.center,
-                      child: widget.savedEvents.containsKey(DateUtils.dateOnly(day)) && widget.savedEvents[DateUtils.dateOnly(day)].isNotEmpty?
+                      child: AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(day)) && AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)]!= null?
                       Icon(Icons.circle, color: Colors.black, size: 8):
                       SizedBox(height: 0,width: 0,)
                       ),
@@ -163,19 +162,21 @@ void initEvents() {
                         iconSize: 25,
                         icon: Icon(Icons.favorite, color: Colors.white),
                         onPressed: () async{
+                          print('codi a borrar = ${savedEventsList[index].code}');
                           EventsController controller =
                                 EventsController(context);
                            controller.unsaveEvent(savedEventsList[index].code);
                           setState(() {
-                             widget.savedEvents[DateUtils.dateOnly(today)].remove(savedEventsList[index]);
+                            print('valor del map ${AppEvents.savedEvents[savedEventsList[index].code]}');
+                             AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]?.remove(savedEventsList[index]);
+                             if (AppEvents.savedEvents.containsKey(savedEventsList[index].code)) {
+                              AppEvents.savedEvents.remove(savedEventsList[index].code);
+                             }
+                            savedEventsList.remove(savedEventsList[index]);
                              //print('saved event list dia 8 = ${savedEventsList[index].code}');
                             //savedEventsList.remove(savedEventsList[index]);
                           });
-                          loadSavedEvents().then((value) {
-                            setState(() {
-                            });
-                          });
-                        },
+                          },
                       ),
                       onTap: () {
                         pushEventScreen(index);
@@ -199,7 +200,7 @@ void initEvents() {
             //                 color: Colors.redAccent),
             //             onPressed: () {
             //               setState(() {
-            //                 widget.savedEvents.remove(savedEventsList[index].code);
+            //                 widget.savedEventsMap.remove(savedEventsList[index].code);
             //                 EventsController controller = EventsController(context);
             //                 controller.unsaveEvent(savedEventsList[index].code);
             //               });

@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextButton(
                       child: Text('Crear una nueva cuenta', style: TextStyle(color: Colors.redAccent) ),
-                      onPressed: () {
+                      onPressed: () async {
                         loginPageController.to_signUp();
                       },
                     ),
