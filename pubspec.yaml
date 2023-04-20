@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_rating_bar: ^4.0.1
   flutter_signin_button: ^2.0.0
   http: ^0.13.5
   line_awesome_flutter: ^2.0.0
