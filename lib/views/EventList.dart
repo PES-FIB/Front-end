@@ -12,13 +12,10 @@ class EventList extends StatefulWidget {
   final List<Event> events;
   final Map<dynamic, dynamic> savedEvents;
   
-  //final VoidCallback onNavigate;
-  
   const EventList({
     Key? key,
     required this.events,
     required this.savedEvents,
-    //required this.onNavigate,
   }) : super(key: key);
 
   @override
@@ -28,17 +25,32 @@ class EventList extends StatefulWidget {
 
 class _EventListState extends State<EventList> {
 
+  late Future<List<String>> ambits; //list of all ambits 
+  
+  List<Event> _foundEvents = [];  
+  List<Event> filteredEvents = []; 
 
-  List<Event> events = [];
-  Map<dynamic,dynamic> saved = {};
-  List<Event> _foundEvents = [];
-  List<Event> result = [];
-  List<String> ambits = [];
+  List<Color> backgroundColor = []; 
+  String wordSearched = '';
+  
 
+ 
+ 
   Future<List<String>> fetchAmbits() async {
     List<String> result = await AmbitsController.getAllAmbits();
-    print(result.length);
+    setState(() {
+      backgroundColor.addAll(List.generate(result.length, (_) => Colors.white)); 
+    });
     return result;
+  }
+
+
+  bool anyAmbitSelected () {
+    bool selected = false;
+    for(int i = 0; i < backgroundColor.length; ++i) {
+      if (backgroundColor[i] == Color.fromARGB(255, 235, 235, 235)) selected = true;
+    }
+    return selected;
   }
 
   
@@ -46,9 +58,9 @@ class _EventListState extends State<EventList> {
   void initState() {
     super.initState();
     setState(() {
-      events.addAll(widget.events);
-      _foundEvents.addAll(widget.events);
-      saved.addAll(widget.savedEvents);
+      filteredEvents.addAll(widget.events);
+      _foundEvents.addAll(filteredEvents);
+      ambits = fetchAmbits();
     });
   } 
 
@@ -57,13 +69,17 @@ class _EventListState extends State<EventList> {
     return widget.savedEvents.containsKey(codeEvent);
   }
 
+
   void _runFilter(String enteredTitle) {
+     List<Event> result = [];
     if(enteredTitle.isEmpty) {
-      result = widget.events;
+      result = filteredEvents;
     } else {
-      result = widget.events.where((event) => event.title.toLowerCase().contains(enteredTitle.toLowerCase())).toList();
+      result = filteredEvents.where((event) => event.title.toLowerCase().contains(enteredTitle.toLowerCase())).toList();
     }
-    setState(() {_foundEvents = result;});
+    setState(() {
+      wordSearched = enteredTitle;
+      _foundEvents = result;});
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -72,23 +88,15 @@ class _EventListState extends State<EventList> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body:
       Column(
         children: [
-          Padding( 
-            padding: const EdgeInsets.all(15.0),
-            child: TextField(
-              onChanged: (value) => _runFilter(value),
-              decoration: InputDecoration(
-                hintText: "busca un event" ,suffixIcon: Icon(Icons.search), contentPadding: EdgeInsets.all(20.0),
-              ),
-            ),
-          ),
-         
-         
+          SizedBox(height: 20.0),
+          //ambits
           FutureBuilder<List<String>>(
-            future: fetchAmbits(),
+            future: ambits,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return SingleChildScrollView(
@@ -100,28 +108,56 @@ class _EventListState extends State<EventList> {
                             scrollDirection: Axis.horizontal,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                width: 130,
-                                margin: EdgeInsets.all(5.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 1,
-                                      offset: Offset(0, 1),
+                              String ambit = snapshot.data![index];
+                              //return AmbitContainer(ambitName: name);
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    bool beforeState = anyAmbitSelected(); //checking if it's the first selected.
+                                    backgroundColor[index] = backgroundColor[index] == Colors.white ? Color.fromARGB(255, 235, 235, 235) : Colors.white;
+                                    //si des-seleccionat
+                                    if (backgroundColor[index] == Colors.white) {
+                                      if (!anyAmbitSelected()) {
+                                        filteredEvents.clear();
+                                        filteredEvents.addAll(widget.events);
+                                       } else {
+                                        filteredEvents.removeWhere((event) => event.ambits.contains(ambit));
+                                      }
+                                      _runFilter(wordSearched);
+                                    }
+                                    //si seleccionat
+                                    else {
+                                      if(!beforeState) filteredEvents.clear(); 
+                                      EventsController.getEventsByAmbit(ambit).then((value) {setState(() {
+                                        filteredEvents.addAll(value);
+                                        _runFilter(wordSearched);
+                                      });});
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  width: 130,
+                                  margin: EdgeInsets.all(5.0),
+                                  decoration: BoxDecoration(
+                                    color: backgroundColor[index],
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 1,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      ambit,
+                                      textAlign: TextAlign.center,
                                     ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    snapshot.data![index],
-                                    textAlign: TextAlign.center,
-                                    
                                   ),
                                 ),
                               );
+                              
                             }),
                       ),
                     ],
@@ -134,6 +170,17 @@ class _EventListState extends State<EventList> {
               }
             },
           ),
+          //cercador
+          Padding( 
+            padding: const EdgeInsets.all(15.0),
+            child: TextField(
+              onChanged: (value) => _runFilter(value),
+              decoration: InputDecoration(
+                hintText: "busca un event" ,suffixIcon: Icon(Icons.search), contentPadding: EdgeInsets.all(20.0),
+              ),
+            ),
+          ),
+          //lista d'events
           Expanded(
             child: ListView.builder(
               itemCount: _foundEvents.length,

@@ -19,6 +19,12 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
 
+  String ambits = '';
+  for(int i = 0; i < widget.event.ambits.length; i++) {
+    ambits += widget.event.ambits[i];
+    ambits += ' ';
+    }
+
   String month = "";
   String month_number = widget.event.initialDate.substring(5,7);
   switch (month_number) {
@@ -187,7 +193,7 @@ class _EventsState extends State<Events> {
                               ),
                             ],
                           ),
-                           Row(
+                          Row(
                             children: [
                               Icon(Icons.money),
                               SizedBox(width: 10.0),
@@ -249,7 +255,21 @@ class _EventsState extends State<Events> {
                                 ),
                               ),
                             ],
-                          ),      
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.category),
+                              SizedBox(width: 10.0),
+                              
+                              Text(
+                                ambits,
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.black
+                                ),
+                              ),
+                            ],
+                          )      
                         ],
                       ),
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dioController.dart';
+import '../models/Event.dart';
 
 class AmbitsController {
   final BuildContext context;
@@ -19,7 +20,6 @@ class AmbitsController {
           for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
             allAmbits.add(response.data['data'][i]['name']);
           }
-          print(allAmbits[0]);
           return allAmbits;
         }
         return []; 
@@ -29,5 +29,10 @@ class AmbitsController {
       print(error.toString());
       return []; // return an empty list if there was an error
     }
+  }
+
+  static Future<List<Event>> getEventsByAmbit(String ambit) async {
+    List<Event> ambit = []; //initialize empty event list.
+    return ambit;
   }
 }

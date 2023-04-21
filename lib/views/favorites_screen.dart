@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import '../models/Event.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
