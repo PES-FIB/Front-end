@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prova_login/models/Valoration.dart';
-import '../../controllers/valoracions_controller.dart';
 
 //reviewcard es una clase que se encarga de mostrar una valoración en forma de card
 // ignore: non_constant_identifier_names
@@ -31,7 +30,14 @@ Card ReviewCard(Valoracion valoracion) {
   );
 }
 
-//llistar todas las valoracionse de una actividad
+ListView ReviewList(List<Valoracion> valoracions) {
+  return ListView.builder(
+    itemCount: valoracions.length,
+    itemBuilder: (context, index) {
+      return ReviewCard(valoracions[index]);
+    },
+  );
+}
 
  
 

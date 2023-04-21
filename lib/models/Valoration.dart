@@ -4,7 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class Valoracion {
   String username;
-  int idActivity;
+  String idActivity;
   double score;
   String contenido;
   
