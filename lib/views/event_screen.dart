@@ -2,9 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../controllers/valoracions_controller.dart';
-import '../models/Valoration.dart';
-import 'styles/valoracions.dart';
+import '../views/review_screen.dart';
 
 class Events extends StatefulWidget {
 
@@ -16,25 +14,6 @@ class Events extends StatefulWidget {
 }
   
 class _EventsState extends State<Events> { 
-  //for reviews
-  List<Valoracion> reviews = [];
-  
-  @override
-  void initState() {
-    super.initState();
-
-    // crea 3 valoraciones de prueba
-    Valoracion review1 = Valoracion("user1", widget.event.code, 3, "Molt divertit");
-    Valoracion review2 = Valoracion("user2", widget.event.code, 4, "Molt divertit");
-    Valoracion review3 = Valoracion("user3", widget.event.code, 2, "Molt divertit");
-
-    reviews = [
-      review1,
-      review2,
-      review3,
-    ];
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -285,19 +264,23 @@ class _EventsState extends State<Events> {
                         });
                       },
                     ),
-              
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(
-                        "Valoracions",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+              */
+                  //boton para ir a la pagina de valoraciones
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
                         ),
                       ),
+                      child: Text("Valoracions"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ReviewPage(widget.event)),
+                        );
+                      },
                     ),
-                    Container(child: ReviewList(reviews),)
-                    */
+                    SizedBox(height: 30.0),
                   ],
               ),
             ],
@@ -309,3 +292,5 @@ class _EventsState extends State<Events> {
     );
   }
 }
+
+
