@@ -261,7 +261,9 @@ class _EventsState extends State<Events> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  final url = sharecontroller.ObtainMessage();
+                                  String eUrl = widget.event.url;
+                                  String eTitle = widget.event.title;
+                                  final url = sharecontroller.ObtainMessage(eTitle, eUrl);
                                   sharecontroller.ShareAction(url); 
                                 },
                                 child: Row(
@@ -271,7 +273,7 @@ class _EventsState extends State<Events> {
                                     //espacio de 10px
                                     const SizedBox(width: 10),
                                     const Text(
-                                      'Comparteix-lo! ',
+                                      'Comparteix-lo!',
                                       style: TextStyle(fontSize: 15),
                                     ),
                                   ],

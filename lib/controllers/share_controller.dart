@@ -6,12 +6,18 @@ import 'package:share_plus/share_plus.dart';
 
 class ShareController {  
 
-  String ObtainMessage() {
-    String url = "https://nattech.fib.upc.edu:40331/";
-    return ("Check out this event! $url");
-  }
-  void ShareAction(String url) {
-    Share.share(url);
+  String ObtainMessage(String title, String url) {
+    if (url == "") {
+      final eventname = title;
+      return ("Check out this event! $eventname, this event doesn't have a link.");
+    }
+    else {
+      return ("Check out this event! $url, you can find more information about this event in the link.");
+    }
+    } 
+      
+  void ShareAction(String message) {
+    Share.share(message);
   }
 
 }
