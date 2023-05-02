@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dioController.dart';
 import '../models/Review.dart';
-
+import '../models/User.dart';
 
 class ReviewController{
   final BuildContext context;
@@ -21,7 +21,7 @@ class ReviewController{
     return response.statusCode == 200;
   }
 
-
-
-  
+  Future<void> roportReview(Review review, User reporter) async {
+     
+  }
 }

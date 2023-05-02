@@ -5,10 +5,10 @@ import '../../models/User.dart';
 
 //reviewcard es una clase que se encarga de mostrar una valoración en forma de card
 // ignore: non_constant_identifier_names
-Card ReviewCard(Review valoracion, Event event) {
-  final username = valoracion.username;
-  final idActivity = valoracion.idActivity;
-  final contenido = valoracion.contenido;
+Card ReviewCard(Review review, Event event) {
+  final username = review.username;
+  final idActivity = review.idActivity;
+  final contenido = review.contenido;
 
   final eventname = event.title;
   
@@ -26,13 +26,32 @@ Card ReviewCard(Review valoracion, Event event) {
         ),
         Align(
           alignment: Alignment.centerRight,
-          child: valoracion.buildRatingBar(true),    // muestra la puntuación como estrellas
+          child: review.buildRatingBar(true),    // muestra la puntuación como estrellas
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                radius: 100,
+                child: Text("Reportar valoració"),
+                onTap: () {
+                  //reportar comentario
+                  print("Reportar");
+                  print(User.id);
+                  print(review.idActivity);
+                },
+              ),
+            ),
+          ],
         ),
       ],
     ),
   );
 }
 
+// ignore: non_constant_identifier_names
 ListView ReviewList(List<Review> valoracions, Event event) {
   return ListView.builder(
     itemCount: valoracions.length,
