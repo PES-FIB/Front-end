@@ -24,4 +24,22 @@ class ReviewController{
   Future<void> roportReview(Review review, User reporter) async {
      
   }
+
+  bool iMadeReviewForEvent(List<Review> reviews, String username) {
+    for (var review in reviews) {
+      if (review.username == username) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Review takeMyReview(List<Review> reviews, String username) {
+    for (var review in reviews) {
+      if (review.username == username) {
+        return review;
+      }
+    }
+    return Review("", "0", 1, "");
+  }
 }

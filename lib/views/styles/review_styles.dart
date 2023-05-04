@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import '../../models/Review.dart';
 import '../../models/Event.dart';
@@ -84,6 +86,46 @@ Column MakeReview(Event event) {
           //añadir la review a la lista de reviews
 
         },
+      ),
+    ],
+  );
+}
+
+Column MyReview(Event event, Review review) {
+  Review valoracionUsuario = review;
+  final _reviewController = TextEditingController();
+  return Column(
+    children: [
+      Text("La teva valoració:", style: TextStyle(fontSize: 20),),
+      SizedBox(height: 15.0),
+      Align(
+        child: valoracionUsuario.buildRatingBar(true),
+      ),
+      TextFormField(
+        initialValue: review.contenido,
+        decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
+        controller: _reviewController,
+      ),
+      SizedBox(height: 15.0),
+      Row(
+        //botones para borrar una review y para editarla
+        children: [
+          ElevatedButton(
+            child: Text("Actualitzar valoració"),
+            onPressed: () {
+              valoracionUsuario.contenido = _reviewController.text;
+              print(valoracionUsuario.contenido);
+              //Actualizar la review en la lista de reviews
+            },
+          ),
+          ElevatedButton(
+            child: Text("Eliminar valoració"),
+            onPressed: () {
+              //Eliminar la review de la lista de reviews
+              print("valoració eliminada");
+            },
+          ),
+        ],
       ),
     ],
   );

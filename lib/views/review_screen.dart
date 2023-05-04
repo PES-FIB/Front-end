@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../controllers/valoracions_controller.dart';
+import '../controllers/reviews_controller.dart';
 import '../models/Review.dart';
+import '../models/User.dart';
 import 'styles/review_styles.dart';
 import '../models/Event.dart';
 
@@ -16,6 +17,7 @@ class ReviewPage extends StatefulWidget {
 
 class _ReviewPageState extends State<ReviewPage> {
   List<Review> reviews = [];
+  
 
   @override
   void initState() {
@@ -34,12 +36,23 @@ class _ReviewPageState extends State<ReviewPage> {
   Widget build(BuildContext context) {
   DateTime fechaEvento = DateTime.parse(widget.event.finalDate);
   DateTime fechaActual = DateTime.now();
+  final _reviewController = ReviewController(context);
 
   return Scaffold(
     body: Column(
       children: [
+        //si el usuario no ha hecho review del evento, la puede crear, pero si ya la ha hecho, la puede editar o borrar
         if (fechaActual.isBefore(fechaEvento))
-          MakeReview(widget.event),
+          MakeReview(widget.event)
+        else if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
+          MyReview(widget.event, _reviewController.takeMyReview(reviews, User.name))
+        else
+          Column(
+            children: [
+              SizedBox(height: 15.0),
+              Text("No compleixes els requisits per fer una valoració", style: TextStyle(fontSize: 15, color: Colors.red[900]), textAlign: TextAlign.center,),
+            ],
+          ),
         SizedBox(height: 15.0),
         Text("Valoracions dels usuaris", style: TextStyle(fontSize: 20),),
         SizedBox(height: 15.0),
