@@ -66,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
                 events: allEvents,
                 savedEvents: savedEvents,
               ),
-              Map(),
+              MapScreen(),
               Favorites(
                 savedEvents: savedEvents,
               ),

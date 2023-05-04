@@ -1,10 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.culturicat">
     <uses-permission android:name="android.permission.INTERNET"/>
+    
    <application
         android:label="prova_login"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAE-dDtl1QSNkoRfp-wr2a8KXgUlsEI6ZA"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -31,7 +35,5 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyAvlD4RSfucM-FOXtvvgys8V3dUVNTBqZI"/>
     </application>
 </manifest>
