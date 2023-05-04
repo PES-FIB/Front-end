@@ -78,9 +78,11 @@ class userController {
 
   static Future<bool> checkStoragePermission() async {
     PermissionStatus status = await Permission.storage.status;
+    print('permission status = $status');
     if (status.isGranted) {
       return true;
     } else if (status.isDenied) {
+      print('entrodenied');
       return await requestStoragePermission();
     } else {
       return false;
@@ -89,6 +91,7 @@ class userController {
 
   static Future<bool> requestStoragePermission() async {
     PermissionStatus status = await Permission.storage.request();
+    print('entroo4235235');
     if (status.isGranted) {
       return true;
     } else {

@@ -128,18 +128,23 @@ void initEvents() {
                             icon: Icon(Icons.download_for_offline_rounded,
                                 color: Colors.redAccent),
                             onPressed: () async {
-                              // int downloadResult = await userController.exportCalendar('${User.name.substring(0,User.name.indexOf(' '))}EventCal.ics');
-                              // if (downloadResult  == -1) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error a la Descàrrega'));
-                              // }
-                              // else if (downloadResult == -2) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No es pot realitzar la descàrrega sense permisos'));
-                              // }
-                              // else {}
+                              int downloadResult = await userController.exportCalendar('${User.name.substring(0,User.name.indexOf(' '))}EventCal.ics');
                               setState(() {
                                 statusDownload = 1;
                               });
-                              Future.delayed(Duration(seconds: 2), () {
+                              if (downloadResult  == -1) {
+                                setState(() {
+                                statusDownload = 0;
+                              });
+                                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error a la Descàrrega'));
+                              }
+                              else if (downloadResult == -2) {
+                                setState(() {
+                                statusDownload = 0;
+                              });
+                                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No es pot realitzar la descàrrega sense permisos'));
+                              }
+                              else {
                                 setState(() {
                                   statusDownload = 2;
                                   Future.delayed(Duration(seconds: 2), () {
@@ -148,7 +153,7 @@ void initEvents() {
                                     });
                                   });
                                 });
-                              });
+                            }
                             },
                           )
                       : statusDownload == 1
