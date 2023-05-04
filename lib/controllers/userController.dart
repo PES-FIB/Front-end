@@ -101,6 +101,7 @@ class userController {
 
   static Future<int> exportCalendar(String fileName) async {
     final directory = await getApplicationDocumentsDirectory();
+    print('el directori es = $directory');
     final file = File('${directory.path}/$fileName');
     bool hasPermission = await checkStoragePermission();
     if (!hasPermission) {
