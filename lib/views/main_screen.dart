@@ -15,7 +15,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var index = 0;
+  var _index = 0;
+  final List<Widget> _tabs = <Widget>[    
+    EventList(),    
+    Map(),    
+    Favorites(),    
+    Perfil(),  
+    ];
   @override
   void initState() {
     super.initState();
@@ -56,28 +62,17 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
             activeColor: Colors.redAccent,
-            currentIndex: index,
+            currentIndex: _index,
             onTap: (ind) {
               setState(() {
-                index = ind;
+                _index = ind;
               });
             }),
-        tabBuilder: (context, i) {
-          return CupertinoTabView(
-            builder: (BuildContext context) {
-                if (i == 0) {
-                  return EventList();
-                } 
-                else if(i == 1) {
-                  return Map();
-                }
-                else if(i == 2) {
-                  return Favorites();
-                }
-                else {
-                  return Perfil();
-                }
-          });
+        tabBuilder: (BuildContext context, int index) {
+         return IndexedStack(
+          index: _index,
+          children: _tabs,
+         );
         },
       ),
     );
