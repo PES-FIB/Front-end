@@ -4,6 +4,7 @@ import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/share_controller.dart';
+import 'styles/share_button.dart';
 
 class Events extends StatefulWidget {
 
@@ -259,26 +260,7 @@ class _EventsState extends State<Events> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  String eUrl = widget.event.url;
-                                  String eTitle = widget.event.title;
-                                  final url = sharecontroller.ObtainMessage(eTitle, eUrl);
-                                  sharecontroller.ShareAction(url); 
-                                },
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 8, height: 30),
-                                    const Icon(Icons.share, color: Colors.black),
-                                    //espacio de 10px
-                                    const SizedBox(width: 10),
-                                    const Text(
-                                      'Comparteix-lo!',
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              ShareButton(widget.event, widget.event.url)
                             ],
                           ),
                         ],
