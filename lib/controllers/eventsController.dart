@@ -59,6 +59,19 @@ class EventsController {
             schedule = response.data['data'][i]['schedule'];
           }
 
+          String description;
+          if (response.data['data'][i]['description'] == null) {
+            description = "";
+          } else {
+            description = response.data['data'][i]['description'];
+          }
+
+          if (response.data['data'][i]['schedule'] == null) {
+            schedule = "";
+          } else {
+            schedule = response.data['data'][i]['schedule'];
+          }
+
           String city;
           if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
               city = "";
@@ -83,7 +96,7 @@ class EventsController {
           Event event = Event(
             response.data['data'][i]['code'],
             response.data['data'][i]['denomination'],
-            response.data['data'][i]['description'],
+            description,
             image,
             url,
             initD,

@@ -65,8 +65,6 @@ class _MainScreenState extends State<MainScreen> {
         tabBuilder: (context, i) {
           return CupertinoTabView(
             builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
                 if (i == 0) {
                   return EventList();
                 } 
@@ -79,7 +77,6 @@ class _MainScreenState extends State<MainScreen> {
                 else {
                   return Perfil();
                 }
-              });
           });
         },
       ),
