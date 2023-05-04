@@ -302,15 +302,12 @@ class EventsController {
                 city,
                 adress,
                 tickets);
-            print('initial = $initD');
-            print('final = $finalD');
             if(finalD == "") {
               savedEvents[DateUtils.dateOnly(DateTime.parse(initD))]?.add(event);
             }
             else if (initD != "" && finalD != "") {
               int days = DateUtils.dateOnly(DateTime.parse(initD)).difference(DateUtils.dateOnly(DateTime.parse(finalD))).inDays;
               for (int i = 0; i <= days; ++i) {
-                print('valor de i: $i');
                 if(savedEvents.containsKey(DateUtils.dateOnly(DateTime.parse(initD)).add(Duration(days: i)))){
                   savedEvents[DateUtils.dateOnly(DateTime.parse(initD)).add(Duration(days: i))]?.add(event);
                 }
@@ -355,6 +352,7 @@ class EventsController {
       try {
       //unsave event 
       final response = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/users/unsaveEvent/$codeEvent');
+      print("UNSAVED");
   
       //cheking response
       print(response.statusCode);

@@ -37,15 +37,15 @@ class _FavoritesState extends State<Favorites> {
   void _onDaySelected(DateTime day, DateTime _focusedDay) {
     setState(() {
       today = day;
-      if (AppEvents.savedEventsCalendar.value
+      print('ho conte?? -> ${AppEvents.savedEventsCalendar
+          .containsKey(DateUtils.dateOnly(today))}');
+      if (AppEvents.savedEventsCalendar
           .containsKey(DateUtils.dateOnly(today))) {
         savedEventsList =
-            AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(today)]!;
-        listSize = savedEventsList.length;
+            AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
         print('tamany de la llista = ${savedEventsList.length}');
       } else {
         savedEventsList = [];
-        listSize = 0;
       }
       // update `_focusedDay` here as well
     });
@@ -65,36 +65,13 @@ void initEvents() {
   void initState() {
     super.initState();
     print('LLista inicial, map = ${AppEvents.savedEventsCalendar}');
-    if (AppEvents.savedEventsCalendar.value
+    if (AppEvents.savedEventsCalendar
         .containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
-          AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(today)]!;
+          AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
       listSize = savedEventsList.length;
     }
     print('tamany de la llista = ${savedEventsList.length}');
-    AppEvents.savedEventsCalendar.addListener(() {
-      setState(() {});
-    });
-    AppEvents.savedEvents.addListener(() {
-      setState(() {});
-    });
-    AppEvents.eventsList.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    AppEvents.savedEventsCalendar.removeListener(() {
-      setState(() {});
-    });
-    AppEvents.savedEvents.removeListener(() {
-      setState(() {});
-    });
-    AppEvents.eventsList.removeListener(() {
-      setState(() {});
-    });
-    super.dispose();
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -135,7 +112,7 @@ void initEvents() {
                               // else if (downloadResult == -2) {
                               //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No es pot realitzar la descàrrega sense permisos'));
                               // }
-                              // else {}
+                              // else {}                          
                               setState(() {
                                 statusDownload = 1;
                               });
@@ -188,11 +165,12 @@ void initEvents() {
                     padding: const EdgeInsets.only(top: 30),
                     child: Align(
                         alignment: Alignment.center,
-                        child: AppEvents.savedEventsCalendar.value
+                        child: AppEvents.savedEventsCalendar
                                     .containsKey(DateUtils.dateOnly(day)) &&
                                 AppEvents.savedEventsCalendar
-                                        .value[DateUtils.dateOnly(day)] !=
-                                    null
+                                        [DateUtils.dateOnly(day)] !=
+                                    null && AppEvents.savedEventsCalendar
+                                        [DateUtils.dateOnly(day)]?.length != 0
                             ? Icon(Icons.circle, color: Colors.black, size: 8)
                             : SizedBox(
                                 height: 0,
@@ -206,7 +184,7 @@ void initEvents() {
             Expanded(
               child: ListView.builder(
                 key: _listKey,
-                itemCount: listSize,
+                itemCount: savedEventsList.length,
                 itemBuilder: (context, index) => Card(
                   child: ListTile(
                       tileColor: Colors.redAccent,
@@ -267,23 +245,22 @@ void initEvents() {
                               'codi a borrar = ${savedEventsList[index].code}');
                           print(
                               'savedeventslist length abans = ${savedEventsList.length}');
-                          setState(() {
-                            print(
-                                'valor del map ${AppEvents.savedEvents.value[savedEventsList[index].code]}');
-                            AppEvents.savedEventsCalendar
-                                .value[DateUtils.dateOnly(today)]
-                                ?.remove(savedEventsList[index]);
-                            //  print('savedeventslist length = ${savedEventsList.length}');
-                            //  if (AppEvents.savedEvents.value.containsKey(savedEventsList[index].code)) {
-                            //   AppEvents.savedEvents.value.remove(savedEventsList[index].code);
-                            // }
-                            savedEventsList.remove(savedEventsList[index]);
-                            //print('saved event list dia 8 = ${savedEventsList[index].code}');
-                            //savedEventsList.remove(savedEventsList[index]);
-                          });
                           EventsController controller =
                               EventsController(context);
                           controller.unsaveEvent(savedEventsList[index].code);
+                          setState(() {
+                            print(
+                              'savedeventslist length abans2 = ${savedEventsList.length}');
+                            print(
+                                'valor del map ${AppEvents.savedEvents[savedEventsList[index].code]}');
+                            print('savedeventslist length = ${savedEventsList.length}');
+                            if (AppEvents.savedEvents.containsKey(savedEventsList[index].code)) {
+                            AppEvents.savedEvents.remove(savedEventsList[index].code);
+                            }
+                            AppEvents.savedEventsCalendar
+                                [DateUtils.dateOnly(today)]
+                                ?.remove(savedEventsList[index]);
+                          });
                         },
                       ),
                       onTap: () {

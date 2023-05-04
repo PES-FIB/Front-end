@@ -69,10 +69,18 @@ class _MainScreenState extends State<MainScreen> {
               });
             }),
         tabBuilder: (BuildContext context, int index) {
-         return IndexedStack(
-          index: _index,
-          children: _tabs,
-         );
+         switch (index) {
+          case 0:
+            return EventList();
+          case 1:
+            return Map();
+          case 2:
+            return Favorites();
+          case 3:
+            return Perfil();
+          default:
+            return SizedBox.shrink();
+        }
         },
       ),
     );
