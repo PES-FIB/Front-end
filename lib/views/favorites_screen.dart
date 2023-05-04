@@ -128,6 +128,7 @@ void initEvents() {
                             icon: Icon(Icons.download_for_offline_rounded,
                                 color: Colors.redAccent),
                             onPressed: () async {
+                              print ('nom = ${User.name.substring(0,User.name.indexOf(' '))}');
                               int downloadResult = await userController.exportCalendar('${User.name.substring(0,User.name.indexOf(' '))}EventCal.ics');
                               setState(() {
                                 statusDownload = 1;

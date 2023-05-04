@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -100,14 +100,14 @@ class userController {
   }
 
   static Future<int> exportCalendar(String fileName) async {
-    final directory = await getApplicationDocumentsDirectory();
-    print('el directori es = $directory');
-    final file = File('${directory.path}/$fileName');
     bool hasPermission = await checkStoragePermission();
     if (!hasPermission) {
       return -2;
     }
     try {
+      final directory = await DownloadsPathProvider.downloadsDirectory;
+      print('el directori es = $directory');
+      final file = File('${directory?.path}/$fileName');
       await dio.download(userApis.getExportCalendar(), file.path);
     } catch (e) {
       return -1;
