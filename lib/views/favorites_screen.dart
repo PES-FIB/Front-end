@@ -37,8 +37,8 @@ class _FavoritesState extends State<Favorites> {
   void _onDaySelected(DateTime day, DateTime _focusedDay) {
     setState(() {
       today = day;
-      print('ho conte?? -> ${AppEvents.savedEventsCalendar
-          .containsKey(DateUtils.dateOnly(today))}');
+      print(
+          'ho conte?? -> ${AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))}');
       if (AppEvents.savedEventsCalendar
           .containsKey(DateUtils.dateOnly(today))) {
         savedEventsList =
@@ -65,8 +65,7 @@ void initEvents() {
   void initState() {
     super.initState();
     print('LLista inicial, map = ${AppEvents.savedEventsCalendar}');
-    if (AppEvents.savedEventsCalendar
-        .containsKey(DateUtils.dateOnly(today))) {
+    if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
           AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
       listSize = savedEventsList.length;
@@ -94,47 +93,89 @@ void initEvents() {
       child: Scaffold(
         body: Column(
           children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(children: [
+              Container(
+                  height: 30,
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.05),
+                  width: MediaQuery.of(context).size.width,
+                  child: Text('EL TEU CALENDARI',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20))),
+            ]),
             Container(
+              height: 3,
+              width: MediaQuery.of(context).size.width * 0.92,
+              decoration: BoxDecoration(color: Colors.redAccent),
+            ),
+            SizedBox(
               height: 40,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  statusDownload == 0
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.01),
+                      child: TextButton(
+                          onPressed: () {
+                            _onDaySelected(DateTime.now(), DateTime.now());
+                          },
+                          child: Text('Avui'))),
+                  Row(
+                    children: [
+                      statusDownload == 0
                       ? IconButton(
-                            iconSize: 37,
-                            icon: Icon(Icons.download_for_offline_rounded,
-                                color: Colors.redAccent),
-                            onPressed: () async {
-                              // int downloadResult = await userController.exportCalendar('${User.name.substring(0,User.name.indexOf(' '))}EventCal.ics');
-                              // if (downloadResult  == -1) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error a la Descàrrega'));
-                              // }
-                              // else if (downloadResult == -2) {
-                              //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No es pot realitzar la descàrrega sense permisos'));
-                              // }
-                              // else {}                          
+                          iconSize: 30,
+                          icon: Icon(LineAwesomeIcons.download,
+                              color: Colors.redAccent),
+                          onPressed: () async {
+                            // int downloadResult = await userController.exportCalendar('${User.name.substring(0,User.name.indexOf(' '))}EventCal.ics');
+                            // if (downloadResult  == -1) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error a la Descàrrega'));
+                            // }
+                            // else if (downloadResult == -2) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No es pot realitzar la descàrrega sense permisos'));
+                            // }
+                            // else {}
+                            setState(() {
+                              statusDownload = 1;
+                            });
+                            Future.delayed(Duration(seconds: 2), () {
                               setState(() {
-                                statusDownload = 1;
-                              });
-                              Future.delayed(Duration(seconds: 2), () {
-                                setState(() {
-                                  statusDownload = 2;
-                                  Future.delayed(Duration(seconds: 2), () {
-                                    setState(() {
-                                      statusDownload = 0;
-                                    });
+                                statusDownload = 2;
+                                Future.delayed(Duration(seconds: 2), () {
+                                  setState(() {
+                                    statusDownload = 0;
                                   });
                                 });
                               });
-                            },
-                          )
-                      : statusDownload == 1
-                          ? SpinKitFadingCircle(
-                                color: Colors.redAccent,
-                              )
-                          : Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, top:MediaQuery.of(context).size.width*0.02),
-                          child:Icon(Icons.check_circle,
-                                  color: Colors.redAccent, size: 37)),
+                            });
+                          },
+                        )
+                        : statusDownload == 1
+                        ? Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.01,right: MediaQuery.of(context).size.width*0.02),child:SpinKitFadingCircle(
+                          size: 30,
+                            color: Colors.redAccent,
+                          ))
+                        : Padding(
+                            padding: EdgeInsets.only(
+                                right: MediaQuery.of(context).size.width *
+                                    0.02,
+                                top: MediaQuery.of(context).size.width *
+                                    0.02),
+                            child: Icon(Icons.check,
+                                color: Colors.redAccent, size: 30)),
+                        IconButton(
+                          onPressed: (){}, 
+                          iconSize: 30,
+                          icon: Icon(LineAwesomeIcons.plus_circle, color: Colors.redAccent))
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -167,10 +208,14 @@ void initEvents() {
                         alignment: Alignment.center,
                         child: AppEvents.savedEventsCalendar
                                     .containsKey(DateUtils.dateOnly(day)) &&
-                                AppEvents.savedEventsCalendar
-                                        [DateUtils.dateOnly(day)] !=
-                                    null && AppEvents.savedEventsCalendar
-                                        [DateUtils.dateOnly(day)]?.length != 0
+                                AppEvents.savedEventsCalendar[
+                                        DateUtils.dateOnly(day)] !=
+                                    null &&
+                                AppEvents
+                                        .savedEventsCalendar[
+                                            DateUtils.dateOnly(day)]
+                                        ?.length !=
+                                    0
                             ? Icon(Icons.circle, color: Colors.black, size: 8)
                             : SizedBox(
                                 height: 0,
@@ -250,15 +295,18 @@ void initEvents() {
                           controller.unsaveEvent(savedEventsList[index].code);
                           setState(() {
                             print(
-                              'savedeventslist length abans2 = ${savedEventsList.length}');
+                                'savedeventslist length abans2 = ${savedEventsList.length}');
                             print(
                                 'valor del map ${AppEvents.savedEvents[savedEventsList[index].code]}');
-                            print('savedeventslist length = ${savedEventsList.length}');
-                            if (AppEvents.savedEvents.containsKey(savedEventsList[index].code)) {
-                            AppEvents.savedEvents.remove(savedEventsList[index].code);
+                            print(
+                                'savedeventslist length = ${savedEventsList.length}');
+                            if (AppEvents.savedEvents
+                                .containsKey(savedEventsList[index].code)) {
+                              AppEvents.savedEvents
+                                  .remove(savedEventsList[index].code);
                             }
-                            AppEvents.savedEventsCalendar
-                                [DateUtils.dateOnly(today)]
+                            AppEvents
+                                .savedEventsCalendar[DateUtils.dateOnly(today)]
                                 ?.remove(savedEventsList[index]);
                           });
                         },

@@ -16,12 +16,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   var _index = 0;
-  final List<Widget> _tabs = <Widget>[    
-    EventList(),    
-    Map(),    
-    Favorites(),    
-    Perfil(),  
-    ];
   @override
   void initState() {
     super.initState();
