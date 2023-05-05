@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:prova_login/views/main_screen.dart';
 import 'event_screen.dart';
