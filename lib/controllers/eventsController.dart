@@ -171,8 +171,8 @@ class EventsController {
           }
 
           String city;
-          if (response.data['events'][i]['region'][2] == null) {
-            city = "";
+          if (response.data['events'][i]['region'] == null || response.data['events'][i]['region'].length < 3) {
+              city = "";
           } else {
             city = response.data['events'][i]['region'][2];
           }
@@ -269,10 +269,10 @@ class EventsController {
               schedule = response.data['events'][i]['schedule'];
             }
 
-            String city;
-            if (response.data['events'][i]['region'][2] == null) {
+             String city;
+          if (response.data['events'][i]['region'] == null || response.data['events'][i]['region'].length < 3) {
               city = "";
-            } else {
+          } else {
               city = response.data['events'][i]['region'][2];
             }
 
