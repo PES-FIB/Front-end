@@ -23,7 +23,7 @@ Widget ShareButton(Event event,String url) {
       child: Row(
         children: [
           const SizedBox(width: 8, height: 30),
-          const Icon(Icons.share, color: Colors.black),
+          const Icon(Icons.share, color: Colors.white),
           //espacio de 10px
           const SizedBox(width: 10),
           const Text(

@@ -12,7 +12,7 @@ class ShareController {
       return ("Check out this event! $eventname, this event doesn't have a link.");
     }
     else {
-      return ("Check out this event! $url, you can find more information about this event in the link.");
+      return ("Check out this event found on CulturiCAT! $url, you can find more information about this event in the link");
     }
     } 
       

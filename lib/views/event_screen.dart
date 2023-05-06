@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/Event.dart';
@@ -255,14 +257,16 @@ class _EventsState extends State<Events> {
                               ),
                             ],
                           ),
-                          //espacio de 10p
-                          SizedBox(height: 10.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ShareButton(widget.event, widget.event.url)
-                            ],
-                          ),
+                          if (widget.event.url != null)
+                            //espacio de 10p
+                            SizedBox(height: 10.0),
+                          if (widget.event.url != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ShareButton(widget.event, widget.event.url)
+                              ],
+                            ),
                         ],
                       ),
                     ),
