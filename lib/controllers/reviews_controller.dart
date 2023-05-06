@@ -11,7 +11,7 @@ class ReviewController{
     final response = await dio.get('/reviews/$idActivity');
     final List<Review> reviews = [];
     for (var review in response.data) {
-      reviews.add(Review(review['username'], review['idActivity'], review['score'], review['contenido']));
+      reviews.add(Review(review['userId'], review['username'], review['idActivity'], review['score'], review['contenido']));
     }
     return reviews;
   }
@@ -34,12 +34,12 @@ class ReviewController{
     return false;
   }
 
-  Review takeMyReview(List<Review> reviews, String username) {
+  Review takeMyReview(List<Review> reviews, int userId) {
     for (var review in reviews) {
-      if (review.username == username) {
+      if (review.userId == userId) {
         return review;
       }
     }
-    return Review("", "0", 1, "");
+    return Review(-1,"", "0", 1, "");
   }
 }

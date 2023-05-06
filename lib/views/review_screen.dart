@@ -22,9 +22,9 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState() {
     super.initState();
-    Review review1 = Review("user1", widget.event.code, 3, "Molt divertit");
-    Review review2 = Review("user2", widget.event.code, 4, "Molt divertit");
-    Review review3 = Review("user3", widget.event.code, 2, "Molt divertit");
+    Review review1 = Review(1000, "user1", widget.event.code, 3, "Molt divertit");
+    Review review2 = Review(1001, "user2", widget.event.code, 4, "Molt divertit");
+    Review review3 = Review(1002, "user3", widget.event.code, 2, "Molt divertit");
 
     reviews = [
       review1,
@@ -43,9 +43,9 @@ class _ReviewPageState extends State<ReviewPage> {
       children: [
         //si el usuario no ha hecho review del evento, la puede crear, pero si ya la ha hecho, la puede editar o borrar
         if (fechaActual.isBefore(fechaEvento))
-          MakeReview(widget.event)
+          MyReview(widget.event, _reviewController.takeMyReview(reviews,1000))
         else if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
-          MyReview(widget.event, _reviewController.takeMyReview(reviews, User.name))
+          MyReview(widget.event, _reviewController.takeMyReview(reviews, User.id))
         else
           Column(
             children: [

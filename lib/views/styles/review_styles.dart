@@ -64,8 +64,8 @@ ListView ReviewList(List<Review> valoracions, Event event) {
 }
 
 Column MakeReview(Event event) {
-  Review valoracionUsuario = Review(User.name, event.code, 1, "");
-  final _reviewController = TextEditingController();
+  Review valoracionUsuario = Review(User.id,User.name, event.code, 1, "");
+  final reviewController = TextEditingController();
   return Column(
     children: [
       Text("Fes la teva valoració", style: TextStyle(fontSize: 20),),
@@ -75,13 +75,13 @@ Column MakeReview(Event event) {
       ),
       TextFormField(
         decoration: const InputDecoration(labelText: 'Escriu que t\'ha semblat l\'activitat'),
-        controller: _reviewController,
+        controller: reviewController,
       ),
       SizedBox(height: 15.0),
       ElevatedButton(
         child: Text("Enviar"),
         onPressed: () {
-          valoracionUsuario.contenido = _reviewController.text;
+          valoracionUsuario.contenido = reviewController.text;
           print(valoracionUsuario.contenido);
           //añadir la review a la lista de reviews
 
@@ -93,33 +93,35 @@ Column MakeReview(Event event) {
 
 Column MyReview(Event event, Review review) {
   Review valoracionUsuario = review;
-  final _reviewController = TextEditingController();
+  final reviewController = TextEditingController(text: review.contenido);
   return Column(
     children: [
       Text("La teva valoració:", style: TextStyle(fontSize: 20),),
       SizedBox(height: 15.0),
       Align(
-        child: valoracionUsuario.buildRatingBar(true),
+        child: valoracionUsuario.buildRatingBar(false),
       ),
       TextFormField(
-        initialValue: review.contenido,
         decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
-        controller: _reviewController,
+        controller: reviewController,
       ),
       SizedBox(height: 15.0),
       Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         //botones para borrar una review y para editarla
         children: [
           ElevatedButton(
-            child: Text("Actualitzar valoració"),
+            child: Text("Update"),
             onPressed: () {
-              valoracionUsuario.contenido = _reviewController.text;
+              valoracionUsuario.contenido = reviewController.text;
               print(valoracionUsuario.contenido);
               //Actualizar la review en la lista de reviews
+              print("valoració actualitzada");
             },
           ),
+          SizedBox(width: 15.0,),
           ElevatedButton(
-            child: Text("Eliminar valoració"),
+            child: Text("Delete"),
             onPressed: () {
               //Eliminar la review de la lista de reviews
               print("valoració eliminada");

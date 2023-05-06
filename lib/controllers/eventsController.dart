@@ -21,9 +21,9 @@ class EventsController {
       final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events');
        
       if (response.statusCode == 200) {
+        print(response.data['data'].length);
         if(response.data['data'] != null) {
           for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-        
           //images can be empty 
           String image;
           if (response.data['data'][i]['images'].isEmpty) {
@@ -31,13 +31,12 @@ class EventsController {
           } else {
             image = response.data['data'][i]['images'][0];
           }
-
           //url can be null 
           String url;
           if (response.data['data'][i]['url'] == null) {
             url = "";
           } else { url = response.data['data'][i]['url']; }
-
+          
           String initD;
           if (response.data['data'][i]['initial_date'] == null) {
             initD = "";
@@ -51,21 +50,21 @@ class EventsController {
           } else {
             finalD = response.data['data'][i]['final_date'];
           }
-
+          
           String schedule;
           if (response.data['data'][i]['schedule'] == null) {
             schedule = "";
           } else {
             schedule = response.data['data'][i]['schedule'];
           }
-
+         
           String city;
           if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
               city = "";
           } else {
             city = response.data['data'][i]['region'][2];
           }
-
+           
           String adress;
           if (response.data['data'][i]['address'] == null) {
             adress = "";
@@ -79,11 +78,17 @@ class EventsController {
           } else {
             tickets = response.data['data'][i]['tickets'];
           }
-
+          String description;
+          if (response.data['data'][i]['description'] == null) {
+            description = "";
+          } else {
+            description = response.data['data'][i]['description'];
+          }
+        
           Event event = Event(
             response.data['data'][i]['code'],
             response.data['data'][i]['denomination'],
-            response.data['data'][i]['description'],
+            description,
             image,
             url,
             initD,
@@ -93,6 +98,7 @@ class EventsController {
             adress,
             tickets,
           );
+          
           allEvents.add(event);
           }
           return allEvents;
@@ -101,7 +107,7 @@ class EventsController {
         }
       return []; // return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
+      print("Error: $error");
       return []; // return an empty list if there was an error
     }
   }
