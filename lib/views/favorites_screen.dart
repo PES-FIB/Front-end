@@ -117,47 +117,65 @@ class _FavoritesState extends State<Favorites> {
                   Row(
                     children: [
                       statusDownload == 0
-                      ? IconButton(
-                            iconSize: 37,
-                            icon: Icon(Icons.download_for_offline_rounded,
-                                color: Colors.redAccent),
-                            onPressed: () async {
-                              print ('nom = ${User.name.substring(0,User.name.indexOf(' '))}');
-                              int downloadResult = await userController.exportCalendar('${User.name.substring(0,User.name.indexOf(' '))}EventCal.ics');
-                              setState(() {
-                                statusDownload = 1;
-                              });
-                              if (downloadResult  == -1) {
+                          ? IconButton(
+                              iconSize: 30,
+                              icon: Icon(LineAwesomeIcons.download,
+                                  color: Colors.redAccent),
+                              onPressed: () async {
+                                print(
+                                    'nom = ${User.name.substring(0, User.name.indexOf(' '))}');
+                                int downloadResult =
+                                    await userController.exportCalendar(
+                                        '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics');
                                 setState(() {
-                                statusDownload = 0;
-                              });
-                                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error a la Descàrrega'));
-                              }
-                              else if (downloadResult == -2) {
-                                setState(() {
-                                statusDownload = 0;
-                              });
-                                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'No es pot realitzar la descàrrega sense permisos'));
-                              }
-                              else {
-                                setState(() {
-                                  statusDownload = 2;
-                                  Future.delayed(Duration(seconds: 2), () {
-                                    setState(() {
-                                      statusDownload = 0;
+                                  statusDownload = 1;
+                                });
+                                if (downloadResult == -1) {
+                                  setState(() {
+                                    statusDownload = 0;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackbar(context,
+                                          'Hi ha hagut un error a la Descàrrega'));
+                                } else if (downloadResult == -2) {
+                                  setState(() {
+                                    statusDownload = 0;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackbar(context,
+                                          'No es pot realitzar la descàrrega sense permisos'));
+                                } else {
+                                  setState(() {
+                                    statusDownload = 2;
+                                    Future.delayed(Duration(seconds: 2), () {
+                                      setState(() {
+                                        statusDownload = 0;
+                                      });
                                     });
                                   });
-                                });
-                            }
-                            },
-                          )
-                      : statusDownload == 1
-                          ? SpinKitFadingCircle(
-                                color: Colors.redAccent,
-                              )
-                          : Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, top:MediaQuery.of(context).size.width*0.02),
-                          child:Icon(Icons.check_circle,
-                                  color: Colors.redAccent, size: 37)),
+                                }
+                              },
+                            )
+                          : statusDownload == 1
+                              ? Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.01,right: MediaQuery.of(context).size.width*0.02),child:SpinKitFadingCircle(
+                          size: 30,
+                            color: Colors.redAccent,
+                          ))
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02,
+                                      top: MediaQuery.of(context).size.width *
+                                          0.02),
+                                  child: Icon(Icons.check_circle,
+                                      color: Colors.redAccent, size: 37)),
+                      IconButton(
+                          onPressed: () {},
+                          iconSize: 30,
+                          icon: Icon(LineAwesomeIcons.plus_circle,
+                              color: Colors.redAccent))
+                    ],
+                  )
                 ],
               ),
             ),
@@ -216,59 +234,61 @@ class _FavoritesState extends State<Favorites> {
                   child: ListTile(
                       tileColor: Colors.redAccent,
                       contentPadding: EdgeInsets.all(20.0),
-                      title:  Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(savedEventsList[index].title,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20)),
-                            SizedBox(height: 5),
-                            Text(savedEventsList[index].city,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15)),
-                            SizedBox(height: 5),
-                            Row(
-                              children: [
-                                savedEventsList[index].initialDate !=
-                                        savedEventsList[index].finalDate
-                                    ? Row(children: [
-                                        Text(
-                                            savedEventsList[index]
-                                                .initialDate
-                                                .substring(0, 10),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15)),
-                                        Text(' - ',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15)),
-                                        Text(
-                                            savedEventsList[index]
-                                                .finalDate
-                                                .substring(0, 10),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15)),
-                                      ])
-                                    : Text(
-                                        savedEventsList[index]
-                                            .initialDate
-                                            .substring(0, 10),
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15)),
-                              ],
-                            )
-                          ],
-                        ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(savedEventsList[index].title,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
+                          SizedBox(height: 5),
+                          Text(savedEventsList[index].city,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15)),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              savedEventsList[index].initialDate !=
+                                      savedEventsList[index].finalDate
+                                  ? Row(children: [
+                                      Text(
+                                          savedEventsList[index]
+                                              .initialDate
+                                              .substring(0, 10),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                      Text(' - ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                      Text(
+                                          savedEventsList[index]
+                                              .finalDate
+                                              .substring(0, 10),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                    ])
+                                  : Text(
+                                      savedEventsList[index]
+                                          .initialDate
+                                          .substring(0, 10),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15)),
+                            ],
+                          )
+                        ],
+                      ),
                       leading: Icon(Icons.event, color: Colors.white, size: 30),
                       trailing: IconButton(
                         iconSize: 25,
                         icon: Icon(Icons.favorite, color: Colors.white),
                         onPressed: () async {
-                          EventsController.unsaveEvent(savedEventsList[index].code);
+                          EventsController.unsaveEvent(
+                              savedEventsList[index].code);
                           setState(() {
-                           EventsController.unsaveEventLocale(savedEventsList[index]);
+                            EventsController.unsaveEventLocale(
+                                savedEventsList[index]);
                           });
                         },
                       ),

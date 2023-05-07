@@ -242,7 +242,6 @@ class EventsController {
   static Future<Map<DateTime, List<Event>>> getSavedEventsCalendar() async {
     Map<DateTime, List<Event>> savedEvents = {}; //initialize empty event list.
     savedEvents.addAll({});
-    print('mapa estructura = $savedEvents');
 
     try {
       //request current user saved events
@@ -250,7 +249,6 @@ class EventsController {
           .get('http://nattech.fib.upc.edu:40331/api/v1/users/savedEvents');
 
       //cheking events response
-      print(response.statusCode);
 
       if (response.statusCode == 200) {
         if (response.data['events'] != null) {
@@ -326,8 +324,6 @@ class EventsController {
                 adress,
                 tickets);
             if (initD != "") {
-              print(
-                  'entro loop normal amb event ${response.data['events'][i]['code']}');
               if (savedEvents
                   .containsKey(DateUtils.dateOnly(DateTime.parse(initD)))) {
                 savedEvents[DateUtils.dateOnly(DateTime.parse(initD))]
@@ -354,13 +350,11 @@ class EventsController {
             //   }
             // }
           }
-          print('tamany del map = ${savedEvents.length}');
           return savedEvents;
         }
       }
       return savedEvents; // return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
       return savedEvents; // return an empty list if there was an error
     }
   }

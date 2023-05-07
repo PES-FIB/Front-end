@@ -100,20 +100,23 @@ class userController {
   }
 
   static Future<int> exportCalendar(String fileName) async {
-    bool hasPermission = await checkStoragePermission();
-    if (!hasPermission) {
-      return -2;
-    }
-    try {
-      final directory = await DownloadsPathProvider.downloadsDirectory;
-      print('el directori es = $directory');
-      final file = File('${directory?.path}/$fileName');
-      await dio.download(userApis.getExportCalendar(), file.path);
-    } catch (e) {
-      return -1;
-    }
-    return 1;
+  bool hasPermission = await checkStoragePermission();
+  if (!hasPermission) {
+    return -2;
   }
+  try {
+    final directory = await DownloadsPathProvider.downloadsDirectory;
+    print('el directori es = $directory');
+    final file = File('${directory?.path}/$fileName');
+    dio.options.headers['Content-Type'] = 'application/octet-stream';
+    dio.options.responseType = ResponseType.bytes;
+    Response response = await dio.get(userApis.getExportCalendar());
+    file.writeAsBytesSync(response.data);
+  } catch (e) {
+    return -1;
+  }
+  return 1;
+}
 
   static Future<bool> updateUserPassword(
       String oldPassword, String newPassword) async {
