@@ -8,7 +8,6 @@ import '../models/User.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/userController.dart';
-import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -34,67 +33,32 @@ class _FavoritesState extends State<Favorites> {
   int statusDownload = 0;
   DateTime today = DateTime.now();
 
-  void _onDaySelected(DateTime day, DateTime _focusedDay) {
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
-      if (AppEvents.savedEventsCalendar.value
+      print(
+          'ho conte?? -> ${AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))}');
+      if (AppEvents.savedEventsCalendar
           .containsKey(DateUtils.dateOnly(today))) {
         savedEventsList =
-            AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(today)]!;
-        listSize = savedEventsList.length;
+            AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
         print('tamany de la llista = ${savedEventsList.length}');
       } else {
         savedEventsList = [];
-        listSize = 0;
       }
-      // update `_focusedDay` here as well
     });
   }
-
-/*
-void initEvents() {
-  loadSavedEvents().then((value){
-       setState(() {
-        savedEventsCalendar.addAll(value.values.toList());
-      });
-    });
-}
-*/
 
   @override
   void initState() {
     super.initState();
     print('LLista inicial, map = ${AppEvents.savedEventsCalendar}');
-    if (AppEvents.savedEventsCalendar.value
-        .containsKey(DateUtils.dateOnly(today))) {
+    if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
-          AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(today)]!;
+          AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
       listSize = savedEventsList.length;
     }
     print('tamany de la llista = ${savedEventsList.length}');
-    AppEvents.savedEventsCalendar.addListener(() {
-      setState(() {});
-    });
-    AppEvents.savedEvents.addListener(() {
-      setState(() {});
-    });
-    AppEvents.eventsList.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    AppEvents.savedEventsCalendar.removeListener(() {
-      setState(() {});
-    });
-    AppEvents.savedEvents.removeListener(() {
-      setState(() {});
-    });
-    AppEvents.eventsList.removeListener(() {
-      setState(() {});
-    });
-    super.dispose();
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -117,12 +81,42 @@ void initEvents() {
       child: Scaffold(
         body: Column(
           children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(children: [
+              Container(
+                  height: 30,
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.05),
+                  width: MediaQuery.of(context).size.width,
+                  child: Text('EL TEU CALENDARI',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20))),
+            ]),
             Container(
+              height: 3,
+              width: MediaQuery.of(context).size.width * 0.92,
+              decoration: BoxDecoration(color: Colors.redAccent),
+            ),
+            SizedBox(
               height: 40,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  statusDownload == 0
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.01),
+                      child: TextButton(
+                          onPressed: () {
+                            _onDaySelected(DateTime.now(), DateTime.now());
+                          },
+                          child: Text('Avui'))),
+                  Row(
+                    children: [
+                      statusDownload == 0
                       ? IconButton(
                             iconSize: 37,
                             icon: Icon(Icons.download_for_offline_rounded,
@@ -194,11 +188,16 @@ void initEvents() {
                     padding: const EdgeInsets.only(top: 30),
                     child: Align(
                         alignment: Alignment.center,
-                        child: AppEvents.savedEventsCalendar.value
+                        child: AppEvents.savedEventsCalendar
                                     .containsKey(DateUtils.dateOnly(day)) &&
-                                AppEvents.savedEventsCalendar
-                                        .value[DateUtils.dateOnly(day)] !=
-                                    null
+                                AppEvents.savedEventsCalendar[
+                                        DateUtils.dateOnly(day)] !=
+                                    null &&
+                                AppEvents
+                                        .savedEventsCalendar[
+                                            DateUtils.dateOnly(day)]
+                                        ?.length !=
+                                    0
                             ? Icon(Icons.circle, color: Colors.black, size: 8)
                             : SizedBox(
                                 height: 0,
@@ -212,13 +211,12 @@ void initEvents() {
             Expanded(
               child: ListView.builder(
                 key: _listKey,
-                itemCount: listSize,
+                itemCount: savedEventsList.length,
                 itemBuilder: (context, index) => Card(
                   child: ListTile(
                       tileColor: Colors.redAccent,
                       contentPadding: EdgeInsets.all(20.0),
-                      title: Container(
-                        child: Column(
+                      title:  Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(savedEventsList[index].title,
@@ -263,33 +261,15 @@ void initEvents() {
                             )
                           ],
                         ),
-                      ),
                       leading: Icon(Icons.event, color: Colors.white, size: 30),
                       trailing: IconButton(
                         iconSize: 25,
                         icon: Icon(Icons.favorite, color: Colors.white),
                         onPressed: () async {
-                          print(
-                              'codi a borrar = ${savedEventsList[index].code}');
-                          print(
-                              'savedeventslist length abans = ${savedEventsList.length}');
+                          EventsController.unsaveEvent(savedEventsList[index].code);
                           setState(() {
-                            print(
-                                'valor del map ${AppEvents.savedEvents.value[savedEventsList[index].code]}');
-                            AppEvents.savedEventsCalendar
-                                .value[DateUtils.dateOnly(today)]
-                                ?.remove(savedEventsList[index]);
-                            //  print('savedeventslist length = ${savedEventsList.length}');
-                            //  if (AppEvents.savedEvents.value.containsKey(savedEventsList[index].code)) {
-                            //   AppEvents.savedEvents.value.remove(savedEventsList[index].code);
-                            // }
-                            savedEventsList.remove(savedEventsList[index]);
-                            //print('saved event list dia 8 = ${savedEventsList[index].code}');
-                            //savedEventsList.remove(savedEventsList[index]);
+                           EventsController.unsaveEventLocale(savedEventsList[index]);
                           });
-                          EventsController controller =
-                              EventsController(context);
-                          controller.unsaveEvent(savedEventsList[index].code);
                         },
                       ),
                       onTap: () {
@@ -298,40 +278,6 @@ void initEvents() {
                 ),
               ),
             ),
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: savedEventsList.length,
-            //     itemBuilder: (context, index) => Card(
-            //       child: ListTile(
-            //           key: ValueKey(savedEventsList[index].title),
-            //           contentPadding: EdgeInsets.all(20.0),
-            //           title: Text(savedEventsList[index].title),
-            //           leading:
-            //               Icon(Icons.event, color: Colors.black, size: 30),
-            //           trailing: IconButton(
-            //             iconSize: 25,
-            //             icon: Icon(Icons.favorite,
-            //                 color: Colors.redAccent),
-            //             onPressed: () {
-            //               setState(() {
-            //                 widget.savedEventsMap.remove(savedEventsList[index].code);
-            //                 EventsController controller = EventsController(context);
-            //                 controller.unsaveEvent(savedEventsList[index].code);
-            //               });
-            //               loadSavedEvents().then((value){
-            //                 savedEventsList.clear();
-            //                 setState(() {
-            //                   savedEventsList.addAll(value.values.toList());
-            //                 });
-            //               });
-            //             },
-            //           ),
-            //           onTap: () {
-            //             pushEventScreen(index);
-            //           }),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

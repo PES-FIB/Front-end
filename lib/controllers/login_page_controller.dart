@@ -39,19 +39,19 @@ class LoginPageController {
 
   Future<void> realize_login() async { 
     try {
-      AppEvents.eventsList.value = await EventsController.getAllEvents();
-      print('numero de events =  ${AppEvents.eventsList.value.length}');
-      AppEvents.savedEvents.value = await EventsController.getSavedEvents();
-      print('numero de events guardats =  ${AppEvents.savedEvents.value.length}');
-      AppEvents.savedEventsCalendar.value = await EventsController.getSavedEventsCalendar();
-      print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.value.length}');
+      AppEvents.eventsList = await EventsController.getAllEvents();
+      print('numero de events =  ${AppEvents.eventsList.length}');
+      AppEvents.savedEvents = await EventsController.getSavedEvents();
+      print('numero de events guardats =  ${AppEvents.savedEvents.length}');
+      AppEvents.savedEventsCalendar = await EventsController.getSavedEventsCalendar();
+      print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
     } catch (e) {
       print(e);
       return;
     }
     finally {
-      print('S\'ha omplert el map? = ${AppEvents.eventsList.value.isNotEmpty}');
-      print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.value.isNotEmpty}');
+      print('S\'ha omplert el map? = ${AppEvents.eventsList.isNotEmpty}');
+      print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.isNotEmpty}');
     // ignore: use_build_context_synchronously
     Navigator.push(
       context,

@@ -62,20 +62,20 @@ class _EventListState extends State<EventList> {
 
 
   bool inSaved(String codeEvent){
-    return AppEvents.savedEvents.value.containsKey(codeEvent);
+    return AppEvents.savedEvents.containsKey(codeEvent);
   }
 
   void _runFilter(String enteredTitle) {
     if(enteredTitle.isEmpty) {
-      result = AppEvents.eventsList.value;
+      result = AppEvents.eventsList;
     } else {
-      result = AppEvents.eventsList.value.where((event) => event.title.toLowerCase().contains(enteredTitle.toLowerCase())).toList();
+      result = AppEvents.eventsList.where((event) => event.title.toLowerCase().contains(enteredTitle.toLowerCase())).toList();
     }
     setState(() {_foundEvents = result;});
   }
 
   void pushEventScreen(int clickedEvent) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: AppEvents.eventsList.value[clickedEvent])));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: AppEvents.eventsList[clickedEvent])));
   }
 
   @override
@@ -107,17 +107,13 @@ class _EventListState extends State<EventList> {
                     icon: Icon(Icons.favorite, color: inSaved(_foundEvents[index].code)? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
                     onPressed: () {
                     setState(() {
-                      EventsController controller = EventsController(context);
                       if (inSaved(_foundEvents[index].code)){
-                        AppEvents.savedEvents.value.remove(_foundEvents[index].code);
-                        AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]?.remove(_foundEvents[index]);
-                        controller.unsaveEvent(_foundEvents[index].code);
+                        EventsController.unsaveEventLocale(_foundEvents[index]);
+                        EventsController.unsaveEvent(_foundEvents[index].code);
                       }//remove
                       else {
-                        AppEvents.savedEvents.value[_foundEvents[index].code] = _foundEvents[index];
-                        AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]?.add(_foundEvents[index]);
-                        print('lhe guardat al front ${AppEvents.savedEventsCalendar.value[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]}');
-                        controller.saveEvent(_foundEvents[index].code);
+                        EventsController.saveEventLocale(_foundEvents[index]);
+                        EventsController.saveEvent(_foundEvents[index].code);
                       }//add
                     });
                     },
