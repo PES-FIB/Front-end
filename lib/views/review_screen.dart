@@ -22,30 +22,26 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState() {
     super.initState();
-    Review review1 = Review(1000, "user1", widget.event.code, 3, "Molt divertit");
-    Review review2 = Review(1001, "user2", widget.event.code, 4, "Molt divertit");
-    Review review3 = Review(1002, "user3", widget.event.code, 2, "Molt divertit");
-
-    reviews = [
-      review1,
-      review2,
-      review3,
-    ];
+    final _reviewController = ReviewController(context);
+    _reviewController.getReviews(widget.event.code).then((value) => setState(() {
+      reviews = value;
+    }));
   }
   @override
   Widget build(BuildContext context) {
   DateTime fechaEvento = DateTime.parse(widget.event.finalDate);
   DateTime fechaActual = DateTime.now();
   final _reviewController = ReviewController(context);
+  final eventName = widget.event.title;
 
   return Scaffold(
     body: Column(
       children: [
         //si el usuario no ha hecho review del evento, la puede crear, pero si ya la ha hecho, la puede editar o borrar
-        if (fechaActual.isBefore(fechaEvento))
-          MyReview(widget.event, _reviewController.takeMyReview(reviews,1000))
+        if (fechaActual.isAfter(fechaEvento))
+          MakeReview(context, widget.event)
         else if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
-          MyReview(widget.event, _reviewController.takeMyReview(reviews, User.id))
+          MyReview(context, widget.event, _reviewController.takeMyReview(reviews, User.id))
         else
           Column(
             children: [
@@ -54,10 +50,11 @@ class _ReviewPageState extends State<ReviewPage> {
             ],
           ),
         SizedBox(height: 15.0),
-        Text("Valoracions dels usuaris", style: TextStyle(fontSize: 20),),
+        Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
         SizedBox(height: 15.0),
         Expanded(
-          child: ReviewList(reviews, widget.event)
+          child: 
+            ReviewList(reviews, widget.event)
         )
       ],
     ),

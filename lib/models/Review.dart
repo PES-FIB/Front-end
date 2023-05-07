@@ -4,12 +4,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class Review {
   int userId;
+  int idReview;
   String username;
   String idActivity;
   double score;
   String contenido;
   
-  Review(this.userId, this.username, this.idActivity, this.score, this.contenido);
+  Review(this.userId, this.idReview, this.username, this.idActivity, this.score, this.contenido);
   
   Widget buildRatingBar(bool ignoreGesture) {
     return RatingBar.builder(
