@@ -107,23 +107,13 @@ class _EventListState extends State<EventList> {
                     icon: Icon(Icons.favorite, color: inSaved(_foundEvents[index].code)? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
                     onPressed: () {
                     setState(() {
-                      EventsController controller = EventsController(context);
                       if (inSaved(_foundEvents[index].code)){
-                        AppEvents.savedEvents.remove(_foundEvents[index].code);
-                        AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]?.remove(_foundEvents[index]);
-                        controller.unsaveEvent(_foundEvents[index].code);
+                        EventsController.unsaveEventLocale(_foundEvents[index]);
+                        EventsController.unsaveEvent(_foundEvents[index].code);
                       }//remove
                       else {
-                        AppEvents.savedEvents[_foundEvents[index].code] = _foundEvents[index];
-                        if( AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))) {
-                          AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]?.add(_foundEvents[index]);
-                        }
-                        else {
-                          List<Event> l = [_foundEvents[index]];
-                          AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))] = l;
-                        }
-                        print('lhe guardat al front ${AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(_foundEvents[index].initialDate)))]}');
-                        controller.saveEvent(_foundEvents[index].code);
+                        EventsController.saveEventLocale(_foundEvents[index]);
+                        EventsController.saveEvent(_foundEvents[index].code);
                       }//add
                     });
                     },

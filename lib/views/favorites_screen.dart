@@ -8,7 +8,6 @@ import '../models/User.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/userController.dart';
-import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -34,7 +33,7 @@ class _FavoritesState extends State<Favorites> {
   int statusDownload = 0;
   DateTime today = DateTime.now();
 
-  void _onDaySelected(DateTime day, DateTime _focusedDay) {
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
       print(
@@ -47,19 +46,8 @@ class _FavoritesState extends State<Favorites> {
       } else {
         savedEventsList = [];
       }
-      // update `_focusedDay` here as well
     });
   }
-
-/*
-void initEvents() {
-  loadSavedEvents().then((value){
-       setState(() {
-        savedEventsCalendar.addAll(value.values.toList());
-      });
-    });
-}
-*/
 
   @override
   void initState() {
@@ -234,8 +222,7 @@ void initEvents() {
                   child: ListTile(
                       tileColor: Colors.redAccent,
                       contentPadding: EdgeInsets.all(20.0),
-                      title: Container(
-                        child: Column(
+                      title:  Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(savedEventsList[index].title,
@@ -280,34 +267,14 @@ void initEvents() {
                             )
                           ],
                         ),
-                      ),
                       leading: Icon(Icons.event, color: Colors.white, size: 30),
                       trailing: IconButton(
                         iconSize: 25,
                         icon: Icon(Icons.favorite, color: Colors.white),
                         onPressed: () async {
-                          print(
-                              'codi a borrar = ${savedEventsList[index].code}');
-                          print(
-                              'savedeventslist length abans = ${savedEventsList.length}');
-                          EventsController controller =
-                              EventsController(context);
-                          controller.unsaveEvent(savedEventsList[index].code);
+                          EventsController.unsaveEvent(savedEventsList[index].code);
                           setState(() {
-                            print(
-                                'savedeventslist length abans2 = ${savedEventsList.length}');
-                            print(
-                                'valor del map ${AppEvents.savedEvents[savedEventsList[index].code]}');
-                            print(
-                                'savedeventslist length = ${savedEventsList.length}');
-                            if (AppEvents.savedEvents
-                                .containsKey(savedEventsList[index].code)) {
-                              AppEvents.savedEvents
-                                  .remove(savedEventsList[index].code);
-                            }
-                            AppEvents
-                                .savedEventsCalendar[DateUtils.dateOnly(today)]
-                                ?.remove(savedEventsList[index]);
+                           EventsController.unsaveEventLocale(savedEventsList[index]);
                           });
                         },
                       ),
@@ -317,40 +284,6 @@ void initEvents() {
                 ),
               ),
             ),
-            // Expanded(
-            //   child: ListView.builder(
-            //     itemCount: savedEventsList.length,
-            //     itemBuilder: (context, index) => Card(
-            //       child: ListTile(
-            //           key: ValueKey(savedEventsList[index].title),
-            //           contentPadding: EdgeInsets.all(20.0),
-            //           title: Text(savedEventsList[index].title),
-            //           leading:
-            //               Icon(Icons.event, color: Colors.black, size: 30),
-            //           trailing: IconButton(
-            //             iconSize: 25,
-            //             icon: Icon(Icons.favorite,
-            //                 color: Colors.redAccent),
-            //             onPressed: () {
-            //               setState(() {
-            //                 widget.savedEventsMap.remove(savedEventsList[index].code);
-            //                 EventsController controller = EventsController(context);
-            //                 controller.unsaveEvent(savedEventsList[index].code);
-            //               });
-            //               loadSavedEvents().then((value){
-            //                 savedEventsList.clear();
-            //                 setState(() {
-            //                   savedEventsList.addAll(value.values.toList());
-            //                 });
-            //               });
-            //             },
-            //           ),
-            //           onTap: () {
-            //             pushEventScreen(index);
-            //           }),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
