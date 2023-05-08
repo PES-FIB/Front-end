@@ -61,6 +61,8 @@ class _MainScreenState extends State<MainScreen> {
             // If we have the data, construct the pages
             final allEvents = events.allEvents;
             final savedEvents = events.savedEvents;
+            print("allEvents size:");
+            print(allEvents.length);
             final pages = [
               EventList(
                 events: allEvents,
@@ -117,6 +119,8 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+
 
 class EventData {
   List<Event> allEvents = [];
