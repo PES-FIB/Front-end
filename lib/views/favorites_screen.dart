@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -27,11 +28,17 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+  TextEditingController codeController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController repeatsController = TextEditingController();
   //Map<String, Event> mapSavedEvents = {};
   List<Event> savedEventsList = [];
   int listSize = 0;
   int statusDownload = 0;
   DateTime today = DateTime.now();
+  DateTime task_ini = DateTime.now();
+  DateTime task_fi = DateTime.now();  
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -157,10 +164,16 @@ class _FavoritesState extends State<Favorites> {
                               },
                             )
                           : statusDownload == 1
-                              ? Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.01,right: MediaQuery.of(context).size.width*0.02),child:SpinKitFadingCircle(
-                          size: 30,
-                            color: Colors.redAccent,
-                          ))
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height *
+                                          0.01,
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02),
+                                  child: SpinKitFadingCircle(
+                                    size: 30,
+                                    color: Colors.redAccent,
+                                  ))
                               : Padding(
                                   padding: EdgeInsets.only(
                                       right: MediaQuery.of(context).size.width *
@@ -170,7 +183,78 @@ class _FavoritesState extends State<Favorites> {
                                   child: Icon(Icons.check_circle,
                                       color: Colors.redAccent, size: 37)),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Center(child: Text('Nova Tasca')),
+                                  content: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.3,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: Column(
+                                        children: [
+                                          TextFormField(
+                                            controller: nameController,
+                                            decoration: const InputDecoration(labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
+                                          ),
+                                          TextFormField(
+                                            controller: descriptionController,
+                                            decoration: const InputDecoration(labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
+                                          ),
+                                          TextButton(
+                                            onPressed: (){
+                                              showCupertinoModalPopup(
+                                                context: context, 
+                                                builder: (BuildContext context) => 
+                                                SizedBox(
+                                                  height: MediaQuery.of(context).size.height *0.4,
+                                                  child: CupertinoDatePicker(
+                                                    backgroundColor: Colors.white,
+                                                    initialDateTime: DateTime.now(),
+                                                    onDateTimeChanged: (DateTime newTime) {
+                                                      task_ini = newTime;
+                                                    },
+                                                    use24hFormat: true,
+                                                    mode:  CupertinoDatePickerMode.dateAndTime,
+                                                    )
+                                                  )
+                                              );
+                                            }, 
+                                            child: Text('Seleccioni Data inicial')
+                                          ),
+                                          TextButton(
+                                            onPressed:(){}, 
+                                            child: Text('Seleccioni Data Final')
+                                          ),
+                                          TextFormField(
+                                            controller: repeatsController,
+                                            decoration: const InputDecoration(labelText: 'Repeteix?', labelStyle: TextStyle(fontSize: 12)),
+                                          ),
+                                          // Add form fields here to enter event details
+                                        ],
+                                      )),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Add code here to save the event
+                                      },
+                                      child: Text('Save'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                           iconSize: 30,
                           icon: Icon(LineAwesomeIcons.plus_circle,
                               color: Colors.redAccent))

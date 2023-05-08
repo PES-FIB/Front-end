@@ -105,14 +105,15 @@ class userController {
     return -2;
   }
   try {
-    final directory = await DownloadsPathProvider.downloadsDirectory;
+    final directory = Directory("/storage/emulated/0/Download");
     print('el directori es = $directory');
-    final file = File('${directory?.path}/$fileName');
+    final file = File('${directory.path}/$fileName');
     dio.options.headers['Content-Type'] = 'application/octet-stream';
     dio.options.responseType = ResponseType.bytes;
     Response response = await dio.get(userApis.getExportCalendar());
     file.writeAsBytesSync(response.data);
   } catch (e) {
+    print(e);
     return -1;
   }
   return 1;
