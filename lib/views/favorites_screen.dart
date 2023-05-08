@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:prova_login/controllers/taskController.dart';
 import 'package:prova_login/views/EventList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
@@ -10,6 +11,7 @@ import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/userController.dart';
 import '../models/AppEvents.dart';
+import '../models/Task.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'styles/custom_snackbar.dart';
@@ -28,17 +30,11 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
-  TextEditingController codeController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController repeatsController = TextEditingController();
   //Map<String, Event> mapSavedEvents = {};
   List<Event> savedEventsList = [];
   int listSize = 0;
   int statusDownload = 0;
   DateTime today = DateTime.now();
-  DateTime task_ini = DateTime.now();
-  DateTime task_fi = DateTime.now();  
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -185,75 +181,10 @@ class _FavoritesState extends State<Favorites> {
                       IconButton(
                           onPressed: () {
                             showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Center(child: Text('Nova Tasca')),
-                                  content: SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.3,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      child: Column(
-                                        children: [
-                                          TextFormField(
-                                            controller: nameController,
-                                            decoration: const InputDecoration(labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
-                                          ),
-                                          TextFormField(
-                                            controller: descriptionController,
-                                            decoration: const InputDecoration(labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
-                                          ),
-                                          TextButton(
-                                            onPressed: (){
-                                              showCupertinoModalPopup(
-                                                context: context, 
-                                                builder: (BuildContext context) => 
-                                                SizedBox(
-                                                  height: MediaQuery.of(context).size.height *0.4,
-                                                  child: CupertinoDatePicker(
-                                                    backgroundColor: Colors.white,
-                                                    initialDateTime: DateTime.now(),
-                                                    onDateTimeChanged: (DateTime newTime) {
-                                                      task_ini = newTime;
-                                                    },
-                                                    use24hFormat: true,
-                                                    mode:  CupertinoDatePickerMode.dateAndTime,
-                                                    )
-                                                  )
-                                              );
-                                            }, 
-                                            child: Text('Seleccioni Data inicial')
-                                          ),
-                                          TextButton(
-                                            onPressed:(){}, 
-                                            child: Text('Seleccioni Data Final')
-                                          ),
-                                          TextFormField(
-                                            controller: repeatsController,
-                                            decoration: const InputDecoration(labelText: 'Repeteix?', labelStyle: TextStyle(fontSize: 12)),
-                                          ),
-                                          // Add form fields here to enter event details
-                                        ],
-                                      )),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Add code here to save the event
-                                      },
-                                      child: Text('Save'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return MyAlertDialog();
+                                });
                           },
                           iconSize: 30,
                           icon: Icon(LineAwesomeIcons.plus_circle,
@@ -263,53 +194,55 @@ class _FavoritesState extends State<Favorites> {
                 ],
               ),
             ),
-            TableCalendar(
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
-              ),
-              availableGestures: AvailableGestures.all,
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              focusedDay: today,
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              rowHeight: MediaQuery.of(context).size.width * 0.13,
-              selectedDayPredicate: (day) => isSameDay(day, today),
-              onDaySelected: _onDaySelected,
-              calendarStyle: CalendarStyle(
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    shape: BoxShape.circle,
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TableCalendar(
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true,
                   ),
-                  todayDecoration: BoxDecoration(
-                      color: Colors.blueGrey, shape: BoxShape.circle),
-                  todayTextStyle: TextStyle(color: Colors.white, fontSize: 16)),
-              calendarBuilders: CalendarBuilders(
-                markerBuilder: (context, day, focusedDay) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Align(
-                        alignment: Alignment.center,
-                        child: AppEvents.savedEventsCalendar
-                                    .containsKey(DateUtils.dateOnly(day)) &&
-                                AppEvents.savedEventsCalendar[
-                                        DateUtils.dateOnly(day)] !=
-                                    null &&
-                                AppEvents
-                                        .savedEventsCalendar[
-                                            DateUtils.dateOnly(day)]
-                                        ?.length !=
-                                    0
-                            ? Icon(Icons.circle, color: Colors.black, size: 8)
-                            : SizedBox(
-                                height: 0,
-                                width: 0,
-                              )),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                  availableGestures: AvailableGestures.all,
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  focusedDay: today,
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  selectedDayPredicate: (day) => isSameDay(day, today),
+                  onDaySelected: _onDaySelected,
+                  calendarStyle: CalendarStyle(
+                      selectedDecoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        shape: BoxShape.circle,
+                      ),
+                      todayDecoration: BoxDecoration(
+                          color: Colors.blueGrey, shape: BoxShape.circle),
+                      todayTextStyle:
+                          TextStyle(color: Colors.white, fontSize: 16)),
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, day, focusedDay) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: AppEvents.savedEventsCalendar
+                                        .containsKey(DateUtils.dateOnly(day)) &&
+                                    AppEvents.savedEventsCalendar[
+                                            DateUtils.dateOnly(day)] !=
+                                        null &&
+                                    AppEvents
+                                            .savedEventsCalendar[
+                                                DateUtils.dateOnly(day)]
+                                            ?.length !=
+                                        0
+                                ? Icon(Icons.circle,
+                                    color: Colors.black, size: 8)
+                                : SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                  )),
+                      );
+                    },
+                  ),
+                )),
             Expanded(
               child: ListView.builder(
                 key: _listKey,
@@ -385,6 +318,147 @@ class _FavoritesState extends State<Favorites> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class MyAlertDialog extends StatefulWidget {
+  @override
+  _MyAlertDialogState createState() => _MyAlertDialogState();
+}
+
+class _MyAlertDialogState extends State<MyAlertDialog> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  DateTime task_ini = DateTime.now();
+  DateTime task_fi = DateTime.now();
+  String? repeteix = 'NO';
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Center(child: Text('Nova Tasca')),
+      content: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.3,
+        width: MediaQuery.of(context).size.width * 0.5,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                  labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
+            ),
+            TextFormField(
+              controller: descriptionController,
+              decoration: const InputDecoration(
+                  labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.04,
+                  child: TextButton(
+                    onPressed: () {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          child: CupertinoDatePicker(
+                            backgroundColor: Colors.white,
+                            initialDateTime: DateTime.now(),
+                            onDateTimeChanged: (DateTime newTime) {
+                              setState(() {
+                                task_ini = newTime;
+                              });
+                            },
+                            use24hFormat: true,
+                            mode: CupertinoDatePickerMode.dateAndTime,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}',
+                      style: TextStyle(fontSize: 13.5, color: Colors.black),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.04,
+                  child: TextButton(
+                    onPressed: () {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          child: CupertinoDatePicker(
+                            backgroundColor: Colors.white,
+                            initialDateTime: DateTime.now(),
+                            onDateTimeChanged: (DateTime newTime) {
+                              setState(() {
+                                task_fi = newTime;
+                              });
+                            },
+                            use24hFormat: true,
+                            mode: CupertinoDatePickerMode.dateAndTime,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                        'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}',
+                        style: TextStyle(fontSize: 13.5, color: Colors.black)),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('Es repeteix?    ', style: TextStyle(fontSize: 14),),
+                DropdownButton<String>(
+                  value: repeteix,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      repeteix = newValue;
+                    });
+                  },
+                  items: <String>['NO', 'daily', 'weekly', 'monthly', 'yearly']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            Task t = Task('', nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix!);
+            taskController.addTaskLocale(t);
+            Navigator.of(context).pop();
+            setState(() {
+            });
+          },
+          child: Text('Save'),
+        ),
+      ],
     );
   }
 }
