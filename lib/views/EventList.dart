@@ -44,6 +44,7 @@ class _EventListState extends State<EventList> {
   void initState() {
     super.initState();
     setState(() {
+      _foundEvents = AppEvents.eventsList;
     });
     /*
     loadAllEvents().then((value){
