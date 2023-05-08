@@ -7,6 +7,7 @@ import '../models/Event.dart';
 import '../views/review_screen.dart';
 
 import '../APIs/reviewsApis.dart';
+import '../APIs/userApis.dart';
 
 class ReviewController{
   final BuildContext context;
@@ -19,7 +20,8 @@ class ReviewController{
     );
     final List<Review> reviews = [];
     for (var review in response.data) {
-      reviews.add(Review(review['userId'], review['reviewId'], review['username'], review['idActivity'], review['score'], review['contenido']));
+      final userresp = await dio.get(userApis.getsingleUserUrl(response.data['userId']));
+      reviews.add(Review(userresp.data['user']['id'], review['review']['id'], userresp.data['user']['name'], idActivity, review['review']['score'], review['review']['comment']));
     }
     return reviews;
   }
@@ -53,12 +55,14 @@ class ReviewController{
     );
     return response.statusCode == 200;
   }
-  Future<bool> reportReview(Review review) async {
+  Future<bool> reportReview(Review review, String category, String comment) async {
+     final id = User.id;
+      if (comment == '' || comment == null) comment = "L'usuari amb id $id no ha deixat cap comentari";
      final response = await dio.post(
       reviewApi.getReportReviewUrl(review.idReview),
       data: {
-        'type': 'report',
-        'comment': 'The user ${User.name} has reported this review',
+        'type': category,
+        'comment': comment,
       },
      );  
      return response.statusCode == 200;
@@ -66,7 +70,7 @@ class ReviewController{
 
   bool iMadeReviewForEvent(List<Review> reviews, String username) {
     for (var review in reviews) {
-      if (review.username == username) {
+      if (review.userId == User.id) {
         return true;
       }
     }
@@ -83,6 +87,7 @@ class ReviewController{
   }
 
   void toReviewsAgain(Event event) {
+    print('recarrga de les valoracions');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ReviewPage(event)),

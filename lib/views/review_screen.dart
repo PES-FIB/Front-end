@@ -21,11 +21,20 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   void initState() {
+    /*
     super.initState();
     final _reviewController = ReviewController(context);
     _reviewController.getReviews(widget.event.code).then((value) => setState(() {
       reviews = value;
-    }));
+    })
+    );
+    */
+    final review1 = Review(1000, 1, 'user1', widget.event.code, 5, "Molt divertit!");
+    final review2 = Review(1001, 2, 'user2', widget.event.code, 5, "Molt divertit!");
+    final review3 = Review(1002, 3, 'user3', widget.event.code, 5, "Molt divertit!");
+
+    reviews = [review1, review2, review3];
+
   }
   @override
   Widget build(BuildContext context) {
@@ -38,10 +47,10 @@ class _ReviewPageState extends State<ReviewPage> {
     body: Column(
       children: [
         //si el usuario no ha hecho review del evento, la puede crear, pero si ya la ha hecho, la puede editar o borrar
-        if (fechaActual.isAfter(fechaEvento))
-          MakeReview(context, widget.event)
-        else if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
+        if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
           MyReview(context, widget.event, _reviewController.takeMyReview(reviews, User.id))
+        else if (fechaActual.isAfter(fechaEvento))
+          MakeReview(context, widget.event)
         else
           Column(
             children: [
@@ -50,7 +59,7 @@ class _ReviewPageState extends State<ReviewPage> {
             ],
           ),
         SizedBox(height: 15.0),
-        Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
+        Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 14), textAlign: TextAlign.center,),
         SizedBox(height: 15.0),
         Expanded(
           child: 

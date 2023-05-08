@@ -12,6 +12,7 @@ class Review {
   
   Review(this.userId, this.idReview, this.username, this.idActivity, this.score, this.contenido);
   
+  //mirar (no funciona correctament el primer cop)
   Widget buildRatingBar(bool ignoreGesture) {
     return RatingBar.builder(
       initialRating: score,
@@ -27,6 +28,8 @@ class Review {
       ),
       onRatingUpdate: (value) {
         score = value;
+        print('score: $score');
+        print('value: $value');
       },
     );
   }
