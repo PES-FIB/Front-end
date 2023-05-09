@@ -7,6 +7,7 @@ import '../models/Event.dart';
 import '../controllers/eventsController.dart';
 import '../views/event_screen.dart';
 
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
   @override
@@ -18,6 +19,7 @@ class MapScreenState extends State<MapScreen> {
   Set<Marker> _markers = {};
   final _controller = MapController();
   bool _markersFetched = false;
+
 
   @override
   void initState() {
@@ -32,7 +34,8 @@ class MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<Set<Marker>>(
+      body:     
+        FutureBuilder<Set<Marker>>(
               future: _fetchMarkers(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -50,7 +53,7 @@ class MapScreenState extends State<MapScreen> {
                   return Center(child: CircularProgressIndicator());
                 }
               },
-            ),
-    );
+          ),
+      );
   }
 }
