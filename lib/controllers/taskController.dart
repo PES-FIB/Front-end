@@ -56,14 +56,30 @@ class taskController {
           } else {
             repeats = '';
           }
+          Task t = Task(id, code, name, description, initialDate, finalDate,repeats);
+          int days = DateUtils.dateOnly(DateTime.parse(finalDate)).difference(DateUtils.dateOnly(DateTime.parse(initialDate))).inDays;
+          for (int i = 0; i <= days; ++i) {
+              if(tasks.containsKey(DateUtils.dateOnly(DateTime.parse(initialDate)).add(Duration(days: i)))){
+                tasks[DateUtils.dateOnly(DateTime.parse(initialDate)).add(Duration(days: i))]?.add(t);
+              }
+              else {
+                List<Task> l = [];
+                l.add(t);
+                tasks[DateUtils.dateOnly(DateTime.parse(initialDate)).add(Duration(days: i))] = l;
+              }
+            }
         }
       }
     }
+    return tasks;
   }
 
   // ignore: non_constant_identifier_names
   static Future<int> createTask(String name, String description,
-      String initial_date, String final_date, String repeats) async {
+    String initial_date, String final_date, String? repeats) async {
+    if (repeats == 'NO') {
+      repeats = null;
+    }
     Response r;
     try {
       r = await dio.post(taskApis.getTaskUrl(), data: {
@@ -81,6 +97,7 @@ class taskController {
     } catch (e) {
       return -1;
     }
+    print('resultat tasca = ${r.statusCode}');
     if (r.statusCode == 200) {
       String description;
       if (r.data['data']['description'] != null) {
@@ -95,7 +112,6 @@ class taskController {
       } else {
         repeats = '';
       }
-
       Task t = Task(
           r.data['data']['id'],
           r.data['data']['code'],
@@ -107,18 +123,22 @@ class taskController {
       addTaskLocale(t);
       return 1;
     }
+    else {
+      return -1;
+    }
   }
 
   static void addTaskLocale(Task t) {
-    if (AppEvents.tasksCalendar
-        .containsKey(DateUtils.dateOnly(DateTime.parse(t.initial_date)))) {
-      AppEvents
-          .tasksCalendar[DateUtils.dateOnly(DateTime.parse(t.initial_date))]
-          ?.add(t);
-    } else {
-      List<Task> l = [t];
-      AppEvents.tasksCalendar[
-          DateUtils.dateOnly(DateTime.parse(t.initial_date))] = l;
+    int days = DateUtils.dateOnly(DateTime.parse(t.final_date)).difference(DateUtils.dateOnly(DateTime.parse(t.initial_date))).inDays;
+    for (int i = 0; i <= days; ++i) {
+      if(AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(DateTime.parse(t.initial_date)).add(Duration(days: i)))){
+        AppEvents.tasksCalendar[DateUtils.dateOnly(DateTime.parse(t.initial_date)).add(Duration(days: i))]?.add(t);
+      }
+      else {
+        List<Task> l = [];
+        l.add(t);
+        AppEvents.tasksCalendar[DateUtils.dateOnly(DateTime.parse(t.initial_date)).add(Duration(days: i))] = l;
+      }
     }
   }
 

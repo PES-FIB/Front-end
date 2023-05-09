@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/taskController.dart';
+import 'styles/custom_snackbar.dart';
 import 'package:prova_login/views/EventList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
@@ -14,7 +15,6 @@ import '../models/AppEvents.dart';
 import '../models/Task.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'styles/custom_snackbar.dart';
 
 class Favorites extends StatefulWidget {
   //final VoidCallback onNavigate;
@@ -30,11 +30,25 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+  final GlobalKey<AnimatedListState> _listkey2 = GlobalKey();
   //Map<String, Event> mapSavedEvents = {};
   List<Event> savedEventsList = [];
-  int listSize = 0;
+  List<Task> savedTasksList = [];
   int statusDownload = 0;
   DateTime today = DateTime.now();
+
+  Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
+  // Show a dialog and wait for it to be popped
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return MyAlertDialog();
+    },
+  );
+  setState(() {
+    _onDaySelected(today, today);
+  });
+}
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -49,6 +63,14 @@ class _FavoritesState extends State<Favorites> {
       } else {
         savedEventsList = [];
       }
+      if (AppEvents.tasksCalendar
+          .containsKey(DateUtils.dateOnly(today))) {
+        savedTasksList =
+            AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
+        print('tamany de la llista = ${savedEventsList.length}');
+      } else {
+        savedTasksList = [];
+      }
     });
   }
 
@@ -59,9 +81,12 @@ class _FavoritesState extends State<Favorites> {
     if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
           AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
-      listSize = savedEventsList.length;
     }
     print('tamany de la llista = ${savedEventsList.length}');
+    if (AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(today))) {
+      savedTasksList =
+          AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
+    }
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -180,11 +205,7 @@ class _FavoritesState extends State<Favorites> {
                                       color: Colors.redAccent, size: 37)),
                       IconButton(
                           onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return MyAlertDialog();
-                                });
+                            _showDialogAndThenUpdateState(context);
                           },
                           iconSize: 30,
                           icon: Icon(LineAwesomeIcons.plus_circle,
@@ -315,6 +336,72 @@ class _FavoritesState extends State<Favorites> {
                 ),
               ),
             ),
+            Expanded(
+              child: ListView.builder(
+                key: _listkey2,
+                itemCount: savedTasksList.length,
+                itemBuilder: (context, index) => Card(
+                  child: ListTile(
+                      tileColor: Color.fromARGB(255, 0, 114, 59),
+                      contentPadding: EdgeInsets.all(20.0),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(savedTasksList[index].name,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
+                          SizedBox(height: 5),
+                          Text(savedTasksList[index].description,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15)),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              savedTasksList[index].initial_date !=
+                                      savedTasksList[index].final_date
+                                  ? Row(children: [
+                                      Text(
+                                          savedTasksList[index]
+                                              .initial_date
+                                              .substring(0, 10),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                      Text(' - ',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                      Text(
+                                          savedTasksList[index]
+                                              .final_date
+                                              .substring(0, 10),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15)),
+                                    ])
+                                  : Text(
+                                      savedTasksList[index]
+                                          .initial_date
+                                          .substring(0, 10),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15)),
+                            ],
+                          )
+                        ],
+                      ),
+                      leading: Icon(Icons.event, color: Colors.white, size: 30),
+                      trailing: IconButton(
+                        iconSize: 25,
+                        icon: Icon(Icons.favorite, color: Colors.white),
+                        onPressed: () async {
+                        },
+                      ),
+                      onTap: () {
+                        pushEventScreen(index);
+                      }),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -346,6 +433,8 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
           children: [
             TextFormField(
               controller: nameController,
+              validator: (value) {
+              },
               decoration: const InputDecoration(
                   labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
             ),
@@ -449,12 +538,23 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
           child: Text('Cancel'),
         ),
         TextButton(
-          onPressed: () {
-            Task t = Task('', nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix!);
-            taskController.addTaskLocale(t);
-            Navigator.of(context).pop();
-            setState(() {
-            });
+          onPressed: () async{
+            if (task_ini.isAfter(task_fi)) {
+              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La data inicial no pot ser major a la final'));
+            }
+            else if (nameController.text == null || nameController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
+            }
+            else {
+            int result = await taskController.createTask(nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix);
+              if (result == -1) {
+                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la creació de la tasca'));
+              }
+              else {
+                print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
+                Navigator.of(context).pop();
+              }
+            }
           },
           child: Text('Save'),
         ),
