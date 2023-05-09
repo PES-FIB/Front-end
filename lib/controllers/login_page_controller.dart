@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:prova_login/controllers/taskController.dart';
 
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
@@ -45,6 +46,8 @@ class LoginPageController {
       print('numero de events guardats =  ${AppEvents.savedEvents.length}');
       AppEvents.savedEventsCalendar = await EventsController.getSavedEventsCalendar();
       print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
+      AppEvents.tasksCalendar = await taskController.getAllTasks();
+      print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');
     } catch (e) {
       print(e);
       return;
