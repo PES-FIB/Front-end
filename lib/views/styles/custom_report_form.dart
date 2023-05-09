@@ -46,7 +46,7 @@ class CustomDropdownButtonState extends State<CustomDropdownButton> {
           TextField(
             controller: reportComment,
             decoration: InputDecoration(
-              hintText: "Escriu aqui el motiu",
+              hintText: "Escriu aqui el motiu (opcional)",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 borderSide: BorderSide(color: Colors.grey),
@@ -76,12 +76,17 @@ class CustomDropdownButtonState extends State<CustomDropdownButton> {
           child: Text('Aceptar'),
           onPressed: () {
             print(selectedValue);
-            print(reportComment.text);
-            print(User.id);
-            //bool status = _reviewController.reportReview(widget.review, selectedCategory, reportComment.text) as bool;
-            //if (status) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració reportada exitosament"));
-            //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració"));
+            if (selectedValue == null) {
+              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al crear el report, necesites escullir un tipus de report"));
+            } else {
+              print(reportComment.text);
+              print(User.id);
+              //bool status = _reviewController.reportReview(widget.review, selectedCategory, reportComment.text) as bool;
+              //if (status) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració reportada exitosament"));
+              //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració"));
+            }
             Navigator.of(context).pop();
+            
           },
         ),
       ],
