@@ -64,20 +64,19 @@ class _LoginPageState extends State<LoginPage> {
                         //obtengo los valores de los campos
                         String email = _emailController.text;
                         String password = _passwordController.text;
-                        try {
-                          //llamo a la funcion de login
-                          int statusCode = await loginPageController.loginUser(email, password);
-                          if (statusCode == 200) {
-                            loginPageController.realize_login();
-                          }
-                          else {
-                            ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Usuario i/o contraseña incorrectos'));
-                          }
-                        }
-                        catch(error) {
-                          print(error);
-                          ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Fallo de connexión al intentar iniciar sesión'));
-                        }
+                        
+                      //llamo a la funcion de login
+                      int? statusCode = await loginPageController.loginUser(email, password);
+                      if (statusCode == 200) {
+                        loginPageController.realize_login();
+                      }
+                      else if (statusCode == 401){
+                        ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Usuari i/o contrasenya incorrectes'));
+                      }else if (statusCode == null){
+                        ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error de conexió, comprova que estàs conectat a internet"));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Hi ha hagut algun tipus d'error($statusCode), torna ha intentar-ho"));
+                      }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

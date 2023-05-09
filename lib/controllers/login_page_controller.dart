@@ -28,17 +28,23 @@ class LoginPageController {
 
   LoginPageController(this.context);
   
-  Future<int> loginUser(String email, String password) async {
-    final response = await dio.post(userApis.getLoginUrl(),   
-    data: {
-      'email': email,
-      'password': password,
-    }
-    ); 
-    await userController.getUserInfo('');
-    realize_login();
-    return response.statusCode!;
-  }
+  Future<int?> loginUser(String email, String password) async {
+    Response response;
+    try{
+      response = await dio.post(userApis.getLoginUrl(),   
+        data: {
+          'email': email,
+          'password': password,
+        }
+      ); 
+      await userController.getUserInfo('');
+      realize_login();
+      return response.statusCode!;
+    } on DioError catch (error){
+      print(error);
+      return error.response?.statusCode;
+    } 
+}
 
   Future<void> realize_login() async { 
     // ignore: use_build_context_synchronously
@@ -62,7 +68,6 @@ class LoginPageController {
 
     final redirect = await dio.post(
       userApis.getSignInGoogle(),
-      
     );
     String initialUrl = '';
     //si la llamada es una redireccion
@@ -98,8 +103,7 @@ class LoginPageController {
         print(response.statusCode);
         //logejar a l'usuari dins de l'aplicació
         //print(response.data['picture']);
-        //final resEmail = await dio.get(userApis.getUser(response.data['user']['userId']));
-        User.setValues(response.data['user']['userId'], response.data['user']['name'], '', response.data['picture']);
+        await userController.getUserInfo(response.data['picture']);
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar( context, 'Login de Google realizado correctamente')
