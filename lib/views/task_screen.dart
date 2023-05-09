@@ -182,9 +182,9 @@ class _taskScreenState extends State<taskScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
               }
               else {
-              int result = await taskController.createTask(nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix);
+              int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix);
                 if (result == -1) {
-                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la creació de la tasca'));
+                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la edició de la tasca'));
                 }
                 else {
                   print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
