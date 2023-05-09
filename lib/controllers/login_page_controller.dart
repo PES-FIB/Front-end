@@ -30,13 +30,12 @@ class LoginPageController {
       'password': password,
     }
     ); 
-    await userController.getUserInfo();
+    await userController.getUserInfo('');
     realize_login();
     return response.statusCode!;
   }
 
   Future<void> realize_login() async { 
-
     // ignore: use_build_context_synchronously
     Navigator.push(
       context,

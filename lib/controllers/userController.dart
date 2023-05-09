@@ -32,7 +32,7 @@ class userController{
       print(e.message);
       return -1;
     }
-    await getUserInfo();
+    await getUserInfo('');
     return response.statusCode!;
   }
   
@@ -49,7 +49,7 @@ class userController{
     return response.statusCode!;
   } 
 
-  static Future<void> getUserInfo() async {
+  static Future<void> getUserInfo(String photo) async {
     Response response;
     try {
       response = await dio.get(userApis.getshowMe());
@@ -59,7 +59,7 @@ class userController{
       return;
     }
     print(response.data['user']);
-    User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email']);
+    User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email'], photo);
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
@@ -75,7 +75,7 @@ class userController{
       
     }
     else {
-    User.setValues(User.id, name, email);
+    User.setValues(User.id, name, email, '');
     return true;
     }
   }

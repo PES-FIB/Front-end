@@ -5,6 +5,7 @@ import 'login_page.dart';
 import '../models/User.dart';
 import 'perfil_config.dart';
 import 'styles/custom_snackbar.dart';
+import 'styles/custom_user_image.dart';
 
 class Perfil extends StatefulWidget {
    @override
@@ -85,7 +86,8 @@ class _PerfilState extends State<Perfil> {
                 height: 180,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: const Image(image: AssetImage('assets/userImage.jpg')),
+                  child: UserImage(),
+                  
                 ),
               ),
               const SizedBox(height: 10),  
