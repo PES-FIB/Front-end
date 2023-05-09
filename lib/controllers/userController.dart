@@ -40,6 +40,7 @@ class userController{
     Response response;
     try {
       response = await dio.get(userApis.getLogoutUrl());
+      print(response.data);
     }
     on DioError catch (e) {
       print(e.message);
@@ -55,10 +56,12 @@ class userController{
       response = await dio.get(userApis.getshowMe());
     }
     on DioError catch (e) {
-      print(e.message);
+      final message = e.message;
+      print('Error: $message');
       return;
     }
     print(response.data['user']);
+    print(photo);
     User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email'], photo);
   }
 

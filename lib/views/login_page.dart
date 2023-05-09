@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:prova_login/APIs/userApis.dart';
 
+import '../controllers/dioController.dart';
 import '../controllers/login_page_controller.dart';
 
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -96,11 +98,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     //espacio para el boton de google
                     const SizedBox(height: 20),
-                    //un flatbutton para el boton de google
                     SignInButton(
                       Buttons.Google,
-                      onPressed: () {
-                        //loginPageController.googleLogin();
+                      onPressed: () async {
+                        await loginPageController.googleLogin();
                       },
                     ),
                   ],
