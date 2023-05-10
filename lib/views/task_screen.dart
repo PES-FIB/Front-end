@@ -53,7 +53,7 @@ repeteix = widget.t.repeats;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Color.fromARGB(255, 201, 255, 229),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [ 
@@ -68,12 +68,15 @@ repeteix = widget.t.repeats;
             onPressed:  (){
               setState(() {
                 edit = !edit;
+                cascadeUpdate = false;
               });
             }),
             IconButton (icon:Icon(Icons.delete),
           onPressed:  (){
           setState(() {
             eliminar = true;
+            edit = false;
+            cascadeDelete = false;
           });
         }),
           ],
@@ -114,7 +117,7 @@ repeteix = widget.t.repeats;
                           height: MediaQuery.of(context).size.height * 0.4,
                           child: CupertinoDatePicker(
                             backgroundColor: Colors.white,
-                            initialDateTime: DateTime.now(),
+                            initialDateTime: task_ini,
                             onDateTimeChanged: (DateTime newTime) {
                               setState(() {
                                 task_ini = newTime;
@@ -147,7 +150,7 @@ repeteix = widget.t.repeats;
                           height: MediaQuery.of(context).size.height * 0.4,
                           child: CupertinoDatePicker(
                             backgroundColor: Colors.white,
-                            initialDateTime: DateTime.now(),
+                            initialDateTime: task_fi,
                             onDateTimeChanged: (DateTime newTime) {
                               setState(() {
                                 task_fi = newTime;
@@ -204,10 +207,13 @@ repeteix = widget.t.repeats;
             edit?
             Row(
               children: [
-                Text('Actualitzar totes les tasques relacionades'),
+                Text('Actualitzar totes les \ntasques relacionades', maxLines: 2),
                 Checkbox(value: cascadeUpdate, onChanged: (value) {
-                  cascadeUpdate = value!;
+                  setState(() {
+                    cascadeUpdate = !cascadeUpdate;
                   print('valor actualitzat = $value');
+                  });
+                  
                 }
                 ),
               ],
@@ -215,29 +221,66 @@ repeteix = widget.t.repeats;
           ],
         ):SizedBox(
           child: Column(children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.1),
-            Text('Està segur que vol eliminar la tasca?', textAlign: TextAlign.center,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+            Text('Està segur que vol eliminar la tasca?', textAlign: TextAlign.center, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Eliminar totes les tasques relacionades'),
+                Text('Eliminar totes les \ntasques relacionades', maxLines: 2, style: TextStyle(fontSize: 13),),
                 Checkbox(value: cascadeDelete, onChanged: (value) {
-                  cascadeDelete = value!;
+                  setState(() {
+                  cascadeDelete = !cascadeDelete;
                   print('valor actualitzat = $value');
+                  });
                 }
                 ),
               ],
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(onPressed: (){}, child: Text('SI', style: TextStyle(color: Colors.black, fontSize: 15))),
-                TextButton(
+                ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(50, 50),
+                  backgroundColor: Colors.redAccent
+                ),
+                  onPressed: () async{
+                  int result = 0;
+                  try {
+                   result = await taskController.deleteTask(widget.t, cascadeDelete);
+                  }
+                  catch(e) {
+                    print(e);
+                  }
+                  finally {
+                    if(result != 1) {
+                      ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en l\'eliminació'));
+                    }
+                    else {
+                   Navigator.of(context).pop();
+                    }
+                  }
+                }, child: Text('SI', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold))),
+                SizedBox(width: MediaQuery.of(context).size.width*0.1),
+                ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fixedSize:Size(50, 50),
+                  backgroundColor: Colors.white
+                ),
                   onPressed: (){
                     setState(() {
                       eliminar = false;
                     });
                   }, 
-                  child: Text('NO', style: TextStyle(color: Colors.black, fontSize: 15)))
+                  child: Text('NO', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)))
               ],
             ),
 
@@ -245,13 +288,17 @@ repeteix = widget.t.repeats;
         )
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Cancel', style: TextStyle(color: Colors.black)),
-        ),
-        TextButton(
+        !eliminar?
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.black)),
+            ),
+            TextButton(
           onPressed: () async{
             if (task_ini != DateTime.parse(widget.t.initial_date) || task_fi != DateTime.parse(widget.t.final_date) || nameController.text != widget.t.name || descriptionController.text != widget.t.description || (repeteix != widget.t.repeats && repeteix != 'NO' && widget.t.repeats != '')) {
               if (task_ini.isAfter(task_fi)) {
@@ -277,6 +324,8 @@ repeteix = widget.t.repeats;
           },
           child: Text('Save', style: TextStyle(color: Colors.black),),
         ),
+          ],
+        ):SizedBox(height: 0)
       ],
     );
   }

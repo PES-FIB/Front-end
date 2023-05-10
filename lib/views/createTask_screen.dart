@@ -70,7 +70,7 @@ class _createTaskState extends State<createTask> {
                           height: MediaQuery.of(context).size.height * 0.4,
                           child: CupertinoDatePicker(
                             backgroundColor: Colors.white,
-                            initialDateTime: DateTime.now(),
+                            initialDateTime: task_ini,
                             onDateTimeChanged: (DateTime newTime) {
                               setState(() {
                                 task_ini = newTime;
@@ -83,7 +83,7 @@ class _createTaskState extends State<createTask> {
                       );
                     },
                     child: Text(
-                      'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}',
+                      'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}',
                       style: TextStyle(fontSize: 13.5, color: Colors.black),
                     ),
                   ),
@@ -102,7 +102,7 @@ class _createTaskState extends State<createTask> {
                           height: MediaQuery.of(context).size.height * 0.4,
                           child: CupertinoDatePicker(
                             backgroundColor: Colors.white,
-                            initialDateTime: DateTime.now(),
+                            initialDateTime: task_fi,
                             onDateTimeChanged: (DateTime newTime) {
                               setState(() {
                                 task_fi = newTime;
@@ -115,7 +115,7 @@ class _createTaskState extends State<createTask> {
                       );
                     },
                     child: Text(
-                        'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}',
+                        'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',
                         style: TextStyle(fontSize: 13.5, color: Colors.black)),
                   ),
                 ),

@@ -112,6 +112,9 @@ class _FavoritesState extends State<Favorites> {
       return taskScreen(t: savedTasksList[clickedTask]);
     },
   );
+   setState(() {
+    _onDaySelected(today, today);
+  });
   }
 
   @override

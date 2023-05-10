@@ -40,7 +40,7 @@ class userController {
   static Future<int> logOut() async {
     Response response;
     try {
-      response = await dio.get(userApis.getExportCalendar());
+      response = await dio.get(userApis.getLogoutUrl());
     } on DioError catch (e) {
       print(e.message);
       return -1;
