@@ -32,6 +32,8 @@ class _taskScreenState extends State<taskScreen> {
   String? repeteix;
   bool edit = false;
   bool eliminar = false;
+  bool cascadeDelete = false;
+  bool cascadeUpdate = false;
 
   @override
   void initState() {
@@ -198,12 +200,33 @@ repeteix = widget.t.repeats;
               children: [
                 Text('Es repeteix?  ${widget.t.repeats}'),
               ],
-            )
+            ),
+            edit?
+            Row(
+              children: [
+                Text('Actualitzar totes les tasques relacionades'),
+                Checkbox(value: cascadeUpdate, onChanged: (value) {
+                  cascadeUpdate = value!;
+                  print('valor actualitzat = $value');
+                }
+                ),
+              ],
+            ):SizedBox(height: 0)
           ],
         ):SizedBox(
           child: Column(children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.1),
             Text('Està segur que vol eliminar la tasca?', textAlign: TextAlign.center,),
+            Row(
+              children: [
+                Text('Eliminar totes les tasques relacionades'),
+                Checkbox(value: cascadeDelete, onChanged: (value) {
+                  cascadeDelete = value!;
+                  print('valor actualitzat = $value');
+                }
+                ),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -238,7 +261,7 @@ repeteix = widget.t.repeats;
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
               }
               else {
-              int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix);
+              int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix,true);
                 if (result == -1) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la edició de la tasca'));
                 }
