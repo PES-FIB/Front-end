@@ -44,7 +44,7 @@ class _FavoritesState extends State<Favorites> {
   await showDialog(
     context: context,
     builder: (BuildContext context) {
-      return createTask();
+      return createTask(selectedDate: today);
     },
   );
   setState(() {
@@ -106,11 +106,12 @@ class _FavoritesState extends State<Favorites> {
   }
 
   void pushTaskScreen(int clickedTask) async {
-    final updatedEvent = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                taskScreen(t: savedTasksList[clickedTask])));
+    await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return taskScreen(t: savedTasksList[clickedTask]);
+    },
+  );
   }
 
   @override
@@ -119,26 +120,6 @@ class _FavoritesState extends State<Favorites> {
       child: Scaffold(
         body: Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(children: [
-              Container(
-                  height: 30,
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.05),
-                  width: MediaQuery.of(context).size.width,
-                  child: Text('EL TEU CALENDARI',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20))),
-            ]),
-            Container(
-              height: 3,
-              width: MediaQuery.of(context).size.width * 0.92,
-              decoration: BoxDecoration(color: Colors.redAccent),
-            ),
             SizedBox(
               height: 40,
               child: Row(
@@ -241,39 +222,40 @@ class _FavoritesState extends State<Favorites> {
                   onDaySelected: _onDaySelected,
                   calendarStyle: CalendarStyle(
                       selectedDecoration: BoxDecoration(
-                        color: Colors.redAccent,
                         shape: BoxShape.circle,
+                        border: Border.all(color:Colors.black, width: 1.0)
                       ),
+                      selectedTextStyle: TextStyle(color: Colors.black),
                       todayDecoration: BoxDecoration(
-                          color: Colors.blueGrey, shape: BoxShape.circle),
+                          color: Color.fromARGB(255, 70, 70, 70), shape: BoxShape.circle),
                       todayTextStyle:
                           TextStyle(color: Colors.white, fontSize: 16)),
                   calendarBuilders: CalendarBuilders(
                     markerBuilder: (context, day, focusedDay) {
                       return Padding(
-                        padding: const EdgeInsets.only(top: 30),
+                        padding:  EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
                         child: Align(
-                            alignment: Alignment.center,
-                            child: AppEvents.savedEventsCalendar
-                                        .containsKey(DateUtils.dateOnly(day)) &&
-                                    AppEvents.savedEventsCalendar[
-                                            DateUtils.dateOnly(day)] !=
-                                        null &&
-                                    AppEvents
-                                            .savedEventsCalendar[
-                                                DateUtils.dateOnly(day)]
-                                            ?.length !=
-                                        0
-                                ? Icon(Icons.circle,
-                                    color: Colors.black, size: 8)
-                                : SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                  )),
+                          alignment: Alignment.center,
+                          child: (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)]?.length != 0) && (AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.tasksCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.tasksCalendar[DateUtils.dateOnly(day)]?.length != 0) ? 
+                          Icon(Icons.circle,color: Colors.black, size: 8)
+                          : AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)]?.length != 0?
+                          Icon(Icons.circle,color: Colors.red, size: 8)
+                          :AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.tasksCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.tasksCalendar[DateUtils.dateOnly(day)]?.length != 0?
+                          Icon(Icons.circle,color: Color.fromARGB(255, 118, 184, 121), size: 8)
+                          :SizedBox(
+                            height: 0,
+                            width: 0,
+                          )
+                        ),
                       );
                     },
                   ),
                 )),
+            savedEventsList.isNotEmpty?
             Expanded(
               child: ListView.builder(
                 key: _listKey,
@@ -345,7 +327,8 @@ class _FavoritesState extends State<Favorites> {
                       }),
                 ),
               ),
-            ),
+            ):SizedBox(height:0),
+            savedTasksList.isNotEmpty?
             Expanded(
               child: ListView.builder(
                 key: _listkey2,
@@ -360,10 +343,6 @@ class _FavoritesState extends State<Favorites> {
                           Text(savedTasksList[index].name,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 20)),
-                          SizedBox(height: 5),
-                          Text(savedTasksList[index].description,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15)),
                           SizedBox(height: 5),
                           Row(
                             children: [
@@ -399,19 +378,14 @@ class _FavoritesState extends State<Favorites> {
                           )
                         ],
                       ),
-                      leading: Icon(Icons.event, color: Colors.white, size: 30),
-                      trailing: IconButton(
-                        iconSize: 25,
-                        icon: Icon(Icons.favorite, color: Colors.white),
-                        onPressed: () async {
-                        },
-                      ),
+                      leading: Icon(Icons.task_alt_sharp, color: Colors.white, size: 30),
                       onTap: () {
                         pushTaskScreen(index);
-                      }),
+                      },
+                      ),
                 ),
               ),
-            )
+            ):SizedBox(height:0)
           ],
         ),
       ),

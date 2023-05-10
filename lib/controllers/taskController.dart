@@ -129,12 +129,12 @@ class taskController {
   }
 
   static Future<int> updateTask(Task oldTask, int Taskid, String name, String description, String initial_date, String final_date, String? repeats)  async{
-    if (repeats == 'NO') {
+    if (repeats == 'NO' || repeats == '') {
       repeats = null;
     }
     Response r;
     try {
-      r = await dio.post('${taskApis.getTaskUrl()}/${User.id}/$Taskid', data: {
+      r = await dio.put('${taskApis.getTaskUrl()}/${User.id}/$Taskid', data: {
         "name": name,
         "description": description,
         "initial_d": initial_date.substring(0, initial_date.indexOf(' ')),
@@ -181,6 +181,7 @@ class taskController {
   }
 
   static void updateTaskLocale(Task oldt, Task t) {
+    print('old = ${oldt.description} and new = ${t.description}');
     //delete all instances of the old task
     int days = DateUtils.dateOnly(DateTime.parse(oldt.final_date)).difference(DateUtils.dateOnly(DateTime.parse(oldt.initial_date))).inDays;
     for (int i = 0; i <= days; ++i) {

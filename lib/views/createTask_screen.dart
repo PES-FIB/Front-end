@@ -17,6 +17,8 @@ import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class createTask extends StatefulWidget {
+  const createTask({super.key, required this.selectedDate});
+  final DateTime selectedDate;
   @override
   _createTaskState createState() => _createTaskState();
 }
@@ -24,16 +26,23 @@ class createTask extends StatefulWidget {
 class _createTaskState extends State<createTask> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  DateTime task_ini = DateTime.now();
-  DateTime task_fi = DateTime.now();
+  late DateTime task_ini;
+  late DateTime task_fi;
   String? repeteix = 'NO';
+
+  @override
+  void initState() {
+    super.initState();
+    task_ini = widget.selectedDate;
+    task_fi = widget.selectedDate;
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Center(child: Text('Nova Tasca')),
       content: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.3,
+        height: MediaQuery.of(context).size.height * 0.4,
         width: MediaQuery.of(context).size.width * 0.5,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,6 +54,7 @@ class _createTaskState extends State<createTask> {
             ),
             TextFormField(
               controller: descriptionController,
+              maxLines: 3,
               decoration: const InputDecoration(
                   labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
             ),
