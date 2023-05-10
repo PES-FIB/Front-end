@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:prova_login/controllers/reviews_controller.dart';
 import 'package:prova_login/controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
@@ -15,6 +16,7 @@ class Perfil extends StatefulWidget {
 class _PerfilState extends State<Perfil> {
   @override
   Widget build(BuildContext context) {
+    final ReviewController reviewController = ReviewController(context);
     return Scaffold(
       body: SingleChildScrollView(
             child: Column (
@@ -93,7 +95,9 @@ class _PerfilState extends State<Perfil> {
                 Text(User.email),
               const Divider(),
               const SizedBox(height: 20),
-              ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){}),
+              ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){
+                reviewController.toUserReviews();
+              }),
               ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
               ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
               ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})

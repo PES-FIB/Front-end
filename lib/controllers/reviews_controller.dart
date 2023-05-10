@@ -5,9 +5,12 @@ import '../models/User.dart';
 import '../models/Event.dart';
 
 import '../views/review_screen.dart';
+import '../views/my_reviews.dart';
 
 import '../APIs/reviewsApis.dart';
 import '../APIs/userApis.dart';
+
+
 
 class ReviewController{
   final BuildContext context;
@@ -26,10 +29,21 @@ class ReviewController{
     return reviews;
   }
 
+  Future<List<Review>> getMyReviews() async {
+    final response = await dio.get(
+      reviewApi.getUserReviewsUrl()
+    );
+    final List<Review> reviews = [];
+    for (var review in response.data) {
+      reviews.add(Review(User.id, review['review']['id'], User.name, null, review['review']['score'], review['review']['comment']));
+    }
+    return reviews;
+  }
+
 
   Future<bool> addReview(Review review) async {
     final response = await dio.post(
-      reviewApi.getCreateReviewUrl(review.idActivity),
+      reviewApi.getCreateReviewUrl(review.idActivity as String),
       data: {
         'rating': review.score,
         'comment': review.contenido,
@@ -91,6 +105,12 @@ class ReviewController{
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ReviewPage(event)),
+    );
+  }
+  void toUserReviews() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyReview()),
     );
   }
 }

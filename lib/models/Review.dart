@@ -5,8 +5,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class Review {
   int userId;
   int idReview;
-  String username;
-  String idActivity;
+  String? username;
+  String? idActivity;
   double score;
   String contenido;
   
