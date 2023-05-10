@@ -4,6 +4,7 @@ import '../utils/map_style.dart';
 import '../models/Event.dart';
 import '../controllers/eventsController.dart';
 import '../views/event_screen.dart';
+import '../views/map_screen.dart';
 
 class MapController {
 
