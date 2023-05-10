@@ -31,12 +31,12 @@ class _EventListState extends State<EventList> {
   
   List<Event> _foundEvents = [];  
   List<Event> filteredEvents = []; 
+  List<Event> dateRangeEvents = [];
+  List<Event> removedEventsByDataFilter = [];
+
 
   List<Color> backgroundColor = []; 
   String wordSearched = '';
-
-  DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now();
 
   bool _isAmbitsVisible = false;
   bool _isSearchBarVisible = false;
@@ -66,6 +66,7 @@ class _EventListState extends State<EventList> {
     setState(() {
       filteredEvents.addAll(widget.events);
       _foundEvents.addAll(filteredEvents);
+      dateRangeEvents.addAll(filteredEvents);
       ambits = fetchAmbits();
     });
   } 
@@ -92,9 +93,40 @@ class _EventListState extends State<EventList> {
     await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: widget.events[clickedEvent])));
   }
 
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    print(args.value);
-}
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) async {
+
+    //year-month-day
+    List<String>  dirtyInitDate = args.value.startDate.toString().split(" ");
+    //[year] [month] [day] 
+    List<String> initDate = dirtyInitDate[0].split("-");
+    //month/day/year
+    String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
+    print(queryInitDate);
+
+    //year-month-day
+    List<String>  dirtyFinalDate = args.value.endDate.toString().split(" ");
+    //[year] [month] [day] 
+    List<String> finalDate = dirtyInitDate[0].split("-");
+    //month/day/year
+    String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
+    print(queryInitDate);
+
+    List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
+
+    setState(() {
+      dateRangeEvents.clear();
+      dateRangeEvents.addAll(tmpByDateRange);
+
+      //FALTA GGESTIONAR SI ES DESSELECCIONA UN RANG DE DATES!!!!!!
+      //afegir boto DESFER FILTRE al dialeg
+      //fer llista de events descartats de la filteredEvents
+      //al clicar NO DATA RANGE, comparar FilteredEventsWithousRangeFilter(que s'haurà d'anar actualitzant) amb descartedEvents.
+      //afegir a filteredEvents addAll(removedEvents in FilteredWithoutRange);
+
+
+      filteredEvents.retainWhere((element) => tmpByDateRange.contains(element));
+    });
+  }
 
 
   @override
@@ -141,15 +173,9 @@ class _EventListState extends State<EventList> {
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: Text('CANCEL'),
+                                      child: Text('DONE'),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        //final selectedRange = _datePicker.controller.selectedRange;
-                                        //Navigator.of(context).pop(selectedRange);
-                                      },
-                                      child: Text('OK'),
-                                    ),
+                                    
                                   ],
                                 );
                               },
@@ -159,8 +185,7 @@ class _EventListState extends State<EventList> {
                                 result.startDate != null &&
                                 result.endDate != null) {
                               setState(() {
-                                _startDate = result.startDate!;
-                                _endDate = result.endDate!;
+                                
                               });
               
                               // update the filter based on the selected date range
