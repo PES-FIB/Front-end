@@ -84,7 +84,7 @@ class _createTaskState extends State<createTask> {
                     },
                     child: Text(
                       'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}',
-                      style: TextStyle(fontSize: 13.5, color: Colors.black),
+                      style: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                   ),
                 )
@@ -116,7 +116,7 @@ class _createTaskState extends State<createTask> {
                     },
                     child: Text(
                         'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',
-                        style: TextStyle(fontSize: 13.5, color: Colors.black)),
+                        style: TextStyle(fontSize: 15, color: Colors.black)),
                   ),
                 ),
               ],
@@ -132,7 +132,7 @@ class _createTaskState extends State<createTask> {
                       repeteix = newValue;
                     });
                   },
-                  items: <String>['NO', 'daily', 'weekly', 'monthly', 'yearly']
+                  items: <String>['NO', 'Diàriament', 'Setmanalment', 'Mensualment', 'Anualment']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -146,32 +146,37 @@ class _createTaskState extends State<createTask> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () async{
-            if (task_ini.isAfter(task_fi)) {
-              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La data inicial no pot ser major a la final'));
-            }
-            else if (nameController.text == null || nameController.text.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
-            }
-            else {
-            int result = await taskController.createTask(nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix);
-              if (result == -1) {
-                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la creació de la tasca'));
-              }
-              else {
-                print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () {
                 Navigator.of(context).pop();
-              }
-            }
-          },
-          child: Text('Save'),
+              },
+              child: Text('Cancel·lar'),
+            ),
+            TextButton(
+              onPressed: () async{
+                if (task_ini.isAfter(task_fi)) {
+                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La data inicial no pot ser major a la final'));
+                }
+                else if (nameController.text == null || nameController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
+                }
+                else {
+                int result = await taskController.createTask(nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix);
+                  if (result == -1) {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la creació de la tasca'));
+                  }
+                  else {
+                    print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+          child: Text('Crear'),
+          ),
+        ],
         ),
       ],
     );

@@ -351,30 +351,44 @@ class _FavoritesState extends State<Favorites> {
                             children: [
                               savedTasksList[index].initial_date !=
                                       savedTasksList[index].final_date
-                                  ? Row(children: [
-                                      Text(
-                                          savedTasksList[index]
+                                  ? Column(
+                                    children: [
+                                      Row(children: [
+                                          Text(
+                                              '${savedTasksList[index]
                                               .initial_date
-                                              .substring(0, 10),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15)),
-                                      Text(' - ',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15)),
-                                      Text(
-                                          savedTasksList[index]
+                                              .substring(0, 10)} ${savedTasksList[index]
+                                              .initial_date
+                                              .substring(11, 16)} -',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15)),
+                                          Text(' - ',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15))
+                                        ]),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${savedTasksList[index]
                                               .final_date
-                                              .substring(0, 10),
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15)),
-                                    ])
+                                              .substring(0, 10)} ${savedTasksList[index]
+                                              .final_date
+                                              .substring(11, 16)}',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15)),
+                                          ],
+                                        ),
+                                    ],
+                                  )
                                   : Text(
-                                      savedTasksList[index]
-                                          .initial_date
-                                          .substring(0, 10),
+                                      '${savedTasksList[index]
+                                              .initial_date
+                                              .substring(0, 10)} ${savedTasksList[index]
+                                              .initial_date
+                                              .substring(11, 16)}',
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15)),
                             ],

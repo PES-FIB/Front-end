@@ -56,6 +56,7 @@ class taskController {
           } else {
             repeats = '';
           }
+          repeats = repeatstoCat(repeats);
           Task t = Task(
               id, code, name, description, initialDate, finalDate, repeats);
           addTaskLocale(t);
@@ -65,9 +66,41 @@ class taskController {
     return tasks;
   }
 
+  static String repeatstoCat(String repeats) {
+    if (repeats == 'daily') {
+      repeats = 'Diàriament';
+    } else if (repeats == 'weekly') {
+      repeats = 'Setmanalment';
+    } else if (repeats == 'monthly') {
+      repeats = 'Mensualment';
+    } else if (repeats == 'yearly') {
+      repeats = 'Anualment';
+    } else {
+      repeats = 'NO';
+    }
+    return repeats;
+  }
+
+  static String repeatstoEng(String repeats) {
+    if (repeats == 'Diàriament') {
+      repeats = 'daily';
+    } else if (repeats == 'Setmanalment') {
+      repeats = 'weekly';
+    } else if (repeats == 'Mensualment') {
+      repeats = 'monthly';
+    } else if (repeats == 'Anualment') {
+      repeats = 'yearly';
+    } else {
+      repeats = 'NO';
+    }
+    return repeats;
+  }
+
   // ignore: non_constant_identifier_names
   static Future<int> createTask(String name, String description,
       String initial_date, String final_date, String? repeats) async {
+    repeats = repeatstoEng(repeats!);
+    print('valor repeats = $repeats');
     if (repeats == 'NO') {
       repeats = null;
     }
@@ -114,15 +147,15 @@ class taskController {
         } else {
           repeats = '';
         }
+        repeats = repeatstoCat(repeats);
         Task t =
             Task(id, code, name, description, initialDate, finalDate, repeats);
         addTaskLocale(t);
       }
-       return 1;
+      return 1;
     } else {
       return -1;
     }
-
   }
 
   static Future<List<Task>> getTask(Task t) async {
@@ -160,6 +193,7 @@ class taskController {
           } else {
             repeats = '';
           }
+          repeats = repeatstoCat(repeats);
           Task t = Task(
               id, code, name, description, initialDate, finalDate, repeats);
           ltask.add(t);
@@ -178,6 +212,7 @@ class taskController {
       String final_date,
       String? repeats,
       bool cascade) async {
+        repeats = repeatstoEng(repeats!);
     if (repeats == 'NO' || repeats == '') {
       repeats = null;
     }
@@ -225,7 +260,7 @@ class taskController {
         } else {
           repeats = '';
         }
-
+        repeats = repeatstoCat(repeats);
         Task t =
             Task(id, code, name, description, initialDate, finalDate, repeats);
         addTaskLocale(t);
@@ -250,7 +285,7 @@ class taskController {
     }
     print('status code del delete = ${r.statusCode}');
     if (r.statusCode == 200) {
-      print('llargada de result de request = ${ r.data['data'].length}');
+      print('llargada de result de request = ${r.data['data'].length}');
       for (int i = 0; i < r.data['data'].length; ++i) {
         String name = r.data['data'][i]['name'];
 
@@ -275,10 +310,10 @@ class taskController {
         } else {
           repeats = '';
         }
-
+        repeats = repeatstoCat(repeats);
         Task t =
             Task(id, code, name, description, initialDate, finalDate, repeats);
-            print('son iguals les tasks? -> ${t == t2}');
+        print('son iguals les tasks? -> ${t == t2}');
         deleteTaskLocale(t.id);
       }
       return 1;
@@ -313,24 +348,26 @@ class taskController {
     print('entrodeleteee amb taskId = $taskId');
     // Search for the task with the given ID in the tasksCalendar map
     for (final tasks in AppEvents.tasksCalendar.values) {
-        for (final task in tasks) {
-            if (task.id == taskId) {
-                int days = DateUtils.dateOnly(DateTime.parse(task.final_date))
-                    .difference(DateUtils.dateOnly(DateTime.parse(task.initial_date)))
-                    .inDays;
-                print('dies = $days');
-                print('tamany abans: ${tasks.length}');
-                tasks.remove(task);
-                for (int i = 0; i <= days; ++i) {
-                    AppEvents.tasksCalendar[DateUtils.dateOnly(DateTime.parse(task.initial_date))                            .add(Duration(days: i))]
-                        ?.remove(task);
-                }
-                print('tamany despres: ${tasks.length}');
-                return; // Exit the function after deleting the task
-            }
+      for (final task in tasks) {
+        if (task.id == taskId) {
+          int days = DateUtils.dateOnly(DateTime.parse(task.final_date))
+              .difference(DateUtils.dateOnly(DateTime.parse(task.initial_date)))
+              .inDays;
+          print('dies = $days');
+          print('tamany abans: ${tasks.length}');
+          tasks.remove(task);
+          for (int i = 0; i <= days; ++i) {
+            AppEvents.tasksCalendar[
+                    DateUtils.dateOnly(DateTime.parse(task.initial_date))
+                        .add(Duration(days: i))]
+                ?.remove(task);
+          }
+          print('tamany despres: ${tasks.length}');
+          return; // Exit the function after deleting the task
         }
+      }
     }
     // If the task is not found, print an error message
     print('Task with ID $taskId not found in tasksCalendar');
-}
+  }
 }

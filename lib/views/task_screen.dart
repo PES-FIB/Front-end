@@ -185,7 +185,7 @@ repeteix = widget.t.repeats;
                       repeteix = newValue;
                     });
                   },
-                  items: <String>['NO', 'daily', 'weekly', 'monthly', 'yearly']
+                  items: <String>['NO', 'Diàriament', 'Setmanalment', 'Mensualment', 'Anualment']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
