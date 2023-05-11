@@ -109,12 +109,12 @@ class _EventListState extends State<EventList> {
                     onPressed: () {
                     setState(() {
                       if (inSaved(_foundEvents[index].code)){
-                        EventsController.unsaveEventLocale(_foundEvents[index]);
                         EventsController.unsaveEvent(_foundEvents[index].code);
+                        EventsController.unsaveEventLocale(_foundEvents[index]);
                       }//remove
                       else {
-                        EventsController.saveEventLocale(_foundEvents[index]);
                         EventsController.saveEvent(_foundEvents[index].code);
+                        EventsController.saveEventLocale(_foundEvents[index]);
                       }//add
                     });
                     },

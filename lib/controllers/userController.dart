@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -8,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';
 import 'dioController.dart';
 import '../APIs/userApis.dart';
@@ -40,12 +40,16 @@ class userController {
   static Future<int> logOut() async {
     Response response;
     try {
-      response = await dio.get(userApis.getExportCalendar());
+      response = await dio.get(userApis.getLogoutUrl());
     } on DioError catch (e) {
       print(e.message);
       return -1;
     }
     print(response.statusCode);
+    AppEvents.eventsList = [];
+    AppEvents.savedEvents = {};
+    AppEvents.savedEventsCalendar = {};
+    AppEvents.tasksCalendar = {};
     return response.statusCode!;
   }
 
@@ -105,14 +109,15 @@ class userController {
     return -2;
   }
   try {
-    final directory = await DownloadsPathProvider.downloadsDirectory;
+    final directory = Directory("/storage/emulated/0/Download");
     print('el directori es = $directory');
-    final file = File('${directory?.path}/$fileName');
+    final file = File('${directory.path}/$fileName');
     dio.options.headers['Content-Type'] = 'application/octet-stream';
     dio.options.responseType = ResponseType.bytes;
     Response response = await dio.get(userApis.getExportCalendar());
     file.writeAsBytesSync(response.data);
   } catch (e) {
+    print(e);
     return -1;
   }
   return 1;

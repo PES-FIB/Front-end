@@ -1,6 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:prova_login/controllers/taskController.dart';
+import 'package:prova_login/views/createTask_screen.dart';
+import 'package:prova_login/views/task_screen.dart';
+import 'styles/custom_snackbar.dart';
 import 'package:prova_login/views/EventList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
@@ -9,9 +14,9 @@ import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/userController.dart';
 import '../models/AppEvents.dart';
+import '../models/Task.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'styles/custom_snackbar.dart';
 
 class Favorites extends StatefulWidget {
   //final VoidCallback onNavigate;
@@ -27,11 +32,25 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+  final GlobalKey<AnimatedListState> _listkey2 = GlobalKey();
   //Map<String, Event> mapSavedEvents = {};
   List<Event> savedEventsList = [];
-  int listSize = 0;
+  List<Task> savedTasksList = [];
   int statusDownload = 0;
   DateTime today = DateTime.now();
+
+  Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
+  // Show a dialog and wait for it to be popped
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return createTask(selectedDate: today);
+    },
+  );
+  setState(() {
+    _onDaySelected(today, today);
+  });
+}
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -46,6 +65,14 @@ class _FavoritesState extends State<Favorites> {
       } else {
         savedEventsList = [];
       }
+      if (AppEvents.tasksCalendar
+          .containsKey(DateUtils.dateOnly(today))) {
+        savedTasksList =
+            AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
+        print('tamany de la llista = ${savedEventsList.length}');
+      } else {
+        savedTasksList = [];
+      }
     });
   }
 
@@ -56,9 +83,12 @@ class _FavoritesState extends State<Favorites> {
     if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
           AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
-      listSize = savedEventsList.length;
     }
     print('tamany de la llista = ${savedEventsList.length}');
+    if (AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(today))) {
+      savedTasksList =
+          AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
+    }
   }
 
   void pushEventScreen(int clickedEvent) async {
@@ -75,32 +105,24 @@ class _FavoritesState extends State<Favorites> {
     }
   }
 
+  void pushTaskScreen(int clickedTask) async {
+    await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return taskScreen(t: savedTasksList[clickedTask]);
+    },
+  );
+   setState(() {
+    _onDaySelected(today, today);
+  });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(children: [
-              Container(
-                  height: 30,
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.05),
-                  width: MediaQuery.of(context).size.width,
-                  child: Text('EL TEU CALENDARI',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20))),
-            ]),
-            Container(
-              height: 3,
-              width: MediaQuery.of(context).size.width * 0.92,
-              decoration: BoxDecoration(color: Colors.redAccent),
-            ),
             SizedBox(
               height: 40,
               child: Row(
@@ -157,10 +179,16 @@ class _FavoritesState extends State<Favorites> {
                               },
                             )
                           : statusDownload == 1
-                              ? Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.01,right: MediaQuery.of(context).size.width*0.02),child:SpinKitFadingCircle(
-                          size: 30,
-                            color: Colors.redAccent,
-                          ))
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height *
+                                          0.01,
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02),
+                                  child: SpinKitFadingCircle(
+                                    size: 30,
+                                    color: Colors.redAccent,
+                                  ))
                               : Padding(
                                   padding: EdgeInsets.only(
                                       right: MediaQuery.of(context).size.width *
@@ -170,7 +198,9 @@ class _FavoritesState extends State<Favorites> {
                                   child: Icon(Icons.check_circle,
                                       color: Colors.redAccent, size: 37)),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _showDialogAndThenUpdateState(context);
+                          },
                           iconSize: 30,
                           icon: Icon(LineAwesomeIcons.plus_circle,
                               color: Colors.redAccent))
@@ -179,53 +209,56 @@ class _FavoritesState extends State<Favorites> {
                 ],
               ),
             ),
-            TableCalendar(
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
-              ),
-              availableGestures: AvailableGestures.all,
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              focusedDay: today,
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              rowHeight: MediaQuery.of(context).size.width * 0.13,
-              selectedDayPredicate: (day) => isSameDay(day, today),
-              onDaySelected: _onDaySelected,
-              calendarStyle: CalendarStyle(
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    shape: BoxShape.circle,
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TableCalendar(
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true,
                   ),
-                  todayDecoration: BoxDecoration(
-                      color: Colors.blueGrey, shape: BoxShape.circle),
-                  todayTextStyle: TextStyle(color: Colors.white, fontSize: 16)),
-              calendarBuilders: CalendarBuilders(
-                markerBuilder: (context, day, focusedDay) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Align(
-                        alignment: Alignment.center,
-                        child: AppEvents.savedEventsCalendar
-                                    .containsKey(DateUtils.dateOnly(day)) &&
-                                AppEvents.savedEventsCalendar[
-                                        DateUtils.dateOnly(day)] !=
-                                    null &&
-                                AppEvents
-                                        .savedEventsCalendar[
-                                            DateUtils.dateOnly(day)]
-                                        ?.length !=
-                                    0
-                            ? Icon(Icons.circle, color: Colors.black, size: 8)
-                            : SizedBox(
-                                height: 0,
-                                width: 0,
-                              )),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                  availableGestures: AvailableGestures.all,
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  focusedDay: today,
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  selectedDayPredicate: (day) => isSameDay(day, today),
+                  onDaySelected: _onDaySelected,
+                  calendarStyle: CalendarStyle(
+                      selectedDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color:Colors.black, width: 1.0)
+                      ),
+                      selectedTextStyle: TextStyle(color: Colors.black),
+                      todayDecoration: BoxDecoration(
+                          color: Color.fromARGB(255, 70, 70, 70), shape: BoxShape.circle),
+                      todayTextStyle:
+                          TextStyle(color: Colors.white, fontSize: 16)),
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, day, focusedDay) {
+                      return Padding(
+                        padding:  EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)]?.length != 0) && (AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.tasksCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.tasksCalendar[DateUtils.dateOnly(day)]?.length != 0) ? 
+                          Icon(Icons.circle,color: Colors.black, size: 8)
+                          : AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.savedEventsCalendar[DateUtils.dateOnly(day)]?.length != 0?
+                          Icon(Icons.circle,color: Colors.red, size: 8)
+                          :AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(day)) &&AppEvents.tasksCalendar[DateUtils.dateOnly(day)] !=null 
+                          && AppEvents.tasksCalendar[DateUtils.dateOnly(day)]?.length != 0?
+                          Icon(Icons.circle,color: Color.fromARGB(255, 118, 184, 121), size: 8)
+                          :SizedBox(
+                            height: 0,
+                            width: 0,
+                          )
+                        ),
+                      );
+                    },
+                  ),
+                )),
+            savedEventsList.isNotEmpty?
             Expanded(
               child: ListView.builder(
                 key: _listKey,
@@ -297,10 +330,84 @@ class _FavoritesState extends State<Favorites> {
                       }),
                 ),
               ),
-            ),
+            ):SizedBox(height:0),
+            savedTasksList.isNotEmpty?
+            Expanded(
+              child: ListView.builder(
+                key: _listkey2,
+                itemCount: savedTasksList.length,
+                itemBuilder: (context, index) => Card(
+                  child: ListTile(
+                      tileColor: Color.fromARGB(255, 0, 114, 59),
+                      contentPadding: EdgeInsets.all(20.0),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(savedTasksList[index].name,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              savedTasksList[index].initial_date !=
+                                      savedTasksList[index].final_date
+                                  ? Column(
+                                    children: [
+                                      Row(children: [
+                                          Text(
+                                              '${savedTasksList[index]
+                                              .initial_date
+                                              .substring(0, 10)} ${savedTasksList[index]
+                                              .initial_date
+                                              .substring(11, 16)} -',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15)),
+                                          Text(' - ',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15))
+                                        ]),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${savedTasksList[index]
+                                              .final_date
+                                              .substring(0, 10)} ${savedTasksList[index]
+                                              .final_date
+                                              .substring(11, 16)}',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15)),
+                                          ],
+                                        ),
+                                    ],
+                                  )
+                                  : Text(
+                                      '${savedTasksList[index]
+                                              .initial_date
+                                              .substring(0, 10)} ${savedTasksList[index]
+                                              .initial_date
+                                              .substring(11, 16)}',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 15)),
+                            ],
+                          )
+                        ],
+                      ),
+                      leading: Icon(Icons.task_alt_sharp, color: Colors.white, size: 30),
+                      onTap: () {
+                        pushTaskScreen(index);
+                      },
+                      ),
+                ),
+              ),
+            ):SizedBox(height:0)
           ],
         ),
       ),
     );
   }
 }
+
+

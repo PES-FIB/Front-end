@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:prova_login/controllers/taskController.dart';
 
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
@@ -33,18 +34,18 @@ class LoginPageController {
     }
     ); 
     await userController.getUserInfo();
-    realize_login();
     return response.statusCode!;
   }
 
   Future<void> realize_login() async { 
+    print('stacktrace de login -> ${StackTrace.current.toString()}');
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
       print('numero de events =  ${AppEvents.eventsList.length}');
-      AppEvents.savedEvents = await EventsController.getSavedEvents();
-      print('numero de events guardats =  ${AppEvents.savedEvents.length}');
-      AppEvents.savedEventsCalendar = await EventsController.getSavedEventsCalendar();
+      await EventsController.getSavedEvents();
       print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
+      await taskController.getAllTasks();
+      print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');
     } catch (e) {
       print(e);
       return;
