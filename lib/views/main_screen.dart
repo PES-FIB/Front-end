@@ -7,6 +7,7 @@ import 'favorites_screen.dart';
 import 'perfil_screen.dart';
 import '../models/Event.dart';
 import '../controllers/eventsController.dart';
+import '../models/AppEvents.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,21 +15,16 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var index = 0;
-  var events = EventData();
-  var fetchEvents = true;
-  var fetchFavorites = true;
-
+  var _index = 0;
   @override
   void initState() {
     super.initState();
-    fetchEvents = true;
-    fetchFavorites = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
@@ -40,80 +36,47 @@ class _MainScreenState extends State<MainScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      body: FutureBuilder(
-        future: () async {
-          if (index == 0 && fetchEvents) {
-            await events.fetchData();
-            fetchEvents = false;
-          } else if (index == 2 && fetchFavorites) {
-            await events.fetchData();
-            fetchFavorites = false;
-          }
-        }(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // While we're waiting for the data to be fetched, show a loading indicator
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            // If there was an error fetching the data, show an error message
-            return Center(child: Text('Error fetching data'));
-          } else {
-            // If we have the data, construct the pages
-            final allEvents = events.allEvents;
-            final savedEvents = events.savedEvents;
-            print("allEvents size:");
-            print(allEvents.length);
-            final pages = [
-              EventList(
-                events: allEvents,
-                savedEvents: savedEvents,
+
+      body: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(LineAwesomeIcons.calendar),
+                label: 'events',
               ),
-              MapScreen(),
-              Favorites(
-                savedEvents: savedEvents,
+              BottomNavigationBarItem(
+                icon: Icon(LineAwesomeIcons.map_marker),
+                label: 'map',
               ),
-              Perfil()
-            ];
-            return CupertinoTabScaffold(
-              tabBar: CupertinoTabBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(LineAwesomeIcons.calendar),
-                    label: 'events',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(LineAwesomeIcons.map_marker),
-                    label: 'map',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(LineAwesomeIcons.heart),
-                    label: 'favs',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(LineAwesomeIcons.user),
-                    label: 'perfil',
-                  ),
-                ],
-                activeColor: Colors.redAccent,
-                currentIndex: index,
-                onTap: (ind) {
-                  setState(() {
-                    index = ind;
-                    if (ind == 0) {
-                      fetchEvents = true;
-                    } else if (ind == 2) {
-                      fetchFavorites = true;
-                    }
-                  });
-                },
+              BottomNavigationBarItem(
+                icon: Icon(LineAwesomeIcons.heart),
+                label: 'favs',
               ),
-              tabBuilder: (context, i) {
-                return CupertinoTabView(
-                  builder: (context) => pages[i],
-                );
-              },
-            );
-          }
+              BottomNavigationBarItem(
+                icon: Icon(LineAwesomeIcons.user),
+                label: 'perfil',
+              ),
+            ],
+            activeColor: Colors.redAccent,
+            currentIndex: _index,
+            onTap: (ind) {
+              setState(() {
+                _index = ind;
+              });
+            }),
+        tabBuilder: (BuildContext context, int index) {
+         switch (index) {
+          case 0:
+            return EventList();
+          case 1:
+            return Map();
+          case 2:
+            return Favorites();
+          case 3:
+            return Perfil();
+          default:
+            return SizedBox.shrink();
+        }
         },
       ),
     );
@@ -125,9 +88,12 @@ class _MainScreenState extends State<MainScreen> {
 class EventData {
   List<Event> allEvents = [];
   var savedEvents = {};
-  
-  Future<void> fetchData() async {
-    allEvents = await EventsController.getAllEvents();
-    savedEvents = await EventsController.getSavedEvents();
-  }
+  var calendarEvents = {};
+
+  // Future<void> fetchData() async {
+  //   allEvents = await EventsController.getAllEvents();
+  //   savedEvents = await EventsController.getSavedEvents();
+  //   calendarEvents = await EventsController.getSavedEventsCalendar();
+  // }
 }
+
