@@ -52,6 +52,7 @@ class _ReviewCardState extends State<ReviewCard> {
   Widget build(BuildContext context) {
     final _reviewController = ReviewController(context);
     return Card(
+    elevation: 5.0,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -66,6 +67,7 @@ class _ReviewCardState extends State<ReviewCard> {
           alignment: Alignment.centerRight,
           child: widget.review.buildRatingBar(true),    // muestra la puntuación como estrellas
         ),
+        SizedBox(height: 10.0),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -221,61 +223,65 @@ Column MyReview(BuildContext context, Event event, Review review) {
   );
 }
 
-Column UserReview(BuildContext context, Review review){
+Card UserReview(BuildContext context, Review review){
   ReviewController _reviewController = ReviewController(context);
   final reviewController = TextEditingController(text: review.contenido);
   final eventname = review.idActivity;
   
-  return Column(
-    children: [
-      TextFormField(
-        decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
-        controller: reviewController,
-      ),
-      SizedBox(height: 15.0),
-      Align(
-        child: review.buildRatingBar(false),
-      ),
-      SizedBox(height: 5.0),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        //botones para borrar una review y para editarla
-        children: [
-          ElevatedButton(
-            child: Text("Delete"),
-            onPressed: () {
-              //Eliminar la review de la lista de reviews
-              print(review.idReview);
-              //bool status = _reviewController.deleteMyReview(valoracionUsuario) as bool;
-              //if(status) {
-                //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
-                //_reviewController.UserReviews(event);
-              //}
-              //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
-              print("valoració eliminada");
-            },
-          ),
-          SizedBox(width: 15.0,),
-          ElevatedButton(
-            child: Text("Update"),
-            onPressed: () {
-              review.contenido = reviewController.text;
-              print(review.contenido);
-              print(review.score);
-              print(review.idReview);
-              //Actualizar la review en la lista de reviews
-              //bool status = _reviewController.updateMyReview(valoracionUsuario) as bool;
-              //if(status) {
-                //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
-                //_reviewController.toUserReviews();
-              //}
-              //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
-            },
-          ),
-          
-        ],
-      ),
-    ],
+  return Card(
+    elevation: 5.0,
+    child: Column(
+      children: [
+        SizedBox(height: 20,),
+        TextFormField(
+          decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
+          controller: reviewController,
+        ),
+        SizedBox(height: 15.0),
+        Align(
+          child: review.buildRatingBar(false),
+        ),
+        SizedBox(height: 10.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          //botones para borrar una review y para editarla
+          children: [
+            InkWell(
+              child: Text("Delete"),
+              onTap: () {
+                //Eliminar la review de la lista de reviews
+                print(review.idReview);
+                //bool status = _reviewController.deleteMyReview(valoracionUsuario) as bool;
+                //if(status) {
+                  //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
+                  //_reviewController.UserReviews(event);
+                //}
+                //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
+                print("valoració eliminada");
+              },
+            ),
+            SizedBox(width: 120.0,),
+            InkWell(
+              child: Text("Update"),
+              onTap: () {
+                review.contenido = reviewController.text;
+                print(review.contenido);
+                print(review.score);
+                print(review.idReview);
+                //Actualizar la review en la lista de reviews
+                //bool status = _reviewController.updateMyReview(valoracionUsuario) as bool;
+                //if(status) {
+                  //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
+                  //_reviewController.toUserReviews();
+                //}
+                //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 20,),
+      ],
+    ),
   );
 }
 

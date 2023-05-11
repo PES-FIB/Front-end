@@ -32,7 +32,6 @@ class CustomDropdownButtonState extends State<CustomDropdownButton> {
             onChanged: (newValue) {
               setState(() {
                 selectedValue = newValue!;
-                print(selectedValue);
               });
             },
             items: widget.dropdownValues.map<DropdownMenuItem<String>>((value) {
@@ -68,17 +67,17 @@ class CustomDropdownButtonState extends State<CustomDropdownButton> {
         ElevatedButton(
           child: Text('Cancelar'),
           onPressed: () {
-            print(selectedValue);
+            print("report cancelled");
             Navigator.of(context).pop();
           },
         ),
         ElevatedButton(
           child: Text('Aceptar'),
           onPressed: () {
-            print(selectedValue);
             if (selectedValue == null) {
               ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al crear el report, necesites escullir un tipus de report"));
             } else {
+              print(selectedValue);
               print(reportComment.text);
               print(User.id);
               //bool status = _reviewController.reportReview(widget.review, selectedCategory, reportComment.text) as bool;
