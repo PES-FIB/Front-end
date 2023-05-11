@@ -273,9 +273,8 @@ class _EventsState extends State<Events> {
                                       }
                                     }
                                   ),
-                                ),
-                              ),
-                            ],
+                                )],
+                            ),
                           ),
                           if (widget.event.url != null)
                             //espacio de 10p

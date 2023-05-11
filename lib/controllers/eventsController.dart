@@ -17,9 +17,6 @@ class EventsController {
       //request events
       final response =
           await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events');
-
-      //request events 
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events');
        
       if (response.statusCode == 200) {   
         if(response.data['data'] != null) {
@@ -215,6 +212,20 @@ class EventsController {
               tickets = response.data['events'][i]['tickets'];
             }
 
+            String latitude;
+          if (response.data['data'][i]['latitude'] == null) {
+            latitude = "";
+          } else {
+            latitude = response.data['data'][i]['latitude'];
+          }
+
+          String longitude;
+          if (response.data['data'][i]['longitude'] == null) {
+            longitude = "";
+          } else {
+            longitude = response.data['data'][i]['longitude'];
+          }
+
             Event event = Event(
                 response.data['events'][i]['code'],
                 response.data['events'][i]['denomination'],
@@ -226,7 +237,9 @@ class EventsController {
                 schedule,
                 city,
                 adress,
-                tickets);
+                tickets,
+                latitude,
+                longitude);
             
             saveEventLocale(event);
           }

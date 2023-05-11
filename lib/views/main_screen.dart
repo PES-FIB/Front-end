@@ -69,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
           case 0:
             return EventList();
           case 1:
-            return Map();
+            return MapScreen();
           case 2:
             return Favorites();
           case 3:
