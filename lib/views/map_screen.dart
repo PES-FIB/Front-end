@@ -46,8 +46,10 @@ class MapScreenState extends State<MapScreen> {
               apiKey: "AIzaSyAvlD4RSfucM-FOXtvvgys8V3dUVNTBqZI",
               bgColor: Colors.white,
               textColor: Colors.grey,
-              iconColor: Colors.red,
+              iconColor: Colors.grey,
               clearIcon: Icons.clear,
+              location: LatLng(41.3926467,2.0701492),
+              radius: 3000,
               onSelected: (Place place) async {
                 final geolocation = await place.geolocation;
 
