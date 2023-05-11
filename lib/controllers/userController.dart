@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';
 import 'dioController.dart';
 import '../APIs/userApis.dart';
@@ -46,6 +47,10 @@ class userController {
       return -1;
     }
     print(response.statusCode);
+    AppEvents.eventsList = [];
+    AppEvents.savedEvents = {};
+    AppEvents.savedEventsCalendar = {};
+    AppEvents.tasksCalendar = {};
     return response.statusCode!;
   }
 

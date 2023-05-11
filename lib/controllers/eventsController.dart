@@ -122,9 +122,8 @@ class EventsController {
     }
   }
 
-  static Future<Map<String, Event>> getSavedEvents() async {
-    Map<String, Event> savedEvents = {}; //initialize empty event list.
-
+  static Future<void> getSavedEvents() async {
+    print('stacktrace de getEvents = ${StackTrace.current.toString()}');
     try {
       //request current user saved events
       final response = await dio
@@ -206,15 +205,13 @@ class EventsController {
                 city,
                 adress,
                 tickets);
-            savedEvents[response.data['events'][i]['code']] = event;
+            
+            saveEventLocale(event);
           }
-          return savedEvents;
         }
       }
-      return savedEvents; // return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
-      return savedEvents; // return an empty list if there was an error
+      return; // return an empty list if there was an error
     }
   }
 
@@ -231,132 +228,17 @@ class EventsController {
   }
 
   static void unsaveEventLocale(Event e) {
+    print("unsave event locale amb event ${e.title}");
     if (AppEvents.savedEvents.containsKey(e.code)) {
       AppEvents.savedEvents.remove(e.code);
     }
+    print('saved events calendar abans: ${AppEvents
+        .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))]?.length}');
     AppEvents
         .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))]
         ?.remove(e);
-  }
-
-  static Future<Map<DateTime, List<Event>>> getSavedEventsCalendar() async {
-    Map<DateTime, List<Event>> savedEvents = {}; //initialize empty event list.
-    savedEvents.addAll({});
-
-    try {
-      //request current user saved events
-      final response = await dio
-          .get('http://nattech.fib.upc.edu:40331/api/v1/users/savedEvents');
-
-      //cheking events response
-
-      if (response.statusCode == 200) {
-        if (response.data['events'] != null) {
-          for (int i = 0; i < response.data['events'].length; ++i) {
-            //response is already decoded.
-            String image;
-            if (response.data['events'][i]['images'].isEmpty) {
-              image = "";
-            } else {
-              image = response.data['events'][i]['images'][0];
-            }
-
-            String url;
-            if (response.data['events'][i]['url'] == null) {
-              url = "";
-            } else {
-              url = response.data['events'][i]['url'];
-            }
-
-            String initD;
-            if (response.data['events'][i]['initial_date'] == null) {
-              initD = "";
-            } else {
-              initD = response.data['events'][i]['initial_date'];
-            }
-
-            String finalD;
-            if (response.data['events'][i]['final_date'] == null) {
-              finalD = "";
-            } else {
-              finalD = response.data['events'][i]['final_date'];
-            }
-
-            String schedule;
-            if (response.data['events'][i]['schedule'] == null) {
-              schedule = "";
-            } else {
-              schedule = response.data['events'][i]['schedule'];
-            }
-
-            String city;
-            if (response.data['events'][i]['region'] == null ||
-                response.data['events'][i]['region'].length < 3) {
-              city = "";
-            } else {
-              city = response.data['events'][i]['region'][2];
-            }
-
-            String adress;
-            if (response.data['events'][i]['adress'] == null) {
-              adress = "";
-            } else {
-              adress = response.data['events'][i]['adress'];
-            }
-
-            String tickets;
-            if (response.data['events'][i]['tickets'] == null) {
-              tickets = "";
-            } else {
-              tickets = response.data['events'][i]['tickets'];
-            }
-
-            Event event = Event(
-                response.data['events'][i]['code'],
-                response.data['events'][i]['denomination'],
-                response.data['events'][i]['description'],
-                image,
-                url,
-                initD,
-                finalD,
-                schedule,
-                city,
-                adress,
-                tickets);
-            if (initD != "") {
-              if (savedEvents
-                  .containsKey(DateUtils.dateOnly(DateTime.parse(initD)))) {
-                savedEvents[DateUtils.dateOnly(DateTime.parse(initD))]
-                    ?.add(event);
-              } else {
-                List<Event> l = [];
-                l.add(event);
-                savedEvents[DateUtils.dateOnly(DateTime.parse(initD))] = l;
-              }
-            }
-            // else if (initD != "" && finalD != "" && initD != finalD) {
-            //   print('entro loop raro amb event ${response.data['events'][i]['code']}');
-            //   int days = DateUtils.dateOnly(DateTime.parse(finalD)).difference(DateUtils.dateOnly(DateTime.parse(initD))).inDays;
-            //   print('els dies son = $days');
-            //   for (int i = 0; i <= days; ++i) {
-            //     if(savedEvents.containsKey(DateUtils.dateOnly(DateTime.parse(initD)).add(Duration(days: i)))){
-            //       savedEvents[DateUtils.dateOnly(DateTime.parse(initD)).add(Duration(days: i))]?.add(event);
-            //     }
-            //     else {
-            //       List<Event> l = [];
-            //       l.add(event);
-            //       savedEvents[DateUtils.dateOnly(DateTime.parse(initD)).add(Duration(days: i))] = l;
-            //     }
-            //   }
-            // }
-          }
-          return savedEvents;
-        }
-      }
-      return savedEvents; // return an empty list if there was an error
-    } catch (error) {
-      return savedEvents; // return an empty list if there was an error
-    }
+    print('saved events calendar abans: ${AppEvents
+        .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))]?.length}');
   }
 
   static void saveEvent(String codeEvent) async {

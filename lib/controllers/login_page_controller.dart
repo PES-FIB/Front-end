@@ -34,17 +34,15 @@ class LoginPageController {
     }
     ); 
     await userController.getUserInfo();
-    realize_login();
     return response.statusCode!;
   }
 
   Future<void> realize_login() async { 
+    print('stacktrace de login -> ${StackTrace.current.toString()}');
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
       print('numero de events =  ${AppEvents.eventsList.length}');
-      AppEvents.savedEvents = await EventsController.getSavedEvents();
-      print('numero de events guardats =  ${AppEvents.savedEvents.length}');
-      AppEvents.savedEventsCalendar = await EventsController.getSavedEventsCalendar();
+      await EventsController.getSavedEvents();
       print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
       await taskController.getAllTasks();
       print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');

@@ -87,9 +87,9 @@ class EventData {
   var savedEvents = {};
   var calendarEvents = {};
 
-  Future<void> fetchData() async {
-    allEvents = await EventsController.getAllEvents();
-    savedEvents = await EventsController.getSavedEvents();
-    calendarEvents = await EventsController.getSavedEventsCalendar();
-  }
+  // Future<void> fetchData() async {
+  //   allEvents = await EventsController.getAllEvents();
+  //   savedEvents = await EventsController.getSavedEvents();
+  //   calendarEvents = await EventsController.getSavedEventsCalendar();
+  // }
 }
