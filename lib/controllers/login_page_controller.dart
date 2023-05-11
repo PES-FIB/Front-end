@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:prova_login/controllers/taskController.dart';
 
 import '../models/User.dart';
 import '../views/main_screen.dart';
@@ -19,6 +20,8 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'dioController.dart';
 import 'userController.dart';
+import 'eventsController.dart';
+import '../models/AppEvents.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -28,37 +31,47 @@ class LoginPageController {
 
   LoginPageController(this.context);
   
-  Future<int?> loginUser(String email, String password) async {
-    Response response;
-    try{
-      response = await dio.post(userApis.getLoginUrl(),   
-        data: {
-          'email': email,
-          'password': password,
-        }
-      ); 
-      await userController.getUserInfo();
-      realize_login();
-      return response.statusCode!;
-    } on DioError catch (error){
-      print(error);
-      return error.response?.statusCode;
-    } 
-}
+  Future<int> loginUser(String email, String password) async {
+    final response = await dio.post(userApis.getLoginUrl(),   
+    data: {
+      'email': email,
+      'password': password,
+    }
+    ); 
+    await userController.getUserInfo();
+    return response.statusCode!;
+  }
 
   Future<void> realize_login() async { 
+    print('stacktrace de login -> ${StackTrace.current.toString()}');
+    try {
+      AppEvents.eventsList = await EventsController.getAllEvents();
+      print('numero de events =  ${AppEvents.eventsList.length}');
+      await EventsController.getSavedEvents();
+      print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
+      await taskController.getAllTasks();
+      print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');
+    } catch (e) {
+      print(e);
+      return;
+    }
+    finally {
+      print('S\'ha omplert el map? = ${AppEvents.eventsList.isNotEmpty}');
+      print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.isNotEmpty}');
     // ignore: use_build_context_synchronously
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
     );
+    }
   }
 
-  void to_signUp() {
+  void to_signUp() async {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateAccount()),
     );
+    }
   }
   
 
@@ -119,3 +132,4 @@ class LoginPageController {
     }
   }
 }
+

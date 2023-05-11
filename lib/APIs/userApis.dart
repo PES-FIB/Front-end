@@ -9,6 +9,8 @@ static String _updateUserPassword = 'http://nattech.fib.upc.edu:40331/api/v1/use
 static String _SignInGoogleUrl = 'http://nattech.fib.upc.edu:40331/api/v1/auth/googleSignIn';
 static String _SignInGoogleCollbackUrl = 'http://nattech.fib.upc.edu:40331/api/v1/auth/google/callback';
 static String _getUserUrl = 'http://nattech.fib.upc.edu:40331/api/v1/users/:id';
+static String _exportCalendarurl = 'http://nattech.fib.upc.edu:40331/api/v1/users/exportCalendar';
+static String _deleteUserUrl = 'http://nattech.fib.upc.edu:40331/api/v1/users/deleteUser';
 
 static String getLoginUrl() {return _LoginUrl;}
 static String getRegisterUrl() {return _RegisterUrl;}
@@ -19,4 +21,6 @@ static String getupdatePassword() {return _updateUserPassword;}
 static String getSignInGoogle() {return _SignInGoogleUrl;}
 static String getSignInGoogleCollback() {return _SignInGoogleCollbackUrl;}
 static String getUser(int userId) {return _getUserUrl.replaceAll(':id', userId.toString());}
+static String getExportCalendar() {return _exportCalendarurl;}
+static String getDeleteUser() {return _deleteUserUrl;}
 }

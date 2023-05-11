@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/userController.dart';
@@ -8,79 +9,81 @@ import 'styles/custom_snackbar.dart';
 import 'styles/custom_user_image.dart';
 
 class Perfil extends StatefulWidget {
-   @override
+  @override
   State<Perfil> createState() {
     return _PerfilState();
   }
 }
+
 class _PerfilState extends State<Perfil> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-            child: Column (
-            children: <Widget> [
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.redAccent,
-                    child: IconButton (
-                      tooltip: 'Tanca Sessió',
-                      style: IconButton.styleFrom(
-                          shape: CircleBorder()
+        child: Column(
+          children: <Widget>[
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(right: 10, left: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.redAccent,
+                        child: IconButton(
+                          tooltip: 'Tanca Sessió',
+                          style: IconButton.styleFrom(shape: CircleBorder()),
+                          onPressed: () async {
+                            int response = 0;
+                            try {
+                              response = await userController.logOut();
+                            } catch (e) {
+                              print(e);
+                            } finally {
+                              if (response == 200) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushReplacement(MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackbar(context,
+                                        'Usuario i/o contraseña incorrectos'));
+                              }
+                            }
+                          },
+                          icon: Icon(LineAwesomeIcons.alternate_sign_out,
+                              color: Colors.white),
+                        ),
                       ),
-                      onPressed: () async {
-                        int response = 0;
-                        try {
-                          response = await userController.logOut();
-                        }
-                        catch(e) {
-                          print(e);
-                        }
-                        finally {
-                          if (response == 200) {
-                          Navigator.of(context, rootNavigator: true).pushReplacement(                          
-                          MaterialPageRoute(builder: (context) => LoginPage()));
-                        }
-                        else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            customSnackbar(context, 'Usuario i/o contraseña incorrectos'));      
-                        }
-                        }
-                      },
-                      icon: Icon(LineAwesomeIcons.alternate_sign_out, color: Colors.white),
-                    ),
-                    ),
-                    SizedBox(height: 5),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.redAccent,
-                    child: IconButton (
-                      tooltip: 'Configuració',
-                      style: IconButton.styleFrom(
-                          shape: CircleBorder()
-                      ),
-                      onPressed: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PerfilConfig()),
-                        );
-                      },
-                      icon: Icon(LineAwesomeIcons.cog, color: Colors.white),
-                    )
-                    ),
+                      SizedBox(height: 5),
+                      CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.redAccent,
+                          child: IconButton(
+                            tooltip: 'Configuració',
+                            style: IconButton.styleFrom(shape: CircleBorder()),
+                            onPressed: () async {
+                              final result = await Navigator.of(context,
+                                      rootNavigator: true)
+                                  .push(
+                                MaterialPageRoute(
+                                    builder: (context) => PerfilConfig()),
+                              );
+                              setState(() {
+                                // do something with the result
+                              });
+                            },
+                            icon:
+                                Icon(LineAwesomeIcons.cog, color: Colors.white),
+                          )),
                     ],
                   )
                 ],
               ),
-              ),
+            ),
               SizedBox(
                 width: 180,
                 height: 180,
@@ -109,12 +112,11 @@ class _PerfilState extends State<Perfil> {
 }
 
 class ProfileWidget extends StatelessWidget {
-  const ProfileWidget({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.onPress
-  });
+  const ProfileWidget(
+      {super.key,
+      required this.title,
+      required this.icon,
+      required this.onPress});
   final String title;
   final IconData icon;
   final VoidCallback onPress;
@@ -122,17 +124,16 @@ class ProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onPress,
-      leading: Container (
+      leading: Container(
         width: 40,
         height: 40,
-        decoration: BoxDecoration (
-          borderRadius: BorderRadius.circular(100),
-          color: Colors.redAccent
-        ),
-        child: Icon(icon, color: Colors.white), 
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100), color: Colors.redAccent),
+        child: Icon(icon, color: Colors.white),
       ),
-      title: Text (title, style:TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-      trailing: SizedBox (
+      title: Text(title,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+      trailing: SizedBox(
         width: 30,
         height: 30,
         child: const Icon(LineAwesomeIcons.angle_right),
