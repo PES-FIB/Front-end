@@ -227,19 +227,18 @@ class EventsController {
     }
   }
 
-  static void unsaveEventLocale(Event e) {
-    print("unsave event locale amb event ${e.title}");
-    if (AppEvents.savedEvents.containsKey(e.code)) {
-      AppEvents.savedEvents.remove(e.code);
-    }
-    print('saved events calendar abans: ${AppEvents
-        .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))]?.length}');
-    AppEvents
-        .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))]
-        ?.remove(e);
-    print('saved events calendar abans: ${AppEvents
-        .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))]?.length}');
+ static void unsaveEventLocale(Event e) {
+  print("unsave event locale amb event ${e.title}");
+  if (AppEvents.savedEvents.containsKey(e.code)) {
+    AppEvents.savedEvents.remove(e.code);
   }
+  final eventsOnDate = AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))];
+  print('saved events calendar abans: ${eventsOnDate?.length}');
+  if (eventsOnDate != null) {
+    eventsOnDate.removeWhere((event) => event.code == e.code);
+    print('saved events calendar despres: ${eventsOnDate.length}');
+  }
+}
 
   static void saveEvent(String codeEvent) async {
     try {
