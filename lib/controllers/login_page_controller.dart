@@ -71,7 +71,6 @@ class LoginPageController {
       context,
       MaterialPageRoute(builder: (context) => CreateAccount()),
     );
-    }
   }
   
 

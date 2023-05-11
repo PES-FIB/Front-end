@@ -64,7 +64,7 @@ class userController {
     }
     print(response.data['user']);
     User.setValues(response.data['user']['id'], response.data['user']['name'],
-        response.data['user']['email']);
+        response.data['user']['email'], response.data['user']['image']);
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
@@ -76,7 +76,7 @@ class userController {
     if (r.statusCode != 200) {
       return false;
     } else {
-      User.setValues(User.id, name, email);
+      User.setValues(User.id, name, email, User.photoUrl);
       return true;
     }
   }
