@@ -8,7 +8,7 @@ import '../../models/User.dart';
 Widget UserImage(){
   final userImage = User.photoUrl;
   print(User.photoUrl);
-  if (userImage == '') {
+  if (userImage == '' || userImage == null) {
     print('userImage is empty');
     return Image(image: AssetImage('assets/userImage.jpg'));
   } else {

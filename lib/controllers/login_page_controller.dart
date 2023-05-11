@@ -37,7 +37,7 @@ class LoginPageController {
           'password': password,
         }
       ); 
-      await userController.getUserInfo('');
+      await userController.getUserInfo();
       realize_login();
       return response.statusCode!;
     } on DioError catch (error){
@@ -103,7 +103,7 @@ class LoginPageController {
         print(response.statusCode);
         //logejar a l'usuari dins de l'aplicació
         //print(response.data['picture']);
-        await userController.getUserInfo(response.data['picture']);
+        await userController.getUserInfo();
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar( context, 'Login de Google realizado correctamente')

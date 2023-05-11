@@ -29,10 +29,11 @@ class userController{
     });
     }
     on DioError catch (e) {
-      print(e.message);
+      final error = e.message;
+      print("Error: $error");
       return -1;
     }
-    await getUserInfo('');
+    await getUserInfo();
     return response.statusCode!;
   }
   
@@ -50,7 +51,7 @@ class userController{
     return response.statusCode!;
   } 
 
-  static Future<void> getUserInfo(String photo) async {
+  static Future<void> getUserInfo() async {
     Response response;
     try {
       response = await dio.get(userApis.getshowMe());
@@ -61,8 +62,7 @@ class userController{
       return;
     }
     print(response.data['user']);
-    print(photo);
-    User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email'], photo);
+    User.setValues(response.data['user']['id'], response.data['user']['name'], response.data['user']['email'], response.data['user']['image']);
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
