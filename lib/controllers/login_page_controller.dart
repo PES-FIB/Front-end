@@ -46,7 +46,7 @@ class LoginPageController {
       print('numero de events guardats =  ${AppEvents.savedEvents.length}');
       AppEvents.savedEventsCalendar = await EventsController.getSavedEventsCalendar();
       print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
-      AppEvents.tasksCalendar = await taskController.getAllTasks();
+      await taskController.getAllTasks();
       print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');
     } catch (e) {
       print(e);

@@ -21,14 +21,13 @@ import 'dart:async';
 
 class taskController {
   // ignore: non_constant_identifier_names
-  static Future<Map<DateTime, List<Task>>> getAllTasks() async {
-    Map<DateTime, List<Task>> tasks = {};
+  static Future<void> getAllTasks() async {
     Response r;
     try {
       r = await dio.get('${taskApis.getTaskUrl()}/${User.id}');
     } catch (e) {
       print(e);
-      return tasks;
+      return;
     }
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
@@ -63,7 +62,6 @@ class taskController {
         }
       }
     }
-    return tasks;
   }
 
   static String repeatstoCat(String repeats) {
@@ -158,7 +156,7 @@ class taskController {
     }
   }
 
-  static Future<List<Task>> getTask(Task t) async {
+  static Future<List<Task>> get1Task(Task t) async {
     List<Task> ltask = [];
     Response r;
     try {
@@ -169,6 +167,53 @@ class taskController {
     }
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
+        print ('r.data = ${r.data['data'][0]}');
+        for (int i = 0; i < r.data['data'].length; ++i) {
+          String name = r.data['data'][i]['name'];
+
+          String description;
+          if (r.data['data'][i]['description'] != null) {
+            description = r.data['data'][i]['description'];
+          } else {
+            description = '';
+          }
+
+          String initialDate = r.data['data'][i]['initial_date'];
+
+          String finalDate = r.data['data'][i]['final_date'];
+
+          int id = r.data['data'][i]['id'];
+
+          int code = r.data['data'][i]['code'];
+
+          String repeats;
+          if (r.data['data'][i]['repeats'] != null) {
+            repeats = r.data['data'][i]['repeats'];
+          } else {
+            repeats = '';
+          }
+          repeats = repeatstoCat(repeats);
+          Task t = Task(
+              id, code, name, description, initialDate, finalDate, repeats);
+          ltask.add(t);
+        }
+      }
+    }
+    return ltask;
+  }
+
+  static Future<List<Task>> getTasks(Task t) async {
+    List<Task> ltask = [];
+    Response r;
+    try {
+      r = await dio.get('${taskApis.getTaskUrl()}/${User.id}/code/${t.code}');
+    } catch (e) {
+      print(e);
+      return [];
+    }
+    if (r.statusCode == 200) {
+      if (r.data['data'] != null) {
+        print ('r.data todaaas = ${r.data['data'].length}');
         for (int i = 0; i < r.data['data'].length; ++i) {
           String name = r.data['data'][i]['name'];
 
@@ -216,7 +261,17 @@ class taskController {
     if (repeats == 'NO' || repeats == '') {
       repeats = null;
     }
-    List<Task> oldList = await getTask(oldTask);
+    List<Task> oldList = [];
+    if (cascade == true) {
+      print('entro aqui porque edito en cascada');
+      oldList = await getTasks(oldTask);
+    }
+    else {
+      oldList = await get1Task(oldTask);
+    }
+     for (int j = 0; j < oldList.length; ++j) {
+        deleteTaskLocale(oldList[j].id);
+      }
     Response r;
     try {
       r = await dio.put('${taskApis.getTaskUrl()}/${User.id}/$Taskid', data: {
@@ -229,13 +284,14 @@ class taskController {
         "final_h": final_date.substring(
             final_date.lastIndexOf(' ') + 1, final_date.length),
         "repeats": repeats,
-        "update_all_code": cascade
+        "update_all_code": cascade.toString()
       });
     } catch (e) {
       return -1;
     }
     print('resultat tasca = ${r.statusCode}');
     if (r.statusCode == 200) {
+      print('length update = ${r.data['data'].length}');
       for (int i = 0; i < r.data['data'].length; ++i) {
         String name = r.data['data'][i]['name'];
 
@@ -264,9 +320,6 @@ class taskController {
         Task t =
             Task(id, code, name, description, initialDate, finalDate, repeats);
         addTaskLocale(t);
-      }
-      for (int j = 0; j < oldList.length; ++j) {
-        deleteTaskLocale(oldList[j].id);
       }
       return 1;
     } else {

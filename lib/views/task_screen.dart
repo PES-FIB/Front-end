@@ -308,6 +308,7 @@ repeteix = widget.t.repeats;
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
               }
               else {
+                print('nom actualitzat? -> ${nameController.text}');
               int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix,true);
                 if (result == -1) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la edició de la tasca'));
