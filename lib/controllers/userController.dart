@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:prova_login/controllers/eventsController.dart';
 import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';
 import 'dioController.dart';
@@ -33,7 +34,7 @@ class userController {
       print(e.message);
       return -1;
     }
-    await getUserInfo();
+    AppEvents.eventsList = await EventsController.getAllEvents();
     return response.statusCode!;
   }
 
@@ -137,6 +138,22 @@ class userController {
   }
 
   static Future<bool> deleteUser(int id) async {
-    return true;
+    Response r;
+    try {
+      r = await dio.delete(userApis.getDeleteUser());
+    }
+    catch (e) {
+      return false;
+    }
+    if (r.statusCode == 200) {
+      AppEvents.eventsList =  [];
+      AppEvents.savedEvents = {};
+      AppEvents.savedEventsCalendar = {};
+      AppEvents.tasksCalendar = {};
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
