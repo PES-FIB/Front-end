@@ -77,8 +77,6 @@ class _ReviewCardState extends State<ReviewCard> {
                 radius: 100,
                 child: Text("Reportar valoració"),
                 onTap: () {
-                  final reportComment = TextEditingController();
-
                   print("Reportar");
                   print(User.id);
                   print(idActivity);
@@ -142,12 +140,13 @@ Column MakeReview(BuildContext context, Event event) {
         decoration: const InputDecoration(labelText: 'Escriu que t\'ha semblat l\'activitat'),
         controller: reviewController,
       ),
+      SizedBox(height: 8.0),
       Text("Puntua l'event", style: TextStyle(fontSize: 16),),
       SizedBox(height: 15.0),
       Align(
         child: valoracionUsuario.buildRatingBar(false),
       ),
-      SizedBox(height: 15.0),
+      SizedBox(height: 8.0),
       ElevatedButton(
         child: Text("Enviar"),
         onPressed: () {

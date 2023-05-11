@@ -58,9 +58,9 @@ class _ReviewPageState extends State<ReviewPage> {
               Text("No compleixes els requisits per fer una valoració", style: TextStyle(fontSize: 15, color: Colors.red[900]), textAlign: TextAlign.center,),
             ],
           ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 14), textAlign: TextAlign.center,),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         Expanded(
           child: 
             ReviewList(reviews, widget.event)
