@@ -36,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
+
       body: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
             items: const <BottomNavigationBarItem>[
@@ -82,6 +83,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
+
+
 class EventData {
   List<Event> allEvents = [];
   var savedEvents = {};
@@ -93,3 +96,4 @@ class EventData {
   //   calendarEvents = await EventsController.getSavedEventsCalendar();
   // }
 }
+
