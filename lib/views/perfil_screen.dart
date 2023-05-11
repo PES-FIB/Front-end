@@ -6,6 +6,7 @@ import 'login_page.dart';
 import '../models/User.dart';
 import 'perfil_config.dart';
 import 'styles/custom_snackbar.dart';
+import 'styles/custom_user_image.dart';
 
 class Perfil extends StatefulWidget {
   @override
@@ -83,36 +84,28 @@ class _PerfilState extends State<Perfil> {
                 ],
               ),
             ),
-            SizedBox(
-              width: 180,
-              height: 180,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: const Image(image: AssetImage('assets/userImage.jpg')),
+              SizedBox(
+                width: 180,
+                height: 180,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: UserImage(),
+                  
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(User.name,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
-            Text(User.email),
-            const Divider(),
-            const SizedBox(height: 20),
-            ProfileWidget(
-                title: 'Les meves valoracions',
-                icon: LineAwesomeIcons.comments,
-                onPress: () {}),
-            ProfileWidget(
-                title: 'Entrades',
-                icon: LineAwesomeIcons.alternate_ticket,
-                onPress: () {}),
-            ProfileWidget(
-                title: 'Compartir Perfil',
-                icon: LineAwesomeIcons.share_square,
-                onPress: () {}),
-            ProfileWidget(
-                title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: () {})
-          ],
-        ),
+              const SizedBox(height: 10),  
+                Text(User.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                Text(User.email),
+              const Divider(),
+              const SizedBox(height: 20),
+              ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){}),
+              ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
+              ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
+              ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})
+
+
+            ],
+          ), 
       ),
     );
   }

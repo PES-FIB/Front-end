@@ -1,7 +1,12 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../controllers/share_controller.dart';
+import 'styles/share_button.dart';
 
 class Events extends StatefulWidget {
 
@@ -18,6 +23,8 @@ class _EventsState extends State<Events> {
   
   @override
   Widget build(BuildContext context) {
+
+  final ShareController sharecontroller = ShareController();
 
   String month = "";
   String month_number = widget.event.initialDate.substring(5,7);
@@ -249,7 +256,17 @@ class _EventsState extends State<Events> {
                                 ),
                               ),
                             ],
-                          ),      
+                          ),
+                          if (widget.event.url != null)
+                            //espacio de 10p
+                            SizedBox(height: 10.0),
+                          if (widget.event.url != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ShareButton(widget.event, widget.event.url)
+                              ],
+                            ),
                         ],
                       ),
                     ),
@@ -267,10 +284,13 @@ class _EventsState extends State<Events> {
               */
                   ],
               ),
+              
             ],
                   ),
           ),
+          
         ),
+        //boton de compartir
     );
   }
 }

@@ -117,7 +117,7 @@ class EventsController {
       print(' no he tornat events :((((');
       return []; // return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
+      print("Error: $error");
       return []; // return an empty list if there was an error
     }
   }
