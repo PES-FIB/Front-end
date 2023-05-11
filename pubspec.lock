@@ -257,18 +257,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: dfd138a0cea87d6b1c624513b4b620f06515d884d65f1fa5fb93345266c7592c
+      sha256: "9be1bb9bbdb42823439a18da71484f1964c14dbe1c255ab1b931932b12fa96e8"
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.4"
+    version: "19.4.56"
   syncfusion_flutter_datepicker:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_datepicker
-      sha256: "2008bdbfa1ffb87a065dc720a55799bb800de2d5a6671c59afacc947fc255b70"
+      sha256: ff428c4e2ebd753c2f8f3b2aa60e96e014c9ca2653ce7007c7a603e560973f34
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.4"
+    version: "19.4.56"
   term_glyph:
     dependency: transitive
     description:

@@ -366,11 +366,11 @@ class EventsController {
     }
   }
 
-  static Future<List<Event>> getEventsByDateRange(String init_date, String final_date) async{
+  static Future<List<Event>> getEventsByDateRange(String initDate, String finalDate) async{
     try {
       List<Event> eventsByDataRange = [];
     
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$init_date&final_date=$final_date');
+      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$initDate&final_date=$finalDate');
       print(response.statusCode);
       if (response.statusCode == 200) {
         if(response.data['data'] != null) {
@@ -460,6 +460,8 @@ class EventsController {
           );
           eventsByDataRange.add(event);
            }
+          print("EVENTS BY DATA RANGE LENGHT");
+          print(eventsByDataRange.length);
           return eventsByDataRange;
         }
       }

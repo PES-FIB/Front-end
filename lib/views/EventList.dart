@@ -7,7 +7,6 @@ import '../controllers/eventsController.dart';
 import '../controllers/ambitsController.dart';
 import '../models/Event.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 
 class EventList extends StatefulWidget {
@@ -32,7 +31,7 @@ class _EventListState extends State<EventList> {
   List<Event> _foundEvents = [];  
   List<Event> filteredEvents = []; 
   List<Event> dateRangeEvents = [];
-  List<Event> removedEventsByDataFilter = [];
+  List<Event> filteredEventsWithoutDataRangeFilter= [];
 
 
   List<Color> backgroundColor = []; 
@@ -65,6 +64,7 @@ class _EventListState extends State<EventList> {
     super.initState();
     setState(() {
       filteredEvents.addAll(widget.events);
+      filteredEventsWithoutDataRangeFilter.addAll(widget.events);
       _foundEvents.addAll(filteredEvents);
       dateRangeEvents.addAll(filteredEvents);
       ambits = fetchAmbits();
@@ -77,8 +77,8 @@ class _EventListState extends State<EventList> {
   }
 
 
-  void _runFilter(String enteredTitle) {
-     List<Event> result = [];
+  void _runSearchFilter(String enteredTitle) {
+    List<Event> result = [];
     if(enteredTitle.isEmpty) {
       result = filteredEvents;
     } else {
@@ -86,17 +86,35 @@ class _EventListState extends State<EventList> {
     }
     setState(() {
       wordSearched = enteredTitle;
-      _foundEvents = result;});
+      _foundEvents = result;
+    });
   }
 
   void pushEventScreen(int clickedEvent) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: widget.events[clickedEvent])));
   }
+  
+  void clearRangeDateFilter(){
+    //tornar posar tots aquells events que han estat filtrats per les dates.
+    //fer un set state amb filteredEvents = filteredEventsWithoutDataRangeFilter.
+    //en tot moment filteredEventsWithout es igual a filtered events menys per el datarange. 
+    setState(() {
+      filteredEvents.clear();
+      filteredEvents.addAll(filteredEventsWithoutDataRangeFilter);
+    });
+  }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) async {
+    if (args is PickerDateRange) {
+      PickerDateRange range = args.value;
+      print(range.startDate);
+       print(range.endDate);
+    }
+    print("no entra");
 
+/*
     //year-month-day
-    List<String>  dirtyInitDate = args.value.startDate.toString().split(" ");
+    List<String>  dirtyInitDate = range.startDate .value.startDate.toString().split(" ");
     //[year] [month] [day] 
     List<String> initDate = dirtyInitDate[0].split("-");
     //month/day/year
@@ -109,23 +127,16 @@ class _EventListState extends State<EventList> {
     List<String> finalDate = dirtyInitDate[0].split("-");
     //month/day/year
     String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
-    print(queryInitDate);
+    print(queryFinalDate);
 
     List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
+    print(tmpByDateRange.length);
 
     setState(() {
       dateRangeEvents.clear();
       dateRangeEvents.addAll(tmpByDateRange);
-
-      //FALTA GGESTIONAR SI ES DESSELECCIONA UN RANG DE DATES!!!!!!
-      //afegir boto DESFER FILTRE al dialeg
-      //fer llista de events descartats de la filteredEvents
-      //al clicar NO DATA RANGE, comparar FilteredEventsWithousRangeFilter(que s'haurà d'anar actualitzant) amb descartedEvents.
-      //afegir a filteredEvents addAll(removedEvents in FilteredWithoutRange);
-
-
       filteredEvents.retainWhere((element) => tmpByDateRange.contains(element));
-    });
+    });*/
   }
 
 
@@ -133,10 +144,8 @@ class _EventListState extends State<EventList> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body:
-      Column(
+      body: Column(
         children: [
-        
           Column(
             children: [
               SingleChildScrollView(
@@ -161,36 +170,23 @@ class _EventListState extends State<EventList> {
                                     width: double.maxFinite,
                                     height: 300,
                                     child: SfDateRangePicker(
-                                      view: DateRangePickerView.year,
-                                      monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-                                      onSelectionChanged: _onSelectionChanged,
+                                      view: DateRangePickerView.month,
                                       selectionMode: DateRangePickerSelectionMode.range,
+                                      showActionButtons: true,
+                                      cancelText: 'CANCEL',
+                                      confirmText: 'OK',  
+                                      onCancel: () {
+                                        Navigator.pop(context);
+                                      },
+                                      //onSubmit: ,
+                                      
                                     ),
                                   ),
                                 
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('DONE'),
-                                    ),
-                                    
-                                  ],
+                          
                                 );
                               },
                             );
-              
-                            if (result != null &&
-                                result.startDate != null &&
-                                result.endDate != null) {
-                              setState(() {
-                                
-                              });
-              
-                              // update the filter based on the selected date range
-                              // ...
-                            }
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
@@ -248,7 +244,6 @@ class _EventListState extends State<EventList> {
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
                                 String ambit = snapshot.data![index];
-                                //return AmbitContainer(ambitName: name);
                                 return InkWell(
                                   onTap: () {
                                     setState(() {
@@ -262,16 +257,18 @@ class _EventListState extends State<EventList> {
                                         } else {
                                           filteredEvents.removeWhere((event) => event.ambits.contains(ambit));
                                         }
-                                        _runFilter(wordSearched);
+                                        _runSearchFilter(wordSearched);
                                       }
                                       //si seleccionat
                                       else {
                                         if(!beforeState) filteredEvents.clear(); 
                                         EventsController.getEventsByAmbit(ambit).then((value) {setState(() {
                                           filteredEvents.addAll(value);
-                                          _runFilter(wordSearched);
+                                          _runSearchFilter(wordSearched);
                                         });});
                                       }
+                                      filteredEventsWithoutDataRangeFilter.clear();
+                                      filteredEventsWithoutDataRangeFilter.addAll(filteredEvents);
                                     });
                                   },
                                   child: Container(
@@ -316,7 +313,7 @@ class _EventListState extends State<EventList> {
             child: Padding( 
               padding: const EdgeInsets.all(15.0),
               child: TextField(
-                onChanged: (value) => _runFilter(value),
+                onChanged: (value) => _runSearchFilter(value),
                 decoration: InputDecoration(
                   hintText: "busca un event" ,suffixIcon: Icon(Icons.search), contentPadding: EdgeInsets.all(20.0),
                 ),
