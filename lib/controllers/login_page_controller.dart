@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:prova_login/controllers/taskController.dart';
 
-import '../models/User.dart';
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
 
@@ -15,9 +14,7 @@ import '../views/styles/custom_snackbar.dart';
 
 import 'dart:async';
 
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'dioController.dart';
 import 'userController.dart';
 import 'eventsController.dart';
@@ -58,7 +55,6 @@ class LoginPageController {
     finally {
       print('S\'ha omplert el map? = ${AppEvents.eventsList.isNotEmpty}');
       print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.isNotEmpty}');
-    // ignore: use_build_context_synchronously
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
@@ -72,11 +68,7 @@ class LoginPageController {
       MaterialPageRoute(builder: (context) => CreateAccount()),
     );
     }
-  }
-  
-
- 
-  Future<void> googleLogin() async {
+    Future<void> googleLogin() async {
     String finalUrl = "";
 
     final redirect = await dio.post(
@@ -131,5 +123,9 @@ class LoginPageController {
 
     }
   }
-}
+  }
+  
+
+ 
+
 
