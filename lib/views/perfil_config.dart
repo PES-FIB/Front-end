@@ -1,9 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
-import 'perfil_screen.dart';
 import 'styles/custom_snackbar.dart';
 
 class PerfilConfig extends StatefulWidget {
@@ -30,10 +30,24 @@ class _PerfilConfigState extends State<PerfilConfig> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column (
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
+        child: Scaffold(
+          appBar: AppBar(
+        toolbarHeight: 70,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.redAccent,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          "C U L T U R I C A 'T",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+          body:Column (
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton (
                 tooltip: 'Torna al perfil',
@@ -41,15 +55,11 @@ class _PerfilConfigState extends State<PerfilConfig> {
                     shape: CircleBorder()
                 ),
                 onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Perfil())).then((_) {
-                      setState(() {
-                      });
-                    });
+                    Navigator.of(context).pop();
                 },
                 icon: Icon(Icons.arrow_back, color: Colors.black),
               ),
-              SizedBox(width: 300),
-              Padding(padding: EdgeInsets.only(top: 10), 
+              Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005, right:MediaQuery.of(context).size.width*0.054), 
               child: CircleAvatar(
                         radius: 20,
                         backgroundColor: Colors.redAccent,
@@ -69,7 +79,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(right:11),
+            padding: EdgeInsets.only(right:MediaQuery.of(context).size.width*0.025),
               child:
               Row( 
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -419,6 +429,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
             ],)
           ],)
         ],
+      )
       )
     );
   }
