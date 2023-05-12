@@ -96,7 +96,7 @@ class _EventListState extends State<EventList> {
     context: context,
     builder: (context) {
       return Dialog(
-        child: Events(event: AppEvents.eventsList[clickedEvent]),
+        child: Events(event: _foundEvents[clickedEvent]),
       );
     },
   );
