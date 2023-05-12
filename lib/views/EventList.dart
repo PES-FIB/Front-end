@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
-import '../controllers/ambitsController.dart';
 import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -39,7 +38,7 @@ class _EventListState extends State<EventList> {
   
 
   Future<List<String>> fetchAmbits() async {
-    List<String> result = await AmbitsController.getAllAmbits();
+    List<String> result = await EventsController.getAllAmbits();
     setState(() {
       backgroundColor.addAll(List.generate(result.length, (_) => Colors.white)); 
     });

@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';
 import '../models/Task.dart';
-import 'dioController.dart';
 import '../APIs/taskApis.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 

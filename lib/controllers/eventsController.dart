@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../models/AppEvents.dart';
 import '../models/Event.dart';
-import 'dioController.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../utils/map_style.dart';
+import '../views/event_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EventsController {
   final BuildContext context;
@@ -588,5 +591,78 @@ static Future<Event> getEventByCode(String code) async {
       print(error.toString());
       return "";
     }
+  }
+
+    static Future<List<String>> getAllAmbits() async {
+    List<String> allAmbits = []; 
+    try {
+      //request events 
+      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/ambits');
+       
+      if (response.statusCode == 200) {
+
+        if(response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+            allAmbits.add(response.data['data'][i]['name']);
+          }
+          return allAmbits;
+        }
+        return []; 
+      }
+      return [];// return an empty list if there was an error
+    } catch (error) {
+      print(error.toString());
+      return []; // return an empty list if there was an error
+    }
+  }
+
+  static const initialCameraPosition =  CameraPosition(
+    target: LatLng(41.3926467,2.0701492),
+    zoom: 12,
+  );
+
+  static void onMapCreated(GoogleMapController controller){
+    controller.setMapStyle(mapStyle);
+  }
+
+  static Future<Set<Marker>> markers (BuildContext context) async {
+    
+    //get all events
+    List<Event> allEvents = await EventsController.getAllEvents();
+
+
+    Map<MarkerId, Marker> eventsMarkers = {};
+    for(Event e in allEvents){
+
+      if((e.latitude != "" ) && (e.longitude != "")) {
+        final newMarkerId = MarkerId(e.code);
+        final newMarker = Marker(
+          markerId: newMarkerId,
+          position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Events(event: e)),
+            );
+          }
+        );
+        eventsMarkers[newMarkerId] = newMarker;
+      }
+    }
+    return eventsMarkers.values.toSet();
+  }
+
+  static String ObtainMessage(String title, String url) {
+    if (url == "") {
+      final eventname = title;
+      return ("Check out this event! $eventname, this event doesn't have a link.");
+    }
+    else {
+      return ("Check out this event found on CulturiCAT!\n$url , you can find more information about this event in the link");
+    }
+    } 
+      
+  static void ShareAction(String message) {
+    Share.share(message);
   }
 }

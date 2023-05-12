@@ -4,12 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:prova_login/controllers/eventsController.dart';
 import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';
-import 'dioController.dart';
 import '../APIs/userApis.dart';
 import 'package:permission_handler/permission_handler.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:prova_login/controllers/taskController.dart';
+import '../views/main_screen.dart';
+import '../views/create_account.dart';
+import '../views/styles/custom_snackbar.dart';
 import 'dart:async';
+import 'package:webview_flutter/webview_flutter.dart';
+
 
 class userController {
   final BuildContext context;
@@ -149,6 +152,104 @@ class userController {
     }
     else {
       return false;
+    }
+  }
+
+  static Future<int> loginUser(String email, String password) async {
+    final response = await dio.post(userApis.getLoginUrl(),   
+    data: {
+      'email': email,
+      'password': password,
+    }
+    ); 
+    await userController.getUserInfo();
+    return response.statusCode!;
+  }
+
+  static Future<void> realize_login(context) async { 
+    print('stacktrace de login -> ${StackTrace.current.toString()}');
+    try {
+      AppEvents.eventsList = await EventsController.getAllEvents();
+      print('numero de events =  ${AppEvents.eventsList.length}');
+      await EventsController.getSavedEvents();
+      print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
+      await taskController.getAllTasks();
+      print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');
+    } catch (e) {
+      print(e);
+      return;
+    }
+    finally {
+      print('S\'ha omplert el map? = ${AppEvents.eventsList.isNotEmpty}');
+      print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.isNotEmpty}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
+    );
+    }
+  }
+
+  static void to_signUp(context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateAccount()),
+    );
+    }
+
+    
+   static Future<void> googleLogin(context) async {
+    String finalUrl = "";
+
+    final redirect = await dio.post(
+      userApis.getSignInGoogle(),
+    );
+    String initialUrl = '';
+    //si la llamada es una redireccion
+    if (redirect.statusCode == 302) {
+      initialUrl = redirect.headers.value(HttpHeaders.locationHeader)!;
+    }
+    if (initialUrl != '') {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => WebView(
+            initialUrl: initialUrl,
+            javascriptMode: JavascriptMode.unrestricted,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 OPR/80.0.4170.16 (Edition beta) JavaScriptEnabled',
+            onPageStarted: (String url) async {
+              if (url.startsWith(userApis.getSignInGoogleCollback())) {
+                finalUrl = url;
+                if(Navigator.canPop(context)) Navigator.pop(context); 
+              }
+            },
+          ),
+        ),
+      );
+      try {
+        final response = await dio.get(
+          finalUrl,
+          options: Options (
+            validateStatus: (_) => true,
+            contentType: Headers.jsonContentType,
+            responseType:ResponseType.json,
+          ),
+        );
+        print(response.data);
+        print(response.statusCode);
+        //logejar a l'usuari dins de l'aplicació
+        //print(response.data['picture']);
+        await userController.getUserInfo();
+        //missatge de success
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar( context, 'Login de Google realizado correctamente')
+        );
+        realize_login(context);
+      } catch (e){
+        print('Error al hacer la llamada a la API: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar( context, 'Se ha producido un error: $e')
+        );
+      }
+
     }
   }
 }

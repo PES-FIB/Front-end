@@ -1,13 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-
-import '../../controllers/share_controller.dart';
+import 'package:prova_login/controllers/eventsController.dart';
 import '../../models/Event.dart';
 
 Widget ShareButton(Event event,String url) {
-  
-  final ShareController sharecontroller = ShareController();
+
 
   if (url == '') {
     return Container();
@@ -17,8 +15,8 @@ Widget ShareButton(Event event,String url) {
       onPressed: () {
         String eUrl = event.url;
         String eTitle = event.title;
-        final url = sharecontroller.ObtainMessage(eTitle, eUrl);
-        sharecontroller.ShareAction(url); 
+        final url = EventsController.ObtainMessage(eTitle, eUrl);
+        EventsController.ShareAction(url); 
       },
       child: Row(
         children: [

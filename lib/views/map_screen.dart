@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:prova_login/controllers/eventsController.dart';
 import 'dart:async';
-
-import 'package:prova_login/controllers/map_controller.dart';
 import 'package:search_map_place_updated/search_map_place_updated.dart';
 
 class MapScreen extends StatefulWidget {
@@ -14,7 +13,6 @@ class MapScreen extends StatefulWidget {
 
 class MapScreenState extends State<MapScreen> {
   Set<Marker> _markers = {};
-  final _controller = MapController();
   
   Completer<GoogleMapController> _controllerCompleter = Completer();
   GoogleMapController? googleMapController;
@@ -25,7 +23,7 @@ class MapScreenState extends State<MapScreen> {
   }
 
   Future<Set<Marker>> _fetchMarkers() async {
-    final markers = await _controller.markers(context);
+    final markers = await EventsController.markers(context);
     return markers;
   }
 
@@ -64,9 +62,9 @@ class MapScreenState extends State<MapScreen> {
                   return GoogleMap(
                     onMapCreated: (GoogleMapController controller) {
                       _controllerCompleter.complete(controller);
-                      _controller.onMapCreated(controller);
+                      EventsController.onMapCreated(controller);
                     },
-                    initialCameraPosition: _controller.initialCameraPosition,
+                    initialCameraPosition: EventsController.initialCameraPosition,
                     zoomControlsEnabled: false,
                     markers: _markers,
                   );
