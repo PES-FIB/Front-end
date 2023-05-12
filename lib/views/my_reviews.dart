@@ -19,14 +19,13 @@ class _MyReviewState extends State<MyReview> {
 
   @override
   void initState() {
-    /*
     super.initState();
     final _reviewController = ReviewController(context);
     _reviewController.getMyReviews().then((value) => setState(() {
       reviews = value;
     })
     );
-    */
+    /*
     final review1 = Review(User.id, 1, User.name, null, 5, "Molt divertit!");
     final review2 = Review(User.id, 2, User.name, null, 5, "Molt divertit!");
     final review3 = Review(User.id, 3, User.name, null, 5, "Molt divertit!");
@@ -34,7 +33,7 @@ class _MyReviewState extends State<MyReview> {
     final review5 = Review(User.id, 5, User.name, null, 5, "Molt divertit!");
 
     reviews = [review1, review2, review3, review4, review5];
-
+    */
   }
   @override
   Widget build(BuildContext context) {

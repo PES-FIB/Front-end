@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, curly_braces_in_flow_control_structures
+// ignore_for_file: non_constant_identifier_names, curly_braces_in_flow_control_structures, unrelated_type_equality_checks, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import '../../models/Review.dart';
@@ -56,9 +56,11 @@ class _ReviewCardState extends State<ReviewCard> {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ListTile(
-          title: Text('Valoració feta per $username'),
-        ),
+        //de moment no es mostra el nom de l'usuari que ha fet la review
+        if (username != null)
+          ListTile(
+            title: Text('Valoració feta per $username'),
+          ),
         Padding(
           padding: EdgeInsets.all(16.0),
           child: Text(contenido!),
@@ -80,11 +82,10 @@ class _ReviewCardState extends State<ReviewCard> {
                   print("Reportar");
                   print(User.id);
                   print(idActivity);
-
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return CustomDropdownButton(dropdownValues: categories);
+                      return CustomReportForm(dropdownValues: categories, review: widget.review);
                     },
                   );
                 },
@@ -104,11 +105,8 @@ class _ReviewCardState extends State<ReviewCard> {
 ListView ReviewList(List<Review> valoracions, Event event) {
   List<Widget> reviewCards = [];
   for (int i = 0; i < valoracions.length; i++) {
-    if (valoracions[i].userId != User.id) {
-      reviewCards.add(ReviewCard(review: valoracions[i], event: event));
-    }
+    reviewCards.add(ReviewCard(review: valoracions[i], event: event));
   }
-
   return ListView(
     children: reviewCards,
   );
@@ -149,17 +147,17 @@ Column MakeReview(BuildContext context, Event event) {
       SizedBox(height: 8.0),
       ElevatedButton(
         child: Text("Enviar"),
-        onPressed: () {
+        onPressed: () async {
           valoracionUsuario.contenido = reviewController.text;
           print(valoracionUsuario.contenido);
           print(valoracionUsuario.score);
           //añadir la review a la lista de reviews
-          //bool status = _reviewController.addReview(valoracionUsuario) as bool;
-          //if(status) {
-            //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració enviada exitosament"));
-            //_reviewController.toReviewsAgain(event);
-          //}
-          //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al realizar la valoració"));
+          final status = await _reviewController.addReview(valoracionUsuario);
+          if(status == 200) {
+            ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració enviada exitosament"));
+            _reviewController.toReviewsAgain(event);
+          }
+          else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al realizar la valoració"));
         },
       ),
     ],
@@ -188,32 +186,31 @@ Column MyReview(BuildContext context, Event event, Review review) {
         children: [
           ElevatedButton(
             child: Text("Delete"),
-            onPressed: () {
+            onPressed: () async{
               //Eliminar la review de la lista de reviews
               print(valoracionUsuario.idReview);
-              //bool status = _reviewController.deleteMyReview(valoracionUsuario) as bool;
-              //if(status) {
-                //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
-                //_reviewController.toReviewsAgain(event);
-              //}
-              //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
-              print("valoració eliminada");
+              final status = await _reviewController.deleteMyReview(valoracionUsuario);
+              if(status == 200) {
+                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
+                _reviewController.toReviewsAgain(event);
+              }
+              else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
             },
           ),
           SizedBox(width: 15.0,),
           ElevatedButton(
           child: Text("Update"),
-          onPressed: () {
+          onPressed: () async{
             valoracionUsuario.contenido = reviewController.text;
             print(valoracionUsuario.contenido);
             print(valoracionUsuario.score);
             //Actualizar la review en la lista de reviews
-            //bool status = _reviewController.updateMyReview(valoracionUsuario) as bool;
-            //if(status) {
-              //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
-              //_reviewController.toReviewsAgain(event);
-            //}
-            //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
+            final status = await _reviewController.updateMyReview(valoracionUsuario);
+            if(status == 200) {
+              ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
+              _reviewController.toReviewsAgain(event);
+            }
+            else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
           },
         ),  
         ],
@@ -247,33 +244,33 @@ Card UserReview(BuildContext context, Review review){
           children: [
             InkWell(
               child: Text("Delete"),
-              onTap: () {
+              onTap: () async{
                 //Eliminar la review de la lista de reviews
                 print(review.idReview);
-                //bool status = _reviewController.deleteMyReview(valoracionUsuario) as bool;
-                //if(status) {
-                  //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
-                  //_reviewController.UserReviews(event);
-                //}
-                //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
+                final status = await _reviewController.deleteMyReview(review);
+                if(status == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
+                  _reviewController.toUserReviews();
+                }
+                else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
                 print("valoració eliminada");
               },
             ),
             SizedBox(width: 120.0,),
             InkWell(
               child: Text("Update"),
-              onTap: () {
+              onTap: () async {
                 review.contenido = reviewController.text;
                 print(review.contenido);
                 print(review.score);
                 print(review.idReview);
                 //Actualizar la review en la lista de reviews
-                //bool status = _reviewController.updateMyReview(valoracionUsuario) as bool;
-                //if(status) {
-                  //ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
-                  //_reviewController.toUserReviews();
-                //}
-                //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
+                final status = await _reviewController.updateMyReview(review);
+                if(status == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
+                  
+                }
+                else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
               },
             ),
           ],

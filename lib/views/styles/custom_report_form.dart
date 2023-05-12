@@ -1,24 +1,30 @@
+// ignore_for_file: curly_braces_in_flow_control_structures, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:prova_login/models/Review.dart';
 import '../../models/User.dart';
 import 'custom_snackbar.dart';
 import '../../controllers/reviews_controller.dart';
 
-class CustomDropdownButton extends StatefulWidget {
+class CustomReportForm extends StatefulWidget {
   final List<String> dropdownValues;
+  final Review review;
 
-  CustomDropdownButton({
+  CustomReportForm({
     required this.dropdownValues,
+    required this.review,
   });
 
   @override
-  CustomDropdownButtonState createState() => CustomDropdownButtonState();
+  CustomReportFormState createState() => CustomReportFormState();
 }
 
-class CustomDropdownButtonState extends State<CustomDropdownButton> {
+class CustomReportFormState extends State<CustomReportForm> {
   String? selectedValue;
   final reportComment = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final ReviewController _reviewController = ReviewController(context);
     return 
     AlertDialog(
       content: Column(
@@ -73,16 +79,18 @@ class CustomDropdownButtonState extends State<CustomDropdownButton> {
         ),
         ElevatedButton(
           child: Text('Aceptar'),
-          onPressed: () {
+          onPressed: () async {
             if (selectedValue == null) {
               ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al crear el report, necesites escullir un tipus de report"));
             } else {
               print(selectedValue);
               print(reportComment.text);
               print(User.id);
-              //bool status = _reviewController.reportReview(widget.review, selectedCategory, reportComment.text) as bool;
-              //if (status) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració reportada exitosament"));
-              //else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració"));
+              final status = await _reviewController.reportReview(widget.review, selectedValue!, reportComment.text);
+              if (status == 200) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració reportada exitosament"));
+              else if(status == 400) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració, ja has reportat aquesta valoració"));
+              else if(status == 404) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració, no existeix la valoració"));
+              else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració"));
             }
             Navigator.of(context).pop();
             

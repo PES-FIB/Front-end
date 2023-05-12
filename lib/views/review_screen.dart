@@ -21,20 +21,22 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   void initState() {
-    /*
+    
     super.initState();
     final _reviewController = ReviewController(context);
     _reviewController.getReviews(widget.event.code).then((value) => setState(() {
       reviews = value;
+      print(reviews);
     })
     );
-    */
+    
+    /*
     final review1 = Review(1000, 1, 'user1', widget.event.code, 5, "Molt divertit!");
     final review2 = Review(1001, 2, 'user2', widget.event.code, 5, "Molt divertit!");
     final review3 = Review(1002, 3, 'user3', widget.event.code, 5, "Molt divertit!");
 
     reviews = [review1, review2, review3];
-
+    */
   }
   @override
   Widget build(BuildContext context) {
@@ -61,10 +63,13 @@ class _ReviewPageState extends State<ReviewPage> {
         SizedBox(height: 8.0),
         Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 14), textAlign: TextAlign.center,),
         SizedBox(height: 8.0),
-        Expanded(
-          child: 
-            ReviewList(reviews, widget.event)
-        )
+        if (reviews.length == 0)
+          Text("Encara no hi ha cap valoració", style: TextStyle(fontSize: 14), textAlign: TextAlign.center,)
+        else 
+          Expanded(
+            child: 
+              ReviewList(reviews, widget.event)
+          ),
       ],
     ),
   );

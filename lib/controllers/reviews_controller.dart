@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'dioController.dart';
 import '../models/Review.dart';
 import '../models/User.dart';
@@ -18,14 +19,19 @@ class ReviewController{
 
   //obte las reviews de un event
   Future<List<Review>> getReviews(String idActivity) async {
+    print(idActivity);
+    print(reviewApi.getReviewsUrl(idActivity));
     final response = await dio.get(
       reviewApi.getReviewsUrl(idActivity)
     );
     final List<Review> reviews = [];
-    for (var review in response.data) {
-      final userresp = await dio.get(userApis.getsingleUserUrl(response.data['userId']));
-      reviews.add(Review(userresp.data['user']['id'], review['review']['id'], userresp.data['user']['name'], idActivity, review['review']['score'], review['review']['comment']));
+
+    final List<dynamic> dataReviews = response.data['reviews'];
+    for (var review in dataReviews) {
+      //final userresp = await dio.get(userApis.getsingleUserUrl(user.toString()));
+      reviews.add(Review(review['UserId'], review['id'], null , idActivity, review['score'], review['comment']));
     }
+    print("agafades les reviews :)");
     return reviews;
   }
 
@@ -34,52 +40,70 @@ class ReviewController{
       reviewApi.getUserReviewsUrl()
     );
     final List<Review> reviews = [];
-    for (var review in response.data) {
-      reviews.add(Review(User.id, review['review']['id'], User.name, null, review['review']['score'], review['review']['comment']));
+    final myReviews = response.data['reviews'];
+    for (var review in myReviews) {
+      print(review);
+      reviews.add(Review(User.id, review['id'], User.name, review["EventCode"], review['score'], review['comment']));
     }
     return reviews;
   }
 
 
-  Future<bool> addReview(Review review) async {
+  Future<int?> addReview(Review review) async {
+    print(reviewApi.getCreateReviewUrl(review.idActivity));
     final response = await dio.post(
-      reviewApi.getCreateReviewUrl(review.idActivity as String),
+      reviewApi.getCreateReviewUrl(review.idActivity),
       data: {
         'rating': review.score,
         'comment': review.contenido,
       }
     );
-    return response.statusCode == 200;
+    return response.statusCode;
   }
 
-  Future<bool> deleteMyReview(Review review) async {
+  Future<int?> deleteMyReview(Review review) async {
+    print(reviewApi.getDeleteReviewUrl(review.idActivity));
     final response = await dio.delete(
-      reviewApi.getDeleteReviewUrl(review.idReview),
+      reviewApi.getDeleteReviewUrl(review.idActivity),
     );
-    return response.statusCode == 200;
+    print(response.statusCode);
+    print("fet delete");
+    return response.statusCode;
   }
 
-  Future<bool> updateMyReview(Review review) async {
-    final response = await dio.put(
-      reviewApi.getUpdateReviewUrl(review.idReview),
+  Future<int?> updateMyReview(Review review) async {
+    print(reviewApi.getUpdateReviewUrl(review.idActivity));
+    final response = await dio.patch(
+      reviewApi.getUpdateReviewUrl(review.idActivity),
       data: {
         'rating': review.score,
         'comment': review.contenido,
       }
     );
-    return response.statusCode == 200;
+    return response.statusCode;
   }
-  Future<bool> reportReview(Review review, String category, String comment) async {
-     final id = User.id;
-      if (comment == '' || comment == null) comment = "L'usuari amb id $id no ha deixat cap comentari";
-     final response = await dio.post(
-      reviewApi.getReportReviewUrl(review.idReview),
-      data: {
-        'type': category,
-        'comment': comment,
-      },
-     );  
-     return response.statusCode == 200;
+  Future<int?> reportReview(Review review, String category, String comment) async {
+     Response response;
+     dio.options.validateStatus = (status) {
+      // Permitir el código de estado 400 como respuesta exitosa
+      return status! < 404;
+  };
+     try {
+        final id = User.id;
+        if (comment == '' || comment == null) comment = "L'usuari amb id: $id, no ha deixat cap comentari";
+        final response = await dio.post(
+          reviewApi.getReportReviewUrl(review.idReview),
+          data: {
+            'type': category,
+            'comment': comment,
+          },
+        );  
+      return response.statusCode;
+      } catch (e) {
+        print(e);
+        return null;
+     }
+     
   }
 
   bool iMadeReviewForEvent(List<Review> reviews, String username) {
@@ -99,6 +123,7 @@ class ReviewController{
     }
     return Review(-1, -1, "", "0", 1, "");
   }
+  
 
   void toReviewsAgain(Event event) {
     print('recarrga de les valoracions');

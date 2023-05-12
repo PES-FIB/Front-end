@@ -16,6 +16,6 @@ static String getLogoutUrl() {return _logOutUrl;}
 static String getshowMe() {return _showMeUrl;}
 static String getupdateUser() {return _updateUserurl;}
 static String getupdatePassword() {return _updateUserPassword;}
-static String getsingleUserUrl(int userId) {return _singleUserUrl.replaceAll(':id', userId.toString());}
+static String getsingleUserUrl(String userId) {return _singleUserUrl.replaceAll(':id', userId);}
 
 }
