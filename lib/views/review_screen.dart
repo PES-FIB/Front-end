@@ -26,7 +26,6 @@ class _ReviewPageState extends State<ReviewPage> {
     final _reviewController = ReviewController(context);
     _reviewController.getReviews(widget.event.code).then((value) => setState(() {
       reviews = value;
-      print(reviews);
     })
     );
     

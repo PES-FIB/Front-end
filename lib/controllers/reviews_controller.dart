@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'dioController.dart';
+import '../models/AppEvents.dart';
 import '../models/Review.dart';
 import '../models/User.dart';
 import '../models/Event.dart';
@@ -31,7 +31,6 @@ class ReviewController{
       //final userresp = await dio.get(userApis.getsingleUserUrl(user.toString()));
       reviews.add(Review(review['UserId'], review['id'], null , idActivity, review['score'], review['comment']));
     }
-    print("agafades les reviews :)");
     return reviews;
   }
 
