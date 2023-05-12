@@ -98,10 +98,16 @@ class _PerfilState extends State<Perfil> {
                 Text(User.email),
               const Divider(),
               const SizedBox(height: 20),
-              ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){}),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){}),
               ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
               ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
               ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})
+                  ],
+                ),
+              )
 
 
             ],
