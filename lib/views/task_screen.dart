@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/taskController.dart';
 import 'styles/custom_snackbar.dart';
-import '../models/AppEvents.dart';
 import '../models/Task.dart';
 
 class taskScreen extends StatefulWidget {
