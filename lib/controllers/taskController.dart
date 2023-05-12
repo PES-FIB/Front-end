@@ -166,28 +166,27 @@ class taskController {
     }
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
-        print ('r.data = ${r.data['data'][0]}');
-        for (int i = 0; i < r.data['data'].length; ++i) {
-          String name = r.data['data'][i]['name'];
+        print ('r.data 1 tasca = ${r.data['data'].length}');
+          String name = r.data['data']['name'];
 
           String description;
-          if (r.data['data'][i]['description'] != null) {
-            description = r.data['data'][i]['description'];
+          if (r.data['data']['description'] != null) {
+            description = r.data['data']['description'];
           } else {
             description = '';
           }
 
-          String initialDate = r.data['data'][i]['initial_date'];
+          String initialDate = r.data['data']['initial_date'];
 
-          String finalDate = r.data['data'][i]['final_date'];
+          String finalDate = r.data['data']['final_date'];
 
-          int id = r.data['data'][i]['id'];
+          int id = r.data['data']['id'];
 
-          int code = r.data['data'][i]['code'];
+          int code = r.data['data']['code'];
 
           String repeats;
-          if (r.data['data'][i]['repeats'] != null) {
-            repeats = r.data['data'][i]['repeats'];
+          if (r.data['data']['repeats'] != null) {
+            repeats = r.data['data']['repeats'];
           } else {
             repeats = '';
           }
@@ -195,7 +194,6 @@ class taskController {
           Task t = Task(
               id, code, name, description, initialDate, finalDate, repeats);
           ltask.add(t);
-        }
       }
     }
     return ltask;
