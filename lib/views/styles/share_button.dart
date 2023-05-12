@@ -12,6 +12,10 @@ Widget ShareButton(Event event,String url) {
   }
   else {
     return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
+        elevation: MaterialStateProperty.all<double>(0),
+      ),
       onPressed: () {
         String eUrl = event.url;
         String eTitle = event.title;

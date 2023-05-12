@@ -8,8 +8,8 @@ static String userReviewsUrl = 'http://nattech.fib.upc.edu:40331/api/v1/reviews/
 
 static String getReviewsUrl(String eventId) {return getAllReviewsUrl.replaceAll(':eventId', eventId);}
 static String getCreateReviewUrl(String eventId) {return createReviewUrl.replaceAll(':eventId', eventId);}
-static String getDeleteReviewUrl(String eventId) {return deleteReview.replaceAll(':reviewId', eventId);}
-static String getUpdateReviewUrl(String eventId) {return updateReview.replaceAll(':reviewId', eventId);}
+static String getDeleteReviewUrl(String eventId) {return deleteReview.replaceAll(':EventId', eventId);}
+static String getUpdateReviewUrl(String eventId) {return updateReview.replaceAll(':EventId', eventId);}
 static String getReportReviewUrl(int reviewId) {return reportReview.replaceAll(':reviewId', reviewId.toString());}
 static String getUserReviewsUrl() {return userReviewsUrl;}
 

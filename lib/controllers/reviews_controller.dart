@@ -31,7 +31,6 @@ class ReviewController{
       //final userresp = await dio.get(userApis.getsingleUserUrl(user.toString()));
       reviews.add(Review(review['UserId'], review['id'], null , idActivity, review['score'], review['comment']));
     }
-    print("agafades les reviews :)");
     return reviews;
   }
 
