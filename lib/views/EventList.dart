@@ -37,6 +37,8 @@ class _EventListState extends State<EventList> {
   bool rangeSelected = false;
 
   DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now()); 
+  String dataIni = "";
+  String dataFi = "";
   
 
   Future<List<String>> fetchAmbits() async {
@@ -117,13 +119,16 @@ class _EventListState extends State<EventList> {
   String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
   print(queryFinalDate);
 
+  dataIni = initDate[2] + "/" + initDate[1] + "/" + initDate[0]; 
+  dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0]; 
+
   List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
   print(tmpByDateRange.length);
   print(filteredEventsWithoutDataRangeFilter.length);
 
   List<Event> result = [];
   for (Event event in filteredEventsWithoutDataRangeFilter) {
-    if (tmpByDateRange.contains(event)) {
+    if (tmpByDateRange.any((tmpEvent) => tmpEvent.code == event.code)) {
       result.add(event);
     }
   }
@@ -161,10 +166,21 @@ class _EventListState extends State<EventList> {
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
                           ),
-                          child: const Text("per data"),
+                          child: const Text("Dates"),
                           onPressed: () async {
                             final DateTimeRange? dateTimeRange = await showDateRangePicker(
-                              
+                              builder: (context, child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: Colors.redAccent, 
+                                      onPrimary: Colors.white, 
+                                      onSurface: Colors.grey, 
+                                    ),
+                                   ),
+                                  child: child!,
+                                );
+                              },
                               context: context, 
                               firstDate: DateTime(2000), 
                               lastDate: DateTime(3000),
@@ -203,7 +219,7 @@ class _EventListState extends State<EventList> {
                         _isSearchBarVisible = !_isSearchBarVisible;
                       });
                     },
-                    child: Text('Search!'),
+                    child: Text('Busca!'),
                   ),
                   SizedBox(height: 70),
                  ]
@@ -218,7 +234,7 @@ class _EventListState extends State<EventList> {
                       child: Row(
                       children: [
                         Text(" rang seleccionat:", textAlign: TextAlign.center,),
-                        Text(" " + selectedDates.start.toString().substring(0, 10) + " - " + selectedDates.end.toString().substring(0, 10) + "   ",),
+                        Text(" " + dataIni + " - " + dataFi + "   ",),
                         ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.grey), 
