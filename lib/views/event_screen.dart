@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../views/review_screen.dart';
 import 'styles/share_button.dart';
 
 class Events extends StatefulWidget {
@@ -17,8 +18,6 @@ class Events extends StatefulWidget {
   
 class _EventsState extends State<Events> { 
 
-  
-  
   @override
   Widget build(BuildContext context) {
 
@@ -65,6 +64,7 @@ class _EventsState extends State<Events> {
       default:
         month = "";
     }
+
 
     return  Scaffold(
     
@@ -285,13 +285,29 @@ class _EventsState extends State<Events> {
                         ],
                       ),
                     ),
-
-                    SizedBox(height: 50.0),
+                    SizedBox(height: 10.0),
+                  //boton para ir a la pagina de valoraciones
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                        ),
+                      ),
+                      child: Text("Valoracions"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ReviewPage(widget.event)),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 30.0),
                   ],
               ),
             ],
                   ),
           ),
+          
         ),
         //boton de compartir
     );

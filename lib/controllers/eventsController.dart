@@ -41,19 +41,17 @@ class EventsController {
           } else {
             description = response.data['data'][i]['description'];
           }
-          
           String image;
           if (response.data['data'][i]['images'].isEmpty) {
             image = "";
           } else {
             image = response.data['data'][i]['images'][0];
           }
-
           String url;
           if (response.data['data'][i]['url'] == null) {
             url = "";
           } else { url = response.data['data'][i]['url']; }
-
+          
           String initD;
           if (response.data['data'][i]['initial_date'] == null) {
             initD = "";
@@ -67,21 +65,21 @@ class EventsController {
           } else {
             finalD = response.data['data'][i]['final_date'];
           }
-
+          
           String schedule;
           if (response.data['data'][i]['schedule'] == null) {
             schedule = "";
           } else {
             schedule = response.data['data'][i]['schedule'];
           }
-
+         
           String city;
           if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
               city = "";
           } else {
             city = response.data['data'][i]['region'][2];
           }
-
+           
           String adress;
           if (response.data['data'][i]['address'] == null) {
             adress = "";
@@ -129,6 +127,7 @@ class EventsController {
             longitude,
             ambits,
           );
+          
           allEvents.add(event);
           }
           
