@@ -66,7 +66,7 @@ class _PerfilState extends State<Perfil> {
                             tooltip: 'Configuració',
                             style: IconButton.styleFrom(shape: CircleBorder()),
                             onPressed: () async {
-                              final result = await Navigator.of(context,
+                              await Navigator.of(context,
                                       rootNavigator: true)
                                   .push(
                                 MaterialPageRoute(

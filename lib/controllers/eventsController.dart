@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import 'dart:async';
-import 'dart:convert';
 import '../models/AppEvents.dart';
 import '../models/Event.dart';
 import 'dioController.dart';
@@ -314,7 +312,7 @@ static Future<Event> getEventByCode(String code) async {
     Event emptyEvent = Event("", "", "", "", "", "", "", "", "", "", "", "", "", []);
     try {
       //auth login for getting autorization
-      final authLogin = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', data: {'email':'cbum@gmail.com', 'password':'cbumpostman'});
+     await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', data: {'email':'cbum@gmail.com', 'password':'cbumpostman'});
       //checking if event is saved
       final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/$code');
       if(response.statusCode == 200) {
@@ -572,7 +570,7 @@ static Future<Event> getEventByCode(String code) async {
    static Future<String> existsSavedEvent(String codeEvent) async {
     try {
       //auth login for getting autorization
-      final authLogin = await dio.post(
+      await dio.post(
           'http://nattech.fib.upc.edu:40331/api/v1/auth/login',
           data: {'email': 'cbum@gmail.com', 'password': 'cbumpostman'});
       //checking if event is saved

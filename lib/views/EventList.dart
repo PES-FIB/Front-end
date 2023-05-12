@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:prova_login/views/main_screen.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/ambitsController.dart';
@@ -160,7 +159,7 @@ class _EventListState extends State<EventList> {
                       
                         ElevatedButton(
                           onPressed: () async {
-                            final result = await showDialog(
+                            await showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(

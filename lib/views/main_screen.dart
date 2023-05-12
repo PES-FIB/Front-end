@@ -6,8 +6,6 @@ import 'map_screen.dart';
 import 'favorites_screen.dart';
 import 'perfil_screen.dart';
 import '../models/Event.dart';
-import '../controllers/eventsController.dart';
-import '../models/AppEvents.dart';
 
 class MainScreen extends StatefulWidget {
   @override

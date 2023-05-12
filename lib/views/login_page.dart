@@ -1,10 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:prova_login/APIs/userApis.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../controllers/dioController.dart';
 import '../controllers/login_page_controller.dart';
 
 import 'package:flutter_signin_button/flutter_signin_button.dart';

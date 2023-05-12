@@ -1,12 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:icalendar_parser/icalendar_parser.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:prova_login/controllers/eventsController.dart';
 import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';

@@ -24,7 +24,7 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
 
-  final ShareController sharecontroller = ShareController();
+  ShareController();
 
   String month = "";
   String month_number = widget.event.initialDate.substring(5,7);

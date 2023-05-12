@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/taskController.dart';
 import 'package:prova_login/views/createTask_screen.dart';
 import 'package:prova_login/views/task_screen.dart';
 import 'styles/custom_snackbar.dart';
-import 'package:prova_login/views/EventList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
 import '../models/User.dart';
@@ -15,7 +12,6 @@ import '../controllers/eventsController.dart';
 import '../controllers/userController.dart';
 import '../models/AppEvents.dart';
 import '../models/Task.dart';
-import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Favorites extends StatefulWidget {

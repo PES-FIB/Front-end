@@ -8,7 +8,7 @@ class FilterController {
 
   Future<List<String>> getFilters() async {
     
-    final http.Response response = await
+    await
     http.post(
       Uri.parse(AmbitsApis.getAllAmbitsUrl()),
       headers: <String, String>{
