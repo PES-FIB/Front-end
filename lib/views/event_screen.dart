@@ -21,7 +21,6 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
 
-
   String month = "";
   String month_number = widget.event.initialDate.substring(5,7);
   switch (month_number) {
@@ -67,24 +66,22 @@ class _EventsState extends State<Events> {
 
 
     return  Scaffold(
-    
+
         //body
         body: Container(
-          margin: EdgeInsets.all(16.0),
+          //margin: EdgeInsets.all(16.0),
           padding: EdgeInsets.all(16.0),
         
           child: SingleChildScrollView(
             child: Column( //main column
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row( // date, title
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 40,),
+                IconButton(
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),
                       onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
                     ), 
-                    SizedBox(width: 16.0),
+                Row( // date, title
+                  children: [                
                     Expanded(
                       flex: 1,
                       child: Column(
@@ -118,7 +115,7 @@ class _EventsState extends State<Events> {
                           Text(
                             widget.event.title,
                             style: TextStyle(
-                              fontSize: 35.0,
+                              fontSize:30.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -148,7 +145,6 @@ class _EventsState extends State<Events> {
                     SizedBox(height: 15.0),
               
                     Container( //conainer info
-                      margin: EdgeInsets.all(8.0),
                       padding: EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 228, 228, 228),
@@ -288,12 +284,19 @@ class _EventsState extends State<Events> {
                     SizedBox(height: 10.0),
                   //boton para ir a la pagina de valoraciones
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
+                     style: ButtonStyle(
+                      
+                      backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 228, 228, 228)), 
+                      elevation: MaterialStateProperty.all<double>(1),
                       ),
-                      child: Text("Valoracions"),
+                      child: Center(
+                        child: Text(
+                          "Valoracions",
+                          style: TextStyle(color: Colors.black), // Change the color here
+                        ),
+                        
+                      ),
+                      
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -301,7 +304,7 @@ class _EventsState extends State<Events> {
                         );
                       },
                     ),
-                    SizedBox(height: 30.0),
+                    SizedBox(height: 10.0),
                   ],
               ),
             ],
