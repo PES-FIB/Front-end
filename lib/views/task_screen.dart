@@ -300,7 +300,7 @@ repeteix = widget.t.repeats;
             ),
             TextButton(
           onPressed: () async{
-            if (task_ini != DateTime.parse(widget.t.initial_date) || task_fi != DateTime.parse(widget.t.final_date) || nameController.text != widget.t.name || descriptionController.text != widget.t.description || (repeteix != widget.t.repeats && repeteix != 'NO' && widget.t.repeats != '')) {
+            if (task_ini != DateTime.parse(widget.t.initial_date) || task_fi != DateTime.parse(widget.t.final_date) || nameController.text != widget.t.name || descriptionController.text != widget.t.description || repeteix != widget.t.repeats) {
               if (task_ini.isAfter(task_fi)) {
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La data inicial no pot ser major a la final'));
               }
@@ -309,7 +309,7 @@ repeteix = widget.t.repeats;
               }
               else {
                 print('nom actualitzat? -> ${nameController.text}');
-              int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix,true);
+              int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix,cascadeUpdate);
                 if (result == -1) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la edició de la tasca'));
                 }
