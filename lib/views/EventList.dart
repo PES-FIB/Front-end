@@ -1,22 +1,20 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:prova_login/views/main_screen.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/ambitsController.dart';
 import '../models/Event.dart';
+import '../models/AppEvents.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 
 class EventList extends StatefulWidget {
-  final List<Event> events;
-  final Map<dynamic, dynamic> savedEvents;
+  //final VoidCallback onNavigate;
   
   const EventList({
     Key? key,
-    required this.events,
-    required this.savedEvents,
+    //required this.onNavigate,
   }) : super(key: key);
 
   @override
@@ -63,17 +61,18 @@ class _EventListState extends State<EventList> {
   void initState() {
     super.initState();
     setState(() {
-      filteredEvents.addAll(widget.events);
-      filteredEventsWithoutDataRangeFilter.addAll(widget.events);
+      filteredEvents.addAll(AppEvents.eventsList);
+      filteredEventsWithoutDataRangeFilter.addAll(AppEvents.eventsList);
       _foundEvents.addAll(filteredEvents);
       dateRangeEvents.addAll(filteredEvents);
       ambits = fetchAmbits();
+
     });
   } 
 
 
   bool inSaved(String codeEvent){
-    return widget.savedEvents.containsKey(codeEvent);
+    return AppEvents.savedEvents.containsKey(codeEvent);
   }
 
 
@@ -91,7 +90,7 @@ class _EventListState extends State<EventList> {
   }
 
   void pushEventScreen(int clickedEvent) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: widget.events[clickedEvent])));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: AppEvents.eventsList[clickedEvent])));
   }
   
   void clearRangeDateFilter(){
@@ -253,7 +252,7 @@ class _EventListState extends State<EventList> {
                                       if (backgroundColor[index] == Colors.white) {
                                         if (!anyAmbitSelected()) {
                                           filteredEvents.clear();
-                                          filteredEvents.addAll(widget.events);
+                                          filteredEvents.addAll(AppEvents.eventsList);
                                         } else {
                                           filteredEvents.removeWhere((event) => event.ambits.contains(ambit));
                                         }
@@ -335,14 +334,13 @@ class _EventListState extends State<EventList> {
                     icon: Icon(Icons.favorite, color: inSaved(_foundEvents[index].code)? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
                     onPressed: () {
                     setState(() {
-                      EventsController controller = EventsController(context);
                       if (inSaved(_foundEvents[index].code)){
-                        widget.savedEvents.remove(_foundEvents[index].code);
-                        controller.unsaveEvent(_foundEvents[index].code);
+                        EventsController.unsaveEvent(_foundEvents[index].code);
+                        EventsController.unsaveEventLocale(_foundEvents[index]);
                       }//remove
                       else {
-                        widget.savedEvents[_foundEvents[index].code] = _foundEvents[index];
-                        controller.saveEvent(_foundEvents[index].code);
+                        EventsController.saveEvent(_foundEvents[index].code);
+                        EventsController.saveEventLocale(_foundEvents[index]);
                       }//add
                     });
                     },
