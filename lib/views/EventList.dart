@@ -26,7 +26,6 @@ class _EventListState extends State<EventList> {
   
   List<Event> _foundEvents = [];  
   List<Event> filteredEvents = []; 
-  List<Event> dateRangeEvents = [];
   List<Event> filteredEventsWithoutDataRangeFilter= [];
 
 
@@ -35,6 +34,11 @@ class _EventListState extends State<EventList> {
 
   bool _isAmbitsVisible = false;
   bool _isSearchBarVisible = false;
+  bool rangeSelected = false;
+
+  DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now()); 
+  String dataIni = "";
+  String dataFi = "";
   
 
   Future<List<String>> fetchAmbits() async {
@@ -62,7 +66,6 @@ class _EventListState extends State<EventList> {
       filteredEvents.addAll(AppEvents.eventsList);
       filteredEventsWithoutDataRangeFilter.addAll(AppEvents.eventsList);
       _foundEvents.addAll(filteredEvents);
-      dateRangeEvents.addAll(filteredEvents);
       ambits = fetchAmbits();
 
     });
@@ -92,20 +95,52 @@ class _EventListState extends State<EventList> {
   }
   
   void clearRangeDateFilter(){
-    //tornar posar tots aquells events que han estat filtrats per les dates.
-    //fer un set state amb filteredEvents = filteredEventsWithoutDataRangeFilter.
-    //en tot moment filteredEventsWithout es igual a filtered events menys per el datarange. 
     setState(() {
       filteredEvents.clear();
       filteredEvents.addAll(filteredEventsWithoutDataRangeFilter);
     });
   }
 
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) async {
-    if (args is PickerDateRange) {
-      //PickerDateRange range = args.value;
+  void filterByDateRange() async{
+  
+  //year-month-day
+  List<String>  dirtyInitDate = selectedDates.start.toString().split(" ");
+  //[year] [month] [day] 
+  List<String> initDate = dirtyInitDate[0].split("-");
+  //month/day/year
+  String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
+  print(queryInitDate);
+
+  //year-month-day
+  List<String>  dirtyFinalDate = selectedDates.end.toString().split(" ");
+  //[year] [month] [day] 
+  List<String> finalDate = dirtyFinalDate[0].split("-");
+  //month/day/year
+  String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
+  print(queryFinalDate);
+
+  dataIni = initDate[2] + "/" + initDate[1] + "/" + initDate[0]; 
+  dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0]; 
+
+  List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
+  print(tmpByDateRange.length);
+  print(filteredEventsWithoutDataRangeFilter.length);
+
+  List<Event> result = [];
+  for (Event event in filteredEventsWithoutDataRangeFilter) {
+    if (tmpByDateRange.any((tmpEvent) => tmpEvent.code == event.code)) {
+      result.add(event);
     }
   }
+
+  setState(() {
+    filteredEvents.clear();
+    filteredEvents.addAll(result);
+    print(filteredEvents.length);
+    _runSearchFilter(wordSearched);
+  });
+}
+
 
 
   @override
@@ -128,38 +163,37 @@ class _EventListState extends State<EventList> {
                       children: [
                       
                         ElevatedButton(
-                          onPressed: () async {
-                            await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Select Date Range'),
-                                  content: Container(
-                                    width: double.maxFinite,
-                                    height: 300,
-                                    child: SfDateRangePicker(
-                                      view: DateRangePickerView.month,
-                                      selectionMode: DateRangePickerSelectionMode.range,
-                                      showActionButtons: true,
-                                      cancelText: 'CANCEL',
-                                      confirmText: 'OK',  
-                                      onCancel: () {
-                                        Navigator.pop(context);
-                                      },
-                                      //onSubmit: ,
-                                      
-                                    ),
-                                  ),
-                                
-                          
-                                );
-                              },
-                            );
-                          },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
                           ),
-                          child: Text('Date Range'),
+                          child: const Text("Dates"),
+                          onPressed: () async {
+                            final DateTimeRange? dateTimeRange = await showDateRangePicker(
+                              builder: (context, child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: Colors.redAccent, 
+                                      onPrimary: Colors.white, 
+                                      onSurface: Colors.grey, 
+                                    ),
+                                   ),
+                                  child: child!,
+                                );
+                              },
+                              context: context, 
+                              firstDate: DateTime(2000), 
+                              lastDate: DateTime(3000),
+                              initialDateRange: selectedDates,
+                            );
+                            if(dateTimeRange != null) {
+                              setState(() {
+                                selectedDates = dateTimeRange;
+                                filterByDateRange();
+                                rangeSelected = true;
+                              });
+                            }
+                          },
                         ),
                       ],
                   ),
@@ -185,12 +219,40 @@ class _EventListState extends State<EventList> {
                         _isSearchBarVisible = !_isSearchBarVisible;
                       });
                     },
-                    child: Text('Search!'),
+                    child: Text('Busca!'),
                   ),
                   SizedBox(height: 70),
                  ]
                 ),
               ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  children: [
+                    Visibility(
+                      visible: rangeSelected,
+                      child: Row(
+                      children: [
+                        Text(" rang seleccionat:", textAlign: TextAlign.center,),
+                        Text(" " + dataIni + " - " + dataFi + "   ",),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.grey), 
+                          ),
+                        onPressed: () {
+                          setState(() {
+                            rangeSelected = false;
+                            selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+                            clearRangeDateFilter();
+                          });
+                        },
+                        child: Text('borrar filtre'),
+                      ),
+                      ],
+                    ))
+                  ],
+                ),
+              )
             ],
           ),
           

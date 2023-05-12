@@ -498,7 +498,7 @@ static Future<Event> getEventByCode(String code) async {
           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
 
 
-           String latitude;
+          String latitude;
           if (response.data['data'][i]['latitude'] == null) {
             latitude = "";
           } else {
@@ -513,8 +513,7 @@ static Future<Event> getEventByCode(String code) async {
           } else {
             longitude = response.data['data'][i]['longitude'];
           }
-
-          
+ 
 
           Event event = Event(
             response.data['data'][i]['code'],
@@ -634,4 +633,128 @@ static Future<Event> getEventByCode(String code) async {
   static void ShareAction(String message) {
     Share.share(message);
   }
+
+  static Future<List<Event>> getEventsByDateRange(String initDate, String finalDate) async{
+    try {
+      List<Event> eventsByDataRange = [];
+    
+      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$initDate&final_date=$finalDate');
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        if(response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+        
+          String denomination;
+          if(response.data['data'][i]['denomination'] == null) {
+            denomination = '';
+          } else {denomination = response.data['data'][i]['denomination'];}
+
+          String description;
+          if (response.data['data'][i]['description'] == null) {description = '';}
+          else {description = response.data['data'][i]['description']; }
+
+          //images can be empty 
+          String image;
+          if (response.data['data'][i]['images'].isEmpty) {
+            image = "";
+          } else {
+            image = response.data['data'][i]['images'][0];
+          }
+
+          //url can be null 
+          String url;
+          if (response.data['data'][i]['url'] == null) {
+            url = "";
+          } else { url = response.data['data'][i]['url']; }
+
+          String initD;
+          if (response.data['data'][i]['initial_date'] == null) {
+            initD = "";
+          } else {
+            initD = response.data['data'][i]['initial_date'];
+          }
+          
+          String finalD;
+          if (response.data['data'][i]['final_date'] == null) {
+            finalD = "";
+          } else {
+            finalD = response.data['data'][i]['final_date'];
+          }
+
+          String schedule;
+          if (response.data['data'][i]['schedule'] == null) {
+            schedule = "";
+          } else {
+            schedule = response.data['data'][i]['schedule'];
+          }
+
+          String city;
+          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+              city = "";
+          } else {
+            city = response.data['data'][i]['region'][2];
+          }
+
+          String adress;
+          if (response.data['data'][i]['address'] == null) {
+            adress = "";
+          } else {
+            adress = response.data['data'][i]['address'];
+          }
+          
+          String tickets;
+          if (response.data['data'][i]['tickets'] == null) {
+            tickets = "";
+          } else {
+            tickets = response.data['data'][i]['tickets'];
+          }
+
+          List<dynamic> ambits = [];
+          if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+
+          String latitude;
+          if (response.data['data'][i]['latitude'] == null) {
+            latitude = "";
+          } else {
+            latitude = response.data['data'][i]['latitude'];
+          }
+
+        String longitude;
+          if (response.data['data'][i]['longitude'] == null) {
+            longitude = "";
+          } else {
+            longitude = response.data['data'][i]['longitude'];
+          }
+
+          Event event = Event(
+            response.data['data'][i]['code'],
+            denomination,
+            description,
+            image,
+            url,
+            initD,
+            finalD,
+            schedule,
+            city,
+            adress,
+            tickets,
+            latitude,
+            longitude,
+            ambits
+          );
+          eventsByDataRange.add(event);
+           }
+          return eventsByDataRange;
+        }
+      }
+      return [];
+    } catch (error){
+      print(error.toString());
+      return [];
+    }
+  }
 }
+
+
+
+
