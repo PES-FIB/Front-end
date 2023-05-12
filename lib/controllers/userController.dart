@@ -1,21 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:icalendar_parser/icalendar_parser.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:prova_login/controllers/eventsController.dart';
 import 'package:prova_login/models/AppEvents.dart';
 import '../models/User.dart';
-import 'dioController.dart';
 import '../APIs/userApis.dart';
 import 'package:permission_handler/permission_handler.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:prova_login/controllers/taskController.dart';
+import '../views/main_screen.dart';
+import '../views/create_account.dart';
+import '../views/styles/custom_snackbar.dart';
 import 'dart:async';
+import 'package:webview_flutter/webview_flutter.dart';
+
 
 class userController {
   final BuildContext context;
@@ -30,8 +27,7 @@ class userController {
         'name': name,
         'password': password,
       });
-    } on DioError catch (e) {
-      print(e.message);
+    } on DioError {
       return -1;
     }
     AppEvents.eventsList = await EventsController.getAllEvents();
@@ -43,11 +39,9 @@ class userController {
     Response response;
     try {
       response = await dio.get(userApis.getLogoutUrl());
-    } on DioError catch (e) {
-      print(e.message);
+    } on DioError {
       return -1;
     }
-    print(response.statusCode);
     AppEvents.eventsList = [];
     AppEvents.savedEvents = {};
     AppEvents.savedEventsCalendar = {};
@@ -59,11 +53,9 @@ class userController {
     Response response;
     try {
       response = await dio.get(userApis.getshowMe());
-    } on DioError catch (e) {
-      print(e.message);
+    } on DioError {
       return;
     }
-    print(response.data['user']);
     User.setValues(response.data['user']['id'], response.data['user']['name'],
         response.data['user']['email'], response.data['image']);
   }
@@ -84,11 +76,9 @@ class userController {
 
   static Future<bool> checkStoragePermission() async {
     PermissionStatus status = await Permission.storage.status;
-    print('permission status = $status');
     if (status.isGranted) {
       return true;
     } else if (status.isDenied) {
-      print('entrodenied');
       return await requestStoragePermission();
     } else {
       return false;
@@ -97,7 +87,6 @@ class userController {
 
   static Future<bool> requestStoragePermission() async {
     PermissionStatus status = await Permission.storage.request();
-    print('entroo4235235');
     if (status.isGranted) {
       return true;
     } else {
@@ -112,14 +101,12 @@ class userController {
   }
   try {
     final directory = Directory("/storage/emulated/0/Download");
-    print('el directori es = $directory');
     final file = File('${directory.path}/$fileName');
     dio.options.headers['Content-Type'] = 'application/octet-stream';
     dio.options.responseType = ResponseType.bytes;
     Response response = await dio.get(userApis.getExportCalendar());
     file.writeAsBytesSync(response.data);
   } catch (e) {
-    print(e);
     return -1;
   }
   return 1;
@@ -155,6 +142,93 @@ class userController {
     }
     else {
       return false;
+    }
+  }
+
+  static Future<int> loginUser(String email, String password) async {
+    final response = await dio.post(userApis.getLoginUrl(),   
+    data: {
+      'email': email,
+      'password': password,
+    }
+    ); 
+    await userController.getUserInfo();
+    return response.statusCode!;
+  }
+
+  static Future<void> realize_login(context) async { 
+    try {
+      AppEvents.eventsList = await EventsController.getAllEvents();
+      await EventsController.getSavedEvents();
+      await taskController.getAllTasks();
+    } catch (e) {
+      return;
+    }
+    finally {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
+    );
+    }
+  }
+
+  static void to_signUp(context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateAccount()),
+    );
+    }
+
+    
+   static Future<void> googleLogin(context) async {
+    String finalUrl = "";
+
+    final redirect = await dio.post(
+      userApis.getSignInGoogle(),
+    );
+    String initialUrl = '';
+    //si la llamada es una redireccion
+    if (redirect.statusCode == 302) {
+      initialUrl = redirect.headers.value(HttpHeaders.locationHeader)!;
+    }
+    if (initialUrl != '') {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => WebView(
+            initialUrl: initialUrl,
+            javascriptMode: JavascriptMode.unrestricted,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 OPR/80.0.4170.16 (Edition beta) JavaScriptEnabled',
+            onPageStarted: (String url) async {
+              if (url.startsWith(userApis.getSignInGoogleCollback())) {
+                finalUrl = url;
+                if(Navigator.canPop(context)) Navigator.pop(context); 
+              }
+            },
+          ),
+        ),
+      );
+      try {
+        await dio.get(
+          finalUrl,
+          options: Options (
+            validateStatus: (_) => true,
+            contentType: Headers.jsonContentType,
+            responseType:ResponseType.json,
+          ),
+        );
+        //logejar a l'usuari dins de l'aplicació
+        await userController.getUserInfo();
+        //missatge de success
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar( context, 'Login de Google realizado correctamente')
+        );
+        realize_login(context);
+      } catch (e){
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar( context, 'Se ha producido un error: $e')
+        );
+      }
+
     }
   }
 }

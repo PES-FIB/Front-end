@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/taskController.dart';
 import 'package:prova_login/views/createTask_screen.dart';
 import 'package:prova_login/views/task_screen.dart';
 import 'styles/custom_snackbar.dart';
-import 'package:prova_login/views/EventList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
 import '../models/User.dart';
@@ -15,7 +12,6 @@ import '../controllers/eventsController.dart';
 import '../controllers/userController.dart';
 import '../models/AppEvents.dart';
 import '../models/Task.dart';
-import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Favorites extends StatefulWidget {
@@ -55,13 +51,10 @@ class _FavoritesState extends State<Favorites> {
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
-      print(
-          'ho conte?? -> ${AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))}');
       if (AppEvents.savedEventsCalendar
           .containsKey(DateUtils.dateOnly(today))) {
         savedEventsList =
             AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
-        print('tamany de la llista = ${savedEventsList.length}');
       } else {
         savedEventsList = [];
       }
@@ -69,7 +62,6 @@ class _FavoritesState extends State<Favorites> {
           .containsKey(DateUtils.dateOnly(today))) {
         savedTasksList =
             AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
-        print('tamany de la llista = ${savedEventsList.length}');
       } else {
         savedTasksList = [];
       }
@@ -79,12 +71,10 @@ class _FavoritesState extends State<Favorites> {
   @override
   void initState() {
     super.initState();
-    print('LLista inicial, map = ${AppEvents.savedEventsCalendar}');
     if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
           AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
     }
-    print('tamany de la llista = ${savedEventsList.length}');
     if (AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedTasksList =
           AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
@@ -144,8 +134,6 @@ class _FavoritesState extends State<Favorites> {
                               icon: Icon(LineAwesomeIcons.download,
                                   color: Colors.redAccent),
                               onPressed: () async {
-                                print(
-                                    'nom = ${User.name.substring(0, User.name.indexOf(' '))}');
                                 int downloadResult =
                                     await userController.exportCalendar(
                                         '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics');

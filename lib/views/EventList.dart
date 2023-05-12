@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:prova_login/views/main_screen.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
-import '../controllers/ambitsController.dart';
 import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -40,7 +38,7 @@ class _EventListState extends State<EventList> {
   
 
   Future<List<String>> fetchAmbits() async {
-    List<String> result = await AmbitsController.getAllAmbits();
+    List<String> result = await EventsController.getAllAmbits();
     setState(() {
       backgroundColor.addAll(List.generate(result.length, (_) => Colors.white)); 
     });
@@ -105,37 +103,8 @@ class _EventListState extends State<EventList> {
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) async {
     if (args is PickerDateRange) {
-      PickerDateRange range = args.value;
-      print(range.startDate);
-       print(range.endDate);
+      //PickerDateRange range = args.value;
     }
-    print("no entra");
-
-/*
-    //year-month-day
-    List<String>  dirtyInitDate = range.startDate .value.startDate.toString().split(" ");
-    //[year] [month] [day] 
-    List<String> initDate = dirtyInitDate[0].split("-");
-    //month/day/year
-    String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
-    print(queryInitDate);
-
-    //year-month-day
-    List<String>  dirtyFinalDate = args.value.endDate.toString().split(" ");
-    //[year] [month] [day] 
-    List<String> finalDate = dirtyInitDate[0].split("-");
-    //month/day/year
-    String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
-    print(queryFinalDate);
-
-    List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
-    print(tmpByDateRange.length);
-
-    setState(() {
-      dateRangeEvents.clear();
-      dateRangeEvents.addAll(tmpByDateRange);
-      filteredEvents.retainWhere((element) => tmpByDateRange.contains(element));
-    });*/
   }
 
 
@@ -160,7 +129,7 @@ class _EventListState extends State<EventList> {
                       
                         ElevatedButton(
                           onPressed: () async {
-                            final result = await showDialog(
+                            await showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(

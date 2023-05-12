@@ -41,7 +41,9 @@ class _PerfilState extends State<Perfil> {
                             try {
                               response = await userController.logOut();
                             } catch (e) {
-                              print(e);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackbar(context,
+                                        'No s\'ha pogut tancar sessió'));
                             } finally {
                               if (response == 200) {
                                 Navigator.of(context, rootNavigator: true)
@@ -50,7 +52,7 @@ class _PerfilState extends State<Perfil> {
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     customSnackbar(context,
-                                        'Usuario i/o contraseña incorrectos'));
+                                        'No s\'ha pogut tancar sessió'));
                               }
                             }
                           },
@@ -66,7 +68,7 @@ class _PerfilState extends State<Perfil> {
                             tooltip: 'Configuració',
                             style: IconButton.styleFrom(shape: CircleBorder()),
                             onPressed: () async {
-                              final result = await Navigator.of(context,
+                              await Navigator.of(context,
                                       rootNavigator: true)
                                   .push(
                                 MaterialPageRoute(

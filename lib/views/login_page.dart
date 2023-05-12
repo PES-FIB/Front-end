@@ -1,14 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:prova_login/APIs/userApis.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../controllers/dioController.dart';
-import '../controllers/login_page_controller.dart';
-
+import '../controllers/userController.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-
 import 'styles/custom_snackbar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,8 +21,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final LoginPageController loginPageController =
-        LoginPageController(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -75,10 +68,10 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                                 try {
                                   //llamo a la funcion de login
-                                  int statusCode = await loginPageController
+                                  int statusCode = await userController
                                       .loginUser(email, password);
                                   if (statusCode == 200) {
-                                    loginPageController.realize_login();
+                                    userController.realize_login(context);
                                   } else {
                                     setState(() {
                                       login = false;
@@ -88,7 +81,6 @@ class _LoginPageState extends State<LoginPage> {
                                             'Usuario i/o contraseña incorrectos'));
                                   }
                                 } catch (error) {
-                                  print(error);
                                   setState(() {
                                     login = false;
                                   });
@@ -112,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text('Crear una nueva cuenta',
                                   style: TextStyle(color: Colors.redAccent)),
                               onPressed: () async {
-                                loginPageController.to_signUp();
+                                userController.to_signUp(context);
                               },
                             ),
                             //espacio para el boton de google
@@ -121,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                             SignInButton(
                               Buttons.Google,
                               onPressed: ()  async {
-                                await loginPageController.googleLogin();
+                                await userController.googleLogin(context);
                               },
                             ),
                           ],

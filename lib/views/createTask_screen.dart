@@ -1,20 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/taskController.dart';
 import 'styles/custom_snackbar.dart';
-import 'package:prova_login/views/EventList.dart';
-import 'package:table_calendar/table_calendar.dart';
-import '../models/Event.dart';
-import '../models/User.dart';
-import 'event_screen.dart';
-import '../controllers/eventsController.dart';
-import '../controllers/userController.dart';
-import '../models/AppEvents.dart';
-import '../models/Task.dart';
-import 'package:icalendar_parser/icalendar_parser.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 class createTask extends StatefulWidget {
   const createTask({super.key, required this.selectedDate});
@@ -160,7 +148,7 @@ class _createTaskState extends State<createTask> {
                 if (task_ini.isAfter(task_fi)) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La data inicial no pot ser major a la final'));
                 }
-                else if (nameController.text == null || nameController.text.isEmpty) {
+                else if (nameController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
                 }
                 else {
@@ -169,7 +157,6 @@ class _createTaskState extends State<createTask> {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la creació de la tasca'));
                   }
                   else {
-                    print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
                     Navigator.of(context).pop();
                   }
                 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:prova_login/views/styles/custom_snackbar.dart';
 import 'main_screen.dart';
@@ -166,7 +165,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                           setState(() {
                           createAccount = true;
                         });
-                          print('error');
                           ScaffoldMessenger.of(context).showSnackBar(
                                         customSnackbar(context,
                                             'Usuario i/o contraseña incorrectos'));

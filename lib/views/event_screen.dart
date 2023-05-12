@@ -4,8 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../controllers/share_controller.dart';
 import 'styles/share_button.dart';
 
 class Events extends StatefulWidget {
@@ -24,7 +22,6 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
 
-  final ShareController sharecontroller = ShareController();
 
   String month = "";
   String month_number = widget.event.initialDate.substring(5,7);
@@ -269,7 +266,6 @@ class _EventsState extends State<Events> {
                                       if (urllaunchable) {
                                         await launchUrl(url);
                                       } else {
-                                        print("URL can't be launched");
                                       }
                                     }
                                   ),
@@ -291,24 +287,11 @@ class _EventsState extends State<Events> {
                     ),
 
                     SizedBox(height: 50.0),
-                    /*
-                    IconButton(
-                      iconSize: 30,
-                      icon: Icon(Icons.favorite, color: widget.event.fav ? Colors.redAccent: Color.fromARGB(255, 182, 179, 179),),
-                      onPressed: () {
-                        setState(() {  
-                          //widget.event.fav = !widget.event.fav;
-                        });
-                      },
-                    ),
-              */
                   ],
               ),
-              
             ],
                   ),
           ),
-          
         ),
         //boton de compartir
     );
