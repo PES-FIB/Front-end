@@ -77,9 +77,9 @@ class _EventsState extends State<Events> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),
-                      onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
-                    ), 
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),
+                  onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
+                ), 
                 Row( // date, title
                   children: [                
                     Expanded(
@@ -298,9 +298,13 @@ class _EventsState extends State<Events> {
                       ),
                       
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ReviewPage(widget.event)),
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              child: ReviewPage(widget.event),
+                            );
+                          },
                         );
                       },
                     ),
