@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'dioController.dart';
+import '../models/AppEvents.dart';
 import '../models/Review.dart';
 import '../models/User.dart';
 import '../models/Event.dart';
