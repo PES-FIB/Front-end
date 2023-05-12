@@ -91,6 +91,7 @@ class _EventListState extends State<EventList> {
   }
 
   void pushEventScreen(int clickedEvent) async {
+
   await showDialog(
     context: context,
     builder: (context) {
@@ -100,6 +101,7 @@ class _EventListState extends State<EventList> {
     },
   );
 }
+
   
   void clearRangeDateFilter(){
     setState(() {
