@@ -144,7 +144,6 @@ class EventsController {
   }
 
   static Future<void> getSavedEvents() async {
-    print('stacktrace de getEvents = ${StackTrace.current.toString()}');
     try {
       //request current user saved events
       final response = await dio
@@ -154,9 +153,8 @@ class EventsController {
        print('estatus del get saved Events = ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        print('estan plens els events? ${response.data['events'].length}');
+        print('estan plens els events? ${response.data['events'][0]['latitude']}');
         if (response.data['events'] != null) {
-
           for (int i = 0; i < response.data['events'].length; ++i) {
             //response is already decoded.
             String image;
@@ -165,7 +163,7 @@ class EventsController {
             } else {
               image = response.data['events'][i]['images'][0];
             }
-
+            
             String url;
             if (response.data['events'][i]['url'] == null) {
               url = "";
@@ -186,7 +184,7 @@ class EventsController {
             } else {
               finalD = response.data['events'][i]['final_date'];
             }
-
+            
             String schedule;
             if (response.data['events'][i]['schedule'] == null) {
               schedule = "";
@@ -208,30 +206,24 @@ class EventsController {
             } else {
               adress = response.data['events'][i]['adress'];
             }
-
+            
             String tickets;
             if (response.data['events'][i]['tickets'] == null) {
               tickets = "";
             } else {
               tickets = response.data['events'][i]['tickets'];
             }
-
-            String latitude;
-          if (response.data['data'][i]['latitude'] == null) {
-            latitude = "";
-          } else {
-            latitude = response.data['data'][i]['latitude'];
+            String latitude = "";
+          if (response.data['events'][i]['latitude'] != null) {
+            latitude = response.data['events'][i]['latitude'];
           }
-
-          String longitude;
-          if (response.data['data'][i]['longitude'] == null) {
-            longitude = "";
-          } else {
-            longitude = response.data['data'][i]['longitude'];
+          String longitude ="";
+          if (response.data['events'][i]['longitude'] != null) {
+            longitude = response.data['events'][i]['longitude'];
           }
 
           List<dynamic> ambits = [];
-           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+           if(response.data['events'][i]['ambits'] != null) ambits.addAll(response.data['events'][i]['ambits']);
           
             Event event = Event(
                 response.data['events'][i]['code'],
@@ -248,12 +240,13 @@ class EventsController {
                 latitude,
                 longitude,
                 ambits);
-            
+            print('entro abans de guardar el event');
             saveEventLocale(event);
           }
         }
       }
     } catch (error) {
+      print(error);
       return; // return an empty list if there was an error
     }
   }
