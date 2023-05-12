@@ -91,7 +91,7 @@ class _EventListState extends State<EventList> {
   }
 
   void pushEventScreen(int clickedEvent) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: AppEvents.eventsList[clickedEvent])));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => Events(event: _foundEvents[clickedEvent])));
   }
   
   void clearRangeDateFilter(){
