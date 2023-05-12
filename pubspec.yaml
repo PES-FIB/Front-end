@@ -24,6 +24,7 @@ dependencies:
   path_provider: ^2.0.14
   permission_handler: ^10.2.0
   provider: ^6.0.0
+  syncfusion_flutter_datepicker: ^19.2.57
   share_plus: ^6.3.2
   table_calendar: ^3.0.9
   url_launcher: ^6.0.17
