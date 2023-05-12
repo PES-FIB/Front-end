@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -13,16 +12,14 @@ class EventsController {
 
   static Future<List<Event>> getAllEvents() async {
     List<Event> allEvents = []; //initialize empty event list.
-
     try {
       //request events
       final response =
           await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events');
-       
+      
       if (response.statusCode == 200) {   
         if(response.data['data'] != null) {
           for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-        
           String code;
           if (response.data['data'][i]['code']== null) {
             code = "";
@@ -43,7 +40,7 @@ class EventsController {
           } else {
             description = response.data['data'][i]['description'];
           }
-
+          
           String image;
           if (response.data['data'][i]['images'].isEmpty) {
             image = "";
@@ -98,12 +95,6 @@ class EventsController {
             tickets = response.data['data'][i]['tickets'];
           }
 
-          List<dynamic> ambits = [];
-          if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
-
-          Event event = Event(
-            response.data['data'][i]['code'],
-
           String latitude;
           if (response.data['data'][i]['latitude'] == null) {
             latitude = "";
@@ -117,6 +108,9 @@ class EventsController {
           } else {
             longitude = response.data['data'][i]['longitude'];
           }
+          List<dynamic> ambits = [];
+           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+          
 
           Event event = Event(
             code,
@@ -148,7 +142,6 @@ class EventsController {
     }
   }
 
-
   static Future<void> getSavedEvents() async {
     print('stacktrace de getEvents = ${StackTrace.current.toString()}');
     try {
@@ -157,9 +150,10 @@ class EventsController {
           .get('http://nattech.fib.upc.edu:40331/api/v1/users/savedEvents');
 
       //cheking events response
-      print(response.statusCode);
+       print('estatus del get saved Events = ${response.statusCode}');
 
       if (response.statusCode == 200) {
+        print('estan plens els events? ${response.data['events'].length}');
         if (response.data['events'] != null) {
 
           for (int i = 0; i < response.data['events'].length; ++i) {
@@ -235,6 +229,9 @@ class EventsController {
             longitude = response.data['data'][i]['longitude'];
           }
 
+          List<dynamic> ambits = [];
+           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+          
             Event event = Event(
                 response.data['events'][i]['code'],
                 response.data['events'][i]['denomination'],
@@ -249,7 +246,7 @@ class EventsController {
                 tickets,
                 latitude,
                 longitude,
-                ambits,);
+                ambits);
             
             saveEventLocale(event);
           }
@@ -261,6 +258,7 @@ class EventsController {
   }
 
   static void saveEventLocale(Event e) {
+    print('entro a guardar event locale');
     AppEvents.savedEvents[e.code] = e;
     if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(DateTime.parse(e.initialDate)))) {
       AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(e.initialDate)))]?.add(e);
@@ -313,7 +311,7 @@ class EventsController {
   }
 
 static Future<Event> getEventByCode(String code) async {
-    Event emptyEvent = Event("", "", "", "", "", "", "", "", "", "", "", "", "");
+    Event emptyEvent = Event("", "", "", "", "", "", "", "", "", "", "", "", "", []);
     try {
       //auth login for getting autorization
       final authLogin = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', data: {'email':'cbum@gmail.com', 'password':'cbumpostman'});
@@ -398,9 +396,6 @@ static Future<Event> getEventByCode(String code) async {
             tickets = response.data['data']['tickets'];
           }
 
-          List<dynamic> ambits = [];
-          if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
-
           String latitude;
           if (response.data['data']['latitude'] == null) {
             latitude = "";
@@ -414,6 +409,8 @@ static Future<Event> getEventByCode(String code) async {
           } else {
             longitude = response.data['data']['longitude'];
           }
+          List<dynamic> ambits = [];
+          if(response.data['data']['ambits'] != null) ambits.addAll(response.data['data']['ambits']);
         
         Event event = Event(
             code,
@@ -429,8 +426,9 @@ static Future<Event> getEventByCode(String code) async {
             tickets,
             latitude,
             longitude,
-            ambits,
+            ambits
         );
+
         return event;
       }
       else return emptyEvent;
@@ -439,21 +437,6 @@ static Future<Event> getEventByCode(String code) async {
       }
   }
 
-  void unsaveEvent(String codeEvent) async {
-      
-      try {
-      //unsave event 
-      final response = await dio.post('http://nattech.fib.upc.edu:40331/api/v1/users/unsaveEvent/$codeEvent');
-  
-      //cheking response
-      print(response.statusCode);
-
-    } catch (error) {
-      print(error.toString());
-    }
-  }
-
-
   static Future<List<Event>> getEventsByAmbit(String ambit) async{
     try {
       List<Event> eventsByAmbit = [];
@@ -461,6 +444,8 @@ static Future<Event> getEventByCode(String code) async {
       final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/searchByAmbit?ambit=$ambit');
       print(response.statusCode);
       if (response.statusCode == 200) {
+        print('response length ambits = ${response.data['data'].length}');
+        print('ambits[0] = ${response.data['data'][0]}');
         if(response.data['data'] != null) {
           for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
         
@@ -500,6 +485,7 @@ static Future<Event> getEventByCode(String code) async {
           } else {
             finalD = response.data['data'][i]['final_date'];
           }
+          
 
           String schedule;
           if (response.data['data'][i]['schedule'] == null) {
@@ -529,8 +515,28 @@ static Future<Event> getEventByCode(String code) async {
             tickets = response.data['data'][i]['tickets'];
           }
 
+
           List<dynamic> ambits = [];
           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+
+
+           String latitude;
+          if (response.data['data'][i]['latitude'] == null) {
+            latitude = "";
+          } else {
+            latitude = response.data['data'][i]['latitude'];
+          }
+
+
+
+          String longitude;
+          if (response.data['data'][i]['longitude'] == null) {
+            longitude = "";
+          } else {
+            longitude = response.data['data'][i]['longitude'];
+          }
+
+          
 
           Event event = Event(
             response.data['data'][i]['code'],
@@ -560,6 +566,8 @@ static Future<Event> getEventByCode(String code) async {
       print(error.toString());
       return [];
     }
+  }
+
   
    static Future<String> existsSavedEvent(String codeEvent) async {
     try {
@@ -581,112 +589,6 @@ static Future<Event> getEventByCode(String code) async {
     } catch (error) {
       print(error.toString());
       return "";
-    }
-  }
-
-  static Future<List<Event>> getEventsByDateRange(String initDate, String finalDate) async{
-    try {
-      List<Event> eventsByDataRange = [];
-    
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$initDate&final_date=$finalDate');
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        if(response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-        
-          String denomination;
-          if(response.data['data'][i]['denomination'] == null) {
-            denomination = '';
-          } else {denomination = response.data['data'][i]['denomination'];}
-
-          String description;
-          if (response.data['data'][i]['description'] == null) {description = '';}
-          else {description = response.data['data'][i]['description']; }
-
-          //images can be empty 
-          String image;
-          if (response.data['data'][i]['images'].isEmpty) {
-            image = "";
-          } else {
-            image = response.data['data'][i]['images'][0];
-          }
-
-          //url can be null 
-          String url;
-          if (response.data['data'][i]['url'] == null) {
-            url = "";
-          } else { url = response.data['data'][i]['url']; }
-
-          String initD;
-          if (response.data['data'][i]['initial_date'] == null) {
-            initD = "";
-          } else {
-            initD = response.data['data'][i]['initial_date'];
-          }
-          
-          String finalD;
-          if (response.data['data'][i]['final_date'] == null) {
-            finalD = "";
-          } else {
-            finalD = response.data['data'][i]['final_date'];
-          }
-
-          String schedule;
-          if (response.data['data'][i]['schedule'] == null) {
-            schedule = "";
-          } else {
-            schedule = response.data['data'][i]['schedule'];
-          }
-
-          String city;
-          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
-              city = "";
-          } else {
-            city = response.data['data'][i]['region'][2];
-          }
-
-          String adress;
-          if (response.data['data'][i]['address'] == null) {
-            adress = "";
-          } else {
-            adress = response.data['data'][i]['address'];
-          }
-          
-          String tickets;
-          if (response.data['data'][i]['tickets'] == null) {
-            tickets = "";
-          } else {
-            tickets = response.data['data'][i]['tickets'];
-          }
-
-          List<dynamic> ambits = [];
-          if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
-
-          Event event = Event(
-            response.data['data'][i]['code'],
-            denomination,
-            description,
-            image,
-            url,
-            initD,
-            finalD,
-            schedule,
-            city,
-            adress,
-            tickets,
-            latitud,
-            longitud,
-            ambits
-          );
-          eventsByDataRange.add(event);
-           }
-          return eventsByDataRange;
-        }
-      }
-      return [];
-    } catch (error){
-      print(error.toString());
-      return [];
     }
   }
 }
