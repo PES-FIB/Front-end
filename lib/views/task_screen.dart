@@ -201,7 +201,6 @@ repeteix = widget.t.repeats;
                 Checkbox(value: cascadeUpdate, onChanged: (value) {
                   setState(() {
                     cascadeUpdate = !cascadeUpdate;
-                  print('valor actualitzat = $value');
                   });
                   
                 }
@@ -221,7 +220,6 @@ repeteix = widget.t.repeats;
                 Checkbox(value: cascadeDelete, onChanged: (value) {
                   setState(() {
                   cascadeDelete = !cascadeDelete;
-                  print('valor actualitzat = $value');
                   });
                 }
                 ),
@@ -245,7 +243,7 @@ repeteix = widget.t.repeats;
                    result = await taskController.deleteTask(widget.t, cascadeDelete);
                   }
                   catch(e) {
-                    print(e);
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en l\'eliminació'));
                   }
                   finally {
                     if(result != 1) {
@@ -298,13 +296,11 @@ repeteix = widget.t.repeats;
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Indiqui el nom de la tasca'));
               }
               else {
-                print('nom actualitzat? -> ${nameController.text}');
               int result = await taskController.updateTask(widget.t, widget.t.id, nameController.text, descriptionController.text, task_ini.toString(), task_fi.toString(), repeteix,cascadeUpdate);
                 if (result == -1) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la edició de la tasca'));
                 }
                 else {
-                  print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
                   Navigator.of(context).pop();
                 }
               }

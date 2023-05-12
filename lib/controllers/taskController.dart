@@ -15,7 +15,6 @@ class taskController {
     try {
       r = await dio.get('${taskApis.getTaskUrl()}/${User.id}');
     } catch (e) {
-      print(e);
       return;
     }
     if (r.statusCode == 200) {
@@ -87,7 +86,6 @@ class taskController {
   static Future<int> createTask(String name, String description,
       String initial_date, String final_date, String? repeats) async {
     repeats = repeatstoEng(repeats!);
-    print('valor repeats = $repeats');
     if (repeats == 'NO') {
       repeats = null;
     }
@@ -108,7 +106,6 @@ class taskController {
     } catch (e) {
       return -1;
     }
-    print('resultat tasca = ${r.statusCode}');
     if (r.statusCode == 200) {
       for (int i = 0; i < r.data['data'].length; ++i) {
         String name = r.data['data'][i]['name'];
@@ -151,12 +148,10 @@ class taskController {
     try {
       r = await dio.get('${taskApis.getTaskUrl()}/${User.id}/${t.id}');
     } catch (e) {
-      print(e);
       return [];
     }
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
-        print ('r.data 1 tasca = ${r.data['data'].length}');
           String name = r.data['data']['name'];
 
           String description;
@@ -195,12 +190,10 @@ class taskController {
     try {
       r = await dio.get('${taskApis.getTaskUrl()}/${User.id}/code/${t.code}');
     } catch (e) {
-      print(e);
       return [];
     }
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
-        print ('r.data todaaas = ${r.data['data'].length}');
         for (int i = 0; i < r.data['data'].length; ++i) {
           String name = r.data['data'][i]['name'];
 
@@ -250,7 +243,6 @@ class taskController {
     }
     List<Task> oldList = [];
     if (cascade == true) {
-      print('entro aqui porque edito en cascada');
       oldList = await getTasks(oldTask);
     }
     else {
@@ -276,9 +268,7 @@ class taskController {
     } catch (e) {
       return -1;
     }
-    print('resultat tasca = ${r.statusCode}');
     if (r.statusCode == 200) {
-      print('length update = ${r.data['data'].length}');
       for (int i = 0; i < r.data['data'].length; ++i) {
         String name = r.data['data'][i]['name'];
 
@@ -315,7 +305,6 @@ class taskController {
   }
 
   static Future<int> deleteTask(Task t2, bool cascade) async {
-    print('cascade = $cascade');
     Response r;
     try {
       r = await dio.delete('${taskApis.getTaskUrl()}/${User.id}/${t2.id}',
@@ -323,9 +312,7 @@ class taskController {
     } catch (e) {
       return -1;
     }
-    print('status code del delete = ${r.statusCode}');
     if (r.statusCode == 200) {
-      print('llargada de result de request = ${r.data['data'].length}');
       for (int i = 0; i < r.data['data'].length; ++i) {
         String name = r.data['data'][i]['name'];
 
@@ -353,7 +340,6 @@ class taskController {
         repeats = repeatstoCat(repeats);
         Task t =
             Task(id, code, name, description, initialDate, finalDate, repeats);
-        print('son iguals les tasks? -> ${t == t2}');
         deleteTaskLocale(t.id);
       }
       return 1;
@@ -385,7 +371,6 @@ class taskController {
   }
 
   static void deleteTaskLocale(int taskId) {
-    print('entrodeleteee amb taskId = $taskId');
     // Search for the task with the given ID in the tasksCalendar map
     for (final tasks in AppEvents.tasksCalendar.values) {
       for (final task in tasks) {
@@ -393,8 +378,6 @@ class taskController {
           int days = DateUtils.dateOnly(DateTime.parse(task.final_date))
               .difference(DateUtils.dateOnly(DateTime.parse(task.initial_date)))
               .inDays;
-          print('dies = $days');
-          print('tamany abans: ${tasks.length}');
           tasks.remove(task);
           for (int i = 0; i <= days; ++i) {
             AppEvents.tasksCalendar[
@@ -402,12 +385,9 @@ class taskController {
                         .add(Duration(days: i))]
                 ?.remove(task);
           }
-          print('tamany despres: ${tasks.length}');
           return; // Exit the function after deleting the task
         }
       }
     }
-    // If the task is not found, print an error message
-    print('Task with ID $taskId not found in tasksCalendar');
   }
 }

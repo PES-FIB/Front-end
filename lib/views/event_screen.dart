@@ -266,7 +266,6 @@ class _EventsState extends State<Events> {
                                       if (urllaunchable) {
                                         await launchUrl(url);
                                       } else {
-                                        print("URL can't be launched");
                                       }
                                     }
                                   ),

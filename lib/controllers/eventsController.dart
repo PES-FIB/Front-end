@@ -135,10 +135,8 @@ class EventsController {
           return allEvents;
         }
       }
-      print(' no he tornat events :((((');
       return []; // return an empty list if there was an error
     } catch (error) {
-      print("Error: $error");
       return []; // return an empty list if there was an error
     }
   }
@@ -150,10 +148,8 @@ class EventsController {
           .get('http://nattech.fib.upc.edu:40331/api/v1/users/savedEvents');
 
       //cheking events response
-       print('estatus del get saved Events = ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        print('estan plens els events? ${response.data['events'][0]['latitude']}');
         if (response.data['events'] != null) {
           for (int i = 0; i < response.data['events'].length; ++i) {
             //response is already decoded.
@@ -240,19 +236,16 @@ class EventsController {
                 latitude,
                 longitude,
                 ambits);
-            print('entro abans de guardar el event');
             saveEventLocale(event);
           }
         }
       }
     } catch (error) {
-      print(error);
       return; // return an empty list if there was an error
     }
   }
 
   static void saveEventLocale(Event e) {
-    print('entro a guardar event locale');
     AppEvents.savedEvents[e.code] = e;
     if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(DateTime.parse(e.initialDate)))) {
       AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(e.initialDate)))]?.add(e);
@@ -265,42 +258,37 @@ class EventsController {
   }
 
  static void unsaveEventLocale(Event e) {
-  print("unsave event locale amb event ${e.title}");
   if (AppEvents.savedEvents.containsKey(e.code)) {
     AppEvents.savedEvents.remove(e.code);
   }
   final eventsOnDate = AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))];
-  print('saved events calendar abans: ${eventsOnDate?.length}');
   if (eventsOnDate != null) {
     eventsOnDate.removeWhere((event) => event.code == e.code);
-    print('saved events calendar despres: ${eventsOnDate.length}');
   }
 }
 
   static void saveEvent(String codeEvent) async {
     try {
       //save event
-      final response = await dio.post(
+      await dio.post(
           'http://nattech.fib.upc.edu:40331/api/v1/users/saveEvent/$codeEvent');
-      print("SAVED");
+     
       //cheking response
-      print(response.statusCode);
+   
     } catch (error) {
-      print(error.toString());
+      return;
     }
   }
 
   static void unsaveEvent(String codeEvent) async {
     try {
       //unsave event
-      final response = await dio.post(
+      await dio.post(
           'http://nattech.fib.upc.edu:40331/api/v1/users/unsaveEvent/$codeEvent');
-      print("UNSAVED");
 
       //cheking response
-      print(response.statusCode);
     } catch (error) {
-      print(error.toString());
+      return;
     }
   }
 
@@ -436,10 +424,7 @@ static Future<Event> getEventByCode(String code) async {
       List<Event> eventsByAmbit = [];
     
       final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/searchByAmbit?ambit=$ambit');
-      print(response.statusCode);
       if (response.statusCode == 200) {
-        print('response length ambits = ${response.data['data'].length}');
-        print('ambits[0] = ${response.data['data'][0]}');
         if(response.data['data'] != null) {
           for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
         
@@ -549,15 +534,12 @@ static Future<Event> getEventByCode(String code) async {
             ambits
           );
           eventsByAmbit.add(event);
-          print(eventsByAmbit[i].title);
           }
-          print(eventsByAmbit.length);
         return eventsByAmbit;
         }
       }
       return [];
     } catch (error){
-      print(error.toString());
       return [];
     }
   }
@@ -572,16 +554,12 @@ static Future<Event> getEventByCode(String code) async {
       //checking if event is saved
       final response = await dio.get(
           'http://nattech.fib.upc.edu:40331/api/v1/users/existSavedEvent/$codeEvent');
-
-      print("statusCode existsSavedEvent:");
-      print(response.statusCode);
       if (response.data['exists'] != null) {
         return response.data['exists'];
       } else {
         return "";
       }
     } catch (error) {
-      print(error.toString());
       return "";
     }
   }
@@ -604,7 +582,6 @@ static Future<Event> getEventByCode(String code) async {
       }
       return [];// return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
       return []; // return an empty list if there was an error
     }
   }

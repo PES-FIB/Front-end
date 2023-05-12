@@ -27,8 +27,7 @@ class userController {
         'name': name,
         'password': password,
       });
-    } on DioError catch (e) {
-      print(e.message);
+    } on DioError {
       return -1;
     }
     AppEvents.eventsList = await EventsController.getAllEvents();
@@ -40,11 +39,9 @@ class userController {
     Response response;
     try {
       response = await dio.get(userApis.getLogoutUrl());
-    } on DioError catch (e) {
-      print(e.message);
+    } on DioError {
       return -1;
     }
-    print(response.statusCode);
     AppEvents.eventsList = [];
     AppEvents.savedEvents = {};
     AppEvents.savedEventsCalendar = {};
@@ -56,11 +53,9 @@ class userController {
     Response response;
     try {
       response = await dio.get(userApis.getshowMe());
-    } on DioError catch (e) {
-      print(e.message);
+    } on DioError {
       return;
     }
-    print(response.data['user']);
     User.setValues(response.data['user']['id'], response.data['user']['name'],
         response.data['user']['email'], response.data['image']);
   }
@@ -81,11 +76,9 @@ class userController {
 
   static Future<bool> checkStoragePermission() async {
     PermissionStatus status = await Permission.storage.status;
-    print('permission status = $status');
     if (status.isGranted) {
       return true;
     } else if (status.isDenied) {
-      print('entrodenied');
       return await requestStoragePermission();
     } else {
       return false;
@@ -94,7 +87,6 @@ class userController {
 
   static Future<bool> requestStoragePermission() async {
     PermissionStatus status = await Permission.storage.request();
-    print('entroo4235235');
     if (status.isGranted) {
       return true;
     } else {
@@ -109,14 +101,12 @@ class userController {
   }
   try {
     final directory = Directory("/storage/emulated/0/Download");
-    print('el directori es = $directory');
     final file = File('${directory.path}/$fileName');
     dio.options.headers['Content-Type'] = 'application/octet-stream';
     dio.options.responseType = ResponseType.bytes;
     Response response = await dio.get(userApis.getExportCalendar());
     file.writeAsBytesSync(response.data);
   } catch (e) {
-    print(e);
     return -1;
   }
   return 1;
@@ -167,21 +157,14 @@ class userController {
   }
 
   static Future<void> realize_login(context) async { 
-    print('stacktrace de login -> ${StackTrace.current.toString()}');
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
-      print('numero de events =  ${AppEvents.eventsList.length}');
       await EventsController.getSavedEvents();
-      print('numero de events guardats calendar =  ${AppEvents.savedEventsCalendar.length}');
       await taskController.getAllTasks();
-      print('numero de tasks guardats calendar =  ${AppEvents.tasksCalendar.length}');
     } catch (e) {
-      print(e);
       return;
     }
     finally {
-      print('S\'ha omplert el map? = ${AppEvents.eventsList.isNotEmpty}');
-      print('S\'ha omplert el map de guardatsml? = ${AppEvents.savedEvents.isNotEmpty}');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
@@ -225,7 +208,7 @@ class userController {
         ),
       );
       try {
-        final response = await dio.get(
+        await dio.get(
           finalUrl,
           options: Options (
             validateStatus: (_) => true,
@@ -233,10 +216,7 @@ class userController {
             responseType:ResponseType.json,
           ),
         );
-        print(response.data);
-        print(response.statusCode);
         //logejar a l'usuari dins de l'aplicació
-        //print(response.data['picture']);
         await userController.getUserInfo();
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
@@ -244,7 +224,6 @@ class userController {
         );
         realize_login(context);
       } catch (e){
-        print('Error al hacer la llamada a la API: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar( context, 'Se ha producido un error: $e')
         );

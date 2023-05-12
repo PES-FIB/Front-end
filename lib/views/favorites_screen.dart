@@ -51,13 +51,10 @@ class _FavoritesState extends State<Favorites> {
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
-      print(
-          'ho conte?? -> ${AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))}');
       if (AppEvents.savedEventsCalendar
           .containsKey(DateUtils.dateOnly(today))) {
         savedEventsList =
             AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
-        print('tamany de la llista = ${savedEventsList.length}');
       } else {
         savedEventsList = [];
       }
@@ -65,7 +62,6 @@ class _FavoritesState extends State<Favorites> {
           .containsKey(DateUtils.dateOnly(today))) {
         savedTasksList =
             AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
-        print('tamany de la llista = ${savedEventsList.length}');
       } else {
         savedTasksList = [];
       }
@@ -75,12 +71,10 @@ class _FavoritesState extends State<Favorites> {
   @override
   void initState() {
     super.initState();
-    print('LLista inicial, map = ${AppEvents.savedEventsCalendar}');
     if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedEventsList =
           AppEvents.savedEventsCalendar[DateUtils.dateOnly(today)]!;
     }
-    print('tamany de la llista = ${savedEventsList.length}');
     if (AppEvents.tasksCalendar.containsKey(DateUtils.dateOnly(today))) {
       savedTasksList =
           AppEvents.tasksCalendar[DateUtils.dateOnly(today)]!;
@@ -140,8 +134,6 @@ class _FavoritesState extends State<Favorites> {
                               icon: Icon(LineAwesomeIcons.download,
                                   color: Colors.redAccent),
                               onPressed: () async {
-                                print(
-                                    'nom = ${User.name.substring(0, User.name.indexOf(' '))}');
                                 int downloadResult =
                                     await userController.exportCalendar(
                                         '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics');

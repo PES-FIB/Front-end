@@ -81,7 +81,6 @@ class _LoginPageState extends State<LoginPage> {
                                             'Usuario i/o contraseña incorrectos'));
                                   }
                                 } catch (error) {
-                                  print(error);
                                   setState(() {
                                     login = false;
                                   });

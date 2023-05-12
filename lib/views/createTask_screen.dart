@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:prova_login/controllers/taskController.dart';
 import 'styles/custom_snackbar.dart';
-import '../models/AppEvents.dart';
 
 
 class createTask extends StatefulWidget {
@@ -158,7 +157,6 @@ class _createTaskState extends State<createTask> {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en la creació de la tasca'));
                   }
                   else {
-                    print('longitud de tasks = ${AppEvents.tasksCalendar.length}');
                     Navigator.of(context).pop();
                   }
                 }

@@ -103,37 +103,8 @@ class _EventListState extends State<EventList> {
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) async {
     if (args is PickerDateRange) {
-      PickerDateRange range = args.value;
-      print(range.startDate);
-       print(range.endDate);
+      //PickerDateRange range = args.value;
     }
-    print("no entra");
-
-/*
-    //year-month-day
-    List<String>  dirtyInitDate = range.startDate .value.startDate.toString().split(" ");
-    //[year] [month] [day] 
-    List<String> initDate = dirtyInitDate[0].split("-");
-    //month/day/year
-    String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
-    print(queryInitDate);
-
-    //year-month-day
-    List<String>  dirtyFinalDate = args.value.endDate.toString().split(" ");
-    //[year] [month] [day] 
-    List<String> finalDate = dirtyInitDate[0].split("-");
-    //month/day/year
-    String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
-    print(queryFinalDate);
-
-    List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
-    print(tmpByDateRange.length);
-
-    setState(() {
-      dateRangeEvents.clear();
-      dateRangeEvents.addAll(tmpByDateRange);
-      filteredEvents.retainWhere((element) => tmpByDateRange.contains(element));
-    });*/
   }
 
 
