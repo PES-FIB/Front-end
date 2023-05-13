@@ -90,17 +90,17 @@ class _EventListState extends State<EventList> {
     });
   }
 
-  void pushEventScreen(int clickedEvent) async {
+    void pushEventScreen(int clickedEvent) async {
 
-  await showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        child: Events(event: _foundEvents[clickedEvent]),
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Events(event: _foundEvents[clickedEvent]),
+          );
+        },
       );
-    },
-  );
-}
+    }
 
   
   void clearRangeDateFilter(){
