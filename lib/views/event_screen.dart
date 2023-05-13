@@ -83,7 +83,7 @@ class _EventsState extends State<Events> {
                 Row( // date, title
                   children: [                
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Column(
                         children: [
                           Text(
@@ -106,7 +106,7 @@ class _EventsState extends State<Events> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    SizedBox(width: 10.0),
                     Expanded(
                       flex: 3,
                       child: Column(
