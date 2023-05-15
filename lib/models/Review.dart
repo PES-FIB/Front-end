@@ -19,18 +19,20 @@ class Review {
       minRating: 1,
       direction: Axis.horizontal,
       allowHalfRating: false,
+      itemSize: 30,
       itemCount: 5,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       ignoreGestures: ignoreGesture,
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: Colors.amber,
+        color: Color.fromARGB(255, 255, 215, 97),
       ),
       onRatingUpdate: (value) {
         score = value.toInt();
         print('score: $score');
         print('value: $value');
       },
+      
     );
   }
 }

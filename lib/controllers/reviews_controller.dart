@@ -124,7 +124,7 @@ class ReviewController{
   }
   
 
-  void toReviewsAgain(Event event) {
+  void toReviewsAgain(Event event) async {
     print('recarrga de les valoracions');
     Navigator.push(
       context,
