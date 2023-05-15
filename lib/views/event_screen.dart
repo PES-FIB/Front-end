@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ class Events extends StatefulWidget {
 }
   
 class _EventsState extends State<Events> { 
+  bool amplia = false;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,7 @@ class _EventsState extends State<Events> {
                 Row( // date, title
                   children: [                
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Column(
                         children: [
                           Text(
@@ -106,7 +107,7 @@ class _EventsState extends State<Events> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    SizedBox(width: 10.0),
                     Expanded(
                       flex: 3,
                       child: Column(
@@ -297,8 +298,8 @@ class _EventsState extends State<Events> {
                         
                       ),
                       
-                      onPressed: () {
-                        showDialog(
+                      onPressed: () async {
+                         await showDialog(
                           context: context,
                           builder: (context) {
                             return Dialog(
@@ -309,10 +310,14 @@ class _EventsState extends State<Events> {
                       },
                     ),
                     SizedBox(height: 10.0),
+                    
                   ],
               ),
+              Visibility(
+                visible: amplia,
+                child: ReviewPage(widget.event))
             ],
-                  ),
+          ),
           ),
           
         ),

@@ -607,10 +607,14 @@ static Future<Event> getEventByCode(String code) async {
         final newMarker = Marker(
           markerId: newMarkerId,
           position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Events(event: e)),
+          onTap: () async {
+            await showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  child: Events(event: e),
+                );
+              },
             );
           }
         );

@@ -90,17 +90,17 @@ class _EventListState extends State<EventList> {
     });
   }
 
-  void pushEventScreen(int clickedEvent) async {
+    void pushEventScreen(int clickedEvent) async {
 
-  await showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        child: Events(event: _foundEvents[clickedEvent]),
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Events(event: _foundEvents[clickedEvent]),
+          );
+        },
       );
-    },
-  );
-}
+    }
 
   
   void clearRangeDateFilter(){
@@ -368,6 +368,7 @@ class _EventListState extends State<EventList> {
                   key: ValueKey(_foundEvents[index].code),
                   contentPadding: EdgeInsets.all(20.0),
                   title: Text(_foundEvents[index].title),
+                  subtitle: Text(_foundEvents[index].initialDate.substring(0, 10) + " a " + _foundEvents[index].finalDate.substring(0, 10)),
                   leading:  Icon(Icons.event, color: Colors.black, size: 30),
                   trailing: IconButton(
                     iconSize: 25,

@@ -81,12 +81,16 @@ class _FavoritesState extends State<Favorites> {
     }
   }
 
+
   void pushEventScreen(int clickedEvent) async {
-    final updatedEvent = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                Events(event: savedEventsList[clickedEvent])));
+    final updatedEvent = await showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Events(event: savedEventsList[clickedEvent]),
+          );
+        },
+      );
     if (updatedEvent != null) {
       setState(() {
         savedEventsList[clickedEvent] =
