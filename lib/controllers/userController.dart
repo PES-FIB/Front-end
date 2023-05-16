@@ -56,8 +56,12 @@ class userController {
     } on DioError {
       return;
     }
+    String? photoUrl = '';
+    if (response.data['user']['image'] != null) {
+      photoUrl = 'http://nattech.fib.upc.edu:40331${response.data['user']['image']}';
+    }
     User.setValues(response.data['user']['id'], response.data['user']['name'],
-        response.data['user']['email'], response.data['user']['image']);
+        response.data['user']['email'], photoUrl);
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
