@@ -12,7 +12,7 @@ import '../views/create_account.dart';
 import '../views/styles/custom_snackbar.dart';
 import 'dart:async';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:image_picker/image_picker.dart';
 
 class userController {
   final BuildContext context;
@@ -79,6 +79,34 @@ class userController {
     } else {
       User.setValues(User.id, name, email, User.photoUrl);
       return true;
+    }
+  }
+
+
+  Future<void> pickImage() async {
+    final ImagePicker imagePicker = ImagePicker();
+    final XFile? pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      try {
+        FormData formData = FormData.fromMap({
+          'file': await MultipartFile.fromFile(pickedImage.path),
+        });
+
+        Response response = await dio.put(
+          userApis.uploadImage(),
+          data: formData,
+        );
+
+        if (response.statusCode == 200) {
+          // Maneja la respuesta exitosa
+        } else {
+          // Maneja la respuesta con código de estado no válido
+        }
+      } catch (e) {
+        // Maneja cualquier error que pueda ocurrir
+        print(e);
+      }
     }
   }
 
