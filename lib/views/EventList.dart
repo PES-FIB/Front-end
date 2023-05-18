@@ -63,6 +63,7 @@ class _EventListState extends State<EventList> {
   void initState() {
     super.initState();
     setState(() {
+      print(AppEvents.eventsList.length);
       filteredEvents.addAll(AppEvents.eventsList);
       filteredEventsWithoutDataRangeFilter.addAll(AppEvents.eventsList);
       _foundEvents.addAll(filteredEvents);
@@ -368,7 +369,7 @@ class _EventListState extends State<EventList> {
                   key: ValueKey(_foundEvents[index].code),
                   contentPadding: EdgeInsets.all(20.0),
                   title: Text(_foundEvents[index].title),
-                  subtitle: Text(_foundEvents[index].initialDate.substring(0, 10) + " a " + _foundEvents[index].finalDate.substring(0, 10)),
+                  subtitle: Text(_foundEvents[index].initialDate.substring(0) + " a " + _foundEvents[index].finalDate.substring(0)),
                   leading:  Icon(Icons.event, color: Colors.black, size: 30),
                   trailing: IconButton(
                     iconSize: 25,

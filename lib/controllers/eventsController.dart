@@ -42,7 +42,7 @@ class EventsController {
             description = response.data['data'][i]['description'];
           }
           String image;
-          if (response.data['data'][i]['images'].isEmpty) {
+          if (response.data['data'][i]['images'] == null) {
             image = "";
           } else {
             image = response.data['data'][i]['images'][0];
@@ -136,6 +136,7 @@ class EventsController {
       }
       return []; // return an empty list if there was an error
     } catch (error) {
+      print(error.toString());
       return []; // return an empty list if there was an error
     }
   }
@@ -153,7 +154,7 @@ class EventsController {
           for (int i = 0; i < response.data['events'].length; ++i) {
             //response is already decoded.
             String image;
-            if (response.data['events'][i]['images'].isEmpty) {
+            if (response.data['events'][i]['images'] == null) {
               image = "";
             } else {
               image = response.data['events'][i]['images'][0];
@@ -323,7 +324,7 @@ static Future<Event> getEventByCode(String code) async {
           
           //images can be empty 
           String image;
-          if (response.data['data']['images'].isEmpty) {
+          if (response.data['data']['images'] == null) {
             image = "";
           } else {
             image = response.data['data']['images'][0];
@@ -438,7 +439,7 @@ static Future<Event> getEventByCode(String code) async {
 
           //images can be empty 
           String image;
-          if (response.data['data'][i]['images'].isEmpty) {
+          if (response.data['data'][i]['images'] == null) {
             image = "";
           } else {
             image = response.data['data'][i]['images'][0];
@@ -659,7 +660,7 @@ static Future<Event> getEventByCode(String code) async {
 
           //images can be empty 
           String image;
-          if (response.data['data'][i]['images'].isEmpty) {
+          if (response.data['data'][i]['images'] == null) {
             image = "";
           } else {
             image = response.data['data'][i]['images'][0];

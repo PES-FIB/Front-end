@@ -58,7 +58,11 @@ class userController {
     }
     String? photoUrl = '';
     if (response.data['user']['image'] != null) {
-      photoUrl = 'http://nattech.fib.upc.edu:40331${response.data['user']['image']}';
+      if (response.data['user']['image'].toString().startsWith('https://')) {
+        photoUrl = response.data['user']['image'];
+      } else {
+        photoUrl = 'http://nattech.fib.upc.edu:40331${response.data['user']['image']}';
+      }
     }
     User.setValues(response.data['user']['id'], response.data['user']['name'],
         response.data['user']['email'], photoUrl);
@@ -163,6 +167,7 @@ class userController {
   static Future<void> realize_login(context) async { 
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
+      // ignore: prefer_interpolation_to_compose_strings
       await EventsController.getSavedEvents();
       await taskController.getAllTasks();
     } catch (e) {
