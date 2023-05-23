@@ -584,46 +584,6 @@ static Future<Event> getEventByCode(String code) async {
     }
   }
 
-  static const initialCameraPosition =  CameraPosition(
-    target: LatLng(41.3926467,2.0701492),
-    zoom: 12,
-  );
-
-  static void onMapCreated(GoogleMapController controller){
-    controller.setMapStyle(mapStyle);
-  }
-
-  static Future<Set<Marker>> markers (BuildContext context) async {
-    
-    //get all events
-    List<Event> allEvents = await EventsController.getAllEvents();
-
-
-    Map<MarkerId, Marker> eventsMarkers = {};
-    for(Event e in allEvents){
-
-      if((e.latitude != "" ) && (e.longitude != "")) {
-        final newMarkerId = MarkerId(e.code);
-        final newMarker = Marker(
-          markerId: newMarkerId,
-          position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
-          onTap: () async {
-            await showDialog(
-              context: context,
-              builder: (context) {
-                return Dialog(
-                  child: Events(event: e),
-                );
-              },
-            );
-          }
-        );
-        eventsMarkers[newMarkerId] = newMarker;
-      }
-    }
-    return eventsMarkers.values.toSet();
-  }
-
   static String ObtainMessage(String title, String url) {
     if (url == "") {
       final eventname = title;

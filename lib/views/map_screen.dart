@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:prova_login/controllers/eventsController.dart';
+import 'package:prova_login/controllers/mapController.dart';
 import 'dart:async';
 import 'package:search_map_place_updated/search_map_place_updated.dart';
 
@@ -23,7 +23,7 @@ class MapScreenState extends State<MapScreen> {
   }
 
   Future<Set<Marker>> _fetchMarkers() async {
-    final markers = await EventsController.markers(context);
+    final markers = await mapController.markers(context);
     return markers;
   }
 
@@ -62,9 +62,9 @@ class MapScreenState extends State<MapScreen> {
                   return GoogleMap(
                     onMapCreated: (GoogleMapController controller) {
                       _controllerCompleter.complete(controller);
-                      EventsController.onMapCreated(controller);
+                      mapController.onMapCreated(controller);
                     },
-                    initialCameraPosition: EventsController.initialCameraPosition,
+                    initialCameraPosition: mapController.initialCameraPosition,
                     zoomControlsEnabled: false,
                     markers: _markers,
                   );
