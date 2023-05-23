@@ -31,6 +31,8 @@ class userController {
       return -1;
     }
     AppEvents.eventsList = await EventsController.getAllEvents();
+    AppEvents.ambits = await EventsController.getAllAmbits();
+    print("AMBITS FETCHED");
     getUserInfo();
     return response.statusCode!;
   }
@@ -167,6 +169,7 @@ class userController {
   static Future<void> realize_login(context) async { 
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
+      AppEvents.ambits = await EventsController.getAllAmbits();
       // ignore: prefer_interpolation_to_compose_strings
       await EventsController.getSavedEvents();
       await taskController.getAllTasks();

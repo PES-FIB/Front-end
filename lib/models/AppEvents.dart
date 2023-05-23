@@ -1,5 +1,3 @@
-
-
 import 'package:dio/dio.dart';
 import 'Event.dart';
 import 'Task.dart';
@@ -17,4 +15,5 @@ class AppEvents {
   static Map<String, Event> savedEvents = {};
   static List<Event> eventsList = [];
   static Map<DateTime, List<Task>> tasksCalendar = {};
+  static List<String> ambits = [];
 }

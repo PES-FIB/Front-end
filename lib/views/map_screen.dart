@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:prova_login/controllers/eventsController.dart';
 import 'package:prova_login/controllers/mapController.dart';
 import 'dart:async';
 import 'package:search_map_place_updated/search_map_place_updated.dart';
+import '../models/AppEvents.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -13,6 +15,10 @@ class MapScreen extends StatefulWidget {
 
 class MapScreenState extends State<MapScreen> {
   Set<Marker> _markers = {};
+  String selectedAmbit = "Tots els events";
+  List<String> ambits = [];
+
+
   
   Completer<GoogleMapController> _controllerCompleter = Completer();
   GoogleMapController? googleMapController;
@@ -20,12 +26,24 @@ class MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    ambits.add("Tots els events");
+    ambits.addAll(AppEvents.ambits);
+    _fetchMarkers();
   }
 
-  Future<Set<Marker>> _fetchMarkers() async {
-    final markers = await mapController.markers(context);
-    return markers;
+  
+
+  void _fetchMarkers() {
+    _markers.clear();
+     setState(() {
+      if (selectedAmbit == "Tots els events") {
+        _markers = mapController.markers(context);
+      } else {
+        _markers = mapController.markersByAmbit(context, selectedAmbit);
+      }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,28 +72,48 @@ class MapScreenState extends State<MapScreen> {
           ),
           SizedBox(height: 5),
           Expanded(
-            child: FutureBuilder<Set<Marker>>(
-              future: _fetchMarkers(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _markers = snapshot.data!;
-                  return GoogleMap(
-                    onMapCreated: (GoogleMapController controller) {
-                      _controllerCompleter.complete(controller);
-                      mapController.onMapCreated(controller);
-                    },
-                    initialCameraPosition: mapController.initialCameraPosition,
-                    zoomControlsEnabled: false,
-                    markers: _markers,
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Error fetching markers"));
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
+            child: Stack(
+              children: [
+        
+                GoogleMap(
+                  onMapCreated: (GoogleMapController controller) {
+                    _controllerCompleter.complete(controller);
+                    mapController.onMapCreated(controller);
+                  },
+                  initialCameraPosition: mapController.initialCameraPosition,
+                  zoomControlsEnabled: false,
+                  markers: _markers,
+                ),
+                      
+                Positioned(
+                  top: 16.0,
+                  right: 16.0,
+                  child: Container(
+                    padding: EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(width: 0.5, color: Colors.grey)
+                    ),
+                    child: DropdownButton(
+                      value: selectedAmbit,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedAmbit = value as String;
+                          _fetchMarkers();
+                        });
+                      },
+                      items: ambits.map(
+                        (e) {
+                          return DropdownMenuItem(child: Text(e), value: e,);
+                        }
+                      ).toList(),
+                    ),
+                  )
+                ),
+              ],
             ),
-          ),
+          )
         ],
       ),
     );

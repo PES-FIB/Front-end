@@ -81,17 +81,3 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-
-
-class EventData {
-  List<Event> allEvents = [];
-  var savedEvents = {};
-  var calendarEvents = {};
-
-  // Future<void> fetchData() async {
-  //   allEvents = await EventsController.getAllEvents();
-  //   savedEvents = await EventsController.getSavedEvents();
-  //   calendarEvents = await EventsController.getSavedEventsCalendar();
-  // }
-}
-
