@@ -28,21 +28,27 @@ class MapScreenState extends State<MapScreen> {
     super.initState();
     ambits.add("Tots els events");
     ambits.addAll(AppEvents.ambits);
+    startChecking();
     _fetchMarkers();
   }
 
-  
 
   void _fetchMarkers() {
     _markers.clear();
      setState(() {
       if (selectedAmbit == "Tots els events") {
-        _markers = mapController.markers(context);
+        _markers = MapController.markers(context);
       } else {
-        _markers = mapController.markersByAmbit(context, selectedAmbit);
+        _markers = MapController.markersByAmbit(context, selectedAmbit);
       }
     });
   }
+
+  void startChecking() {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      MapController.checkSavedChanged(_fetchMarkers);
+    });
+  } 
 
 
   @override
@@ -78,9 +84,9 @@ class MapScreenState extends State<MapScreen> {
                 GoogleMap(
                   onMapCreated: (GoogleMapController controller) {
                     _controllerCompleter.complete(controller);
-                    mapController.onMapCreated(controller);
+                    MapController.onMapCreated(controller);
                   },
-                  initialCameraPosition: mapController.initialCameraPosition,
+                  initialCameraPosition: MapController.initialCameraPosition,
                   zoomControlsEnabled: false,
                   markers: _markers,
                 ),
@@ -118,5 +124,4 @@ class MapScreenState extends State<MapScreen> {
       ),
     );
   }
-
 }

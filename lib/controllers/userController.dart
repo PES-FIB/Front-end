@@ -32,6 +32,7 @@ class userController {
     }
     AppEvents.eventsList = await EventsController.getAllEvents();
     AppEvents.ambits = await EventsController.getAllAmbits();
+    AppEvents.savedChanged = false;
     print("AMBITS FETCHED");
     getUserInfo();
     return response.statusCode!;
@@ -170,6 +171,7 @@ class userController {
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
       AppEvents.ambits = await EventsController.getAllAmbits();
+      AppEvents.savedChanged = false;
       // ignore: prefer_interpolation_to_compose_strings
       await EventsController.getSavedEvents();
       await taskController.getAllTasks();

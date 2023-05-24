@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Event.dart';
 import 'Task.dart';
 
@@ -16,4 +17,5 @@ class AppEvents {
   static List<Event> eventsList = [];
   static Map<DateTime, List<Task>> tasksCalendar = {};
   static List<String> ambits = [];
+  static late bool savedChanged; 
 }

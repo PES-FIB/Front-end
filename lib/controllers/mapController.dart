@@ -5,10 +5,10 @@ import '../models/AppEvents.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../utils/map_style.dart';
 import '../views/event_screen.dart';
+import '../views/map_screen.dart';
 import 'eventsController.dart';
 
-class mapController {
-
+class MapController {
 
   static const initialCameraPosition =  CameraPosition(
     target: LatLng(41.3926467,2.0701492),
@@ -118,5 +118,12 @@ class mapController {
       }
     }
     return eventsMarkers.values.toSet();
+  }
+
+  static void checkSavedChanged(Function callback) {
+    if (AppEvents.savedChanged) {
+      AppEvents.savedChanged = false;
+      callback();
+    } 
   }
 }

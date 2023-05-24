@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
+import '../controllers/mapController.dart';
 import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 
 class EventList extends StatefulWidget {
-  //final VoidCallback onNavigate;
   
   const EventList({
     Key? key,
@@ -155,7 +155,6 @@ class _EventListState extends State<EventList> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         children: [
@@ -379,10 +378,12 @@ class _EventListState extends State<EventList> {
                       if (inSaved(_foundEvents[index].code)){
                         EventsController.unsaveEvent(_foundEvents[index].code);
                         EventsController.unsaveEventLocale(_foundEvents[index]);
+                        AppEvents.savedChanged = true;
                       }//remove
                       else {
                         EventsController.saveEvent(_foundEvents[index].code);
                         EventsController.saveEventLocale(_foundEvents[index]);
+                        AppEvents.savedChanged = true;
                       }//add
                     });
                     },
