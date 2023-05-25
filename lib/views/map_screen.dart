@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:prova_login/controllers/eventsController.dart';
 import 'package:prova_login/controllers/mapController.dart';
 import 'dart:async';
 import 'package:search_map_place_updated/search_map_place_updated.dart';
 import '../models/AppEvents.dart';
+import '../utils/gps.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -14,12 +15,21 @@ class MapScreen extends StatefulWidget {
 
 
 class MapScreenState extends State<MapScreen> {
+  final GPS _gps = GPS();
+  Position? _userPosition;
+  Exception? _exception;
+
+  //default camera position = barcelona.
+  CameraPosition initialCameraPosition =  CameraPosition(
+    target: LatLng(41.3926467,2.0701492),
+    zoom: 12,
+  );
+
+
   Set<Marker> _markers = {};
   String selectedAmbit = "Tots els events";
   List<String> ambits = [];
 
-
-  
   Completer<GoogleMapController> _controllerCompleter = Completer();
   GoogleMapController? googleMapController;
 
@@ -30,8 +40,16 @@ class MapScreenState extends State<MapScreen> {
     ambits.addAll(AppEvents.ambits);
     startChecking();
     _fetchMarkers();
+    _gps.startPositionStream(_handlePositionStream).catchError((e) { setState(() {_exception = e;});});
   }
 
+  void _handlePositionStream(Position position) async {
+    googleMapController = await _controllerCompleter.future;
+    setState(() {
+      _userPosition = position;
+      googleMapController?.animateCamera(CameraUpdate.newLatLng(LatLng(_userPosition!.latitude,_userPosition!.longitude)));
+    });
+  }
 
   void _fetchMarkers() {
     _markers.clear();
@@ -86,7 +104,7 @@ class MapScreenState extends State<MapScreen> {
                     _controllerCompleter.complete(controller);
                     MapController.onMapCreated(controller);
                   },
-                  initialCameraPosition: MapController.initialCameraPosition,
+                  initialCameraPosition: initialCameraPosition,
                   zoomControlsEnabled: false,
                   markers: _markers,
                 ),

@@ -10,11 +10,6 @@ import 'eventsController.dart';
 
 class MapController {
 
-  static const initialCameraPosition =  CameraPosition(
-    target: LatLng(41.3926467,2.0701492),
-    zoom: 12,
-  );
-
   static void onMapCreated(GoogleMapController controller){
     controller.setMapStyle(mapStyle);
   }
