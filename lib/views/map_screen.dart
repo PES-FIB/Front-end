@@ -107,6 +107,8 @@ class MapScreenState extends State<MapScreen> {
                   initialCameraPosition: initialCameraPosition,
                   zoomControlsEnabled: false,
                   markers: _markers,
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
                 ),
                       
                 Positioned(
@@ -129,7 +131,7 @@ class MapScreenState extends State<MapScreen> {
                       },
                       items: ambits.map(
                         (e) {
-                          return DropdownMenuItem(child: Text(e), value: e,);
+                          return DropdownMenuItem(value: e, child: Text(e),);
                         }
                       ).toList(),
                     ),
