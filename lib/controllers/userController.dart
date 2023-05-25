@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -14,10 +16,10 @@ import 'dart:async';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
-class userController {
+class UserController {
   final BuildContext context;
 
-  userController(this.context);
+  UserController(this.context);
 
   static Future<int> signUp(String name, String email, String password) async {
     Response response;
@@ -83,31 +85,39 @@ class userController {
   }
 
 
-  Future<void> pickImage() async {
+  Future<bool> pickImage() async {
     final ImagePicker imagePicker = ImagePicker();
     final XFile? pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
-
     if (pickedImage != null) {
       try {
-        FormData formData = FormData.fromMap({
-          'file': await MultipartFile.fromFile(pickedImage.path),
-        });
-
+        FormData formData = FormData.fromMap(
+          {
+            'file': await MultipartFile.fromFile(pickedImage.path),
+          }
+        );
+        final Map<String, dynamic> headers = {
+          'Content-Type': 'multipart/form-data',
+        };
+        print(formData.files.first.value.filename);
         Response response = await dio.put(
           userApis.uploadImage(),
-          data: formData,
+          data: formData.files.first,
+          options: Options(headers: headers),
         );
-
+        
         if (response.statusCode == 200) {
-          // Maneja la respuesta exitosa
+          Response user = await dio.get(userApis.getshowMe());
+          User.setValues(User.id, User.name, User.email, user.data['user']['image']);
+          return true;
         } else {
-          // Maneja la respuesta con código de estado no válido
+          return false;
         }
       } catch (e) {
-        // Maneja cualquier error que pueda ocurrir
         print(e);
+        return false;
       }
     }
+    return false;
   }
 
   static Future<bool> checkStoragePermission() async {
@@ -188,7 +198,7 @@ class userController {
       'password': password,
     }
     ); 
-    await userController.getUserInfo();
+    await UserController.getUserInfo();
     return response.statusCode!;
   }
 
@@ -254,7 +264,7 @@ class userController {
           ),
         );
         //logejar a l'usuari dins de l'aplicació
-        await userController.getUserInfo();
+        await UserController.getUserInfo();
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar( context, 'Login de Google realizado correctamente')

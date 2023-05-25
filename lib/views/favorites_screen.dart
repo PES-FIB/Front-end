@@ -139,7 +139,7 @@ class _FavoritesState extends State<Favorites> {
                                   color: Colors.redAccent),
                               onPressed: () async {
                                 int downloadResult =
-                                    await userController.exportCalendar(
+                                    await UserController.exportCalendar(
                                         '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics');
                                 setState(() {
                                   statusDownload = 1;
