@@ -14,16 +14,15 @@ class MapController {
     controller.setMapStyle(mapStyle);
   }
 
-  static Set<Marker> markers (BuildContext context) {
+  static Set<Marker> markers (BuildContext context, List<Event> filteredEvents) {
 
     Map<MarkerId, Marker> eventsMarkers = {};
-    for(Event e in AppEvents.mapEvents){
-      
+
+    for(Event e in filteredEvents){
       if((e.latitude != "" ) && (e.longitude != "")) {
         final newMarkerId = MarkerId(e.code);
         //if saved --> yellow
         if(AppEvents.savedEvents.containsKey(e.code)) {
-          print("SAVED!");
           final newMarker = Marker(
             markerId: newMarkerId,
             position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
@@ -43,7 +42,6 @@ class MapController {
         }
         //not saved --> default red
         else {
-          print("SAVED!");
           final newMarker = Marker(
             markerId: newMarkerId,
             position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
@@ -66,10 +64,11 @@ class MapController {
   }
 
 
-  static Set<Marker> markersByAmbit (BuildContext context, String ambit) {    
+  static Set<Marker> markersByAmbit (BuildContext context, String ambit, List<Event> filteredEvents) {    
+   
     Map<MarkerId, Marker> eventsMarkers = {};
 
-    for(Event e in AppEvents.mapEvents){ 
+    for(Event e in filteredEvents){ 
       if(e.ambits.contains(ambit)) {
         if((e.latitude != "" ) && (e.longitude != "")) {
           final newMarkerId = MarkerId(e.code);

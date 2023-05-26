@@ -133,8 +133,6 @@ class _EventListState extends State<EventList> {
   dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0]; 
 
   List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
-  print(tmpByDateRange.length);
-  print(filteredEventsWithoutDataRangeFilter.length);
 
   List<Event> result = [];
   for (Event event in filteredEventsWithoutDataRangeFilter) {
