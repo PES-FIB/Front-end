@@ -22,7 +22,8 @@ class MapController {
       if((e.latitude != "" ) && (e.longitude != "")) {
         final newMarkerId = MarkerId(e.code);
         //if saved --> yellow
-        if(AppEvents.savedEvents.containsValue(e)) {
+        if(AppEvents.savedEvents.containsKey(e.code)) {
+          print("SAVED!");
           final newMarker = Marker(
             markerId: newMarkerId,
             position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
@@ -42,6 +43,7 @@ class MapController {
         }
         //not saved --> default red
         else {
+          print("SAVED!");
           final newMarker = Marker(
             markerId: newMarkerId,
             position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
@@ -72,7 +74,7 @@ class MapController {
         if((e.latitude != "" ) && (e.longitude != "")) {
           final newMarkerId = MarkerId(e.code);
           //if saved --> yellow
-          if(AppEvents.savedEvents.containsValue(e)) {
+          if(AppEvents.savedEvents.containsKey(e.code)) {
             final newMarker = Marker(
               markerId: newMarkerId,
               position: LatLng(double.parse(e.latitude), double.parse(e.longitude)),
