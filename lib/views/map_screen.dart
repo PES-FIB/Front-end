@@ -126,6 +126,7 @@ class MapScreenState extends State<MapScreen> {
               clearIcon: Icons.clear,
               location: LatLng(41.3926467,2.0701492),
               radius: 3000,
+              placeholder: "Cerca un lloc",
               onSelected: (Place place) async {
                 final geolocation = await place.geolocation;
                 // Will animate the GoogleMap camera, taking us to the selected position with an appropriate zoom
