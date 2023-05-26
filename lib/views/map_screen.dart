@@ -112,8 +112,8 @@ class MapScreenState extends State<MapScreen> {
                 ),
                       
                 Positioned(
-                  top: 16.0,
-                  right: 16.0,
+                  top: 5.0,
+                  left: 16.0,
                   child: Container(
                     padding: EdgeInsets.only(left: 10),
                     decoration: BoxDecoration(

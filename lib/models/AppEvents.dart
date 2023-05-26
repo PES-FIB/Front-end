@@ -15,6 +15,7 @@ class AppEvents {
   static Map<DateTime, List<Event>> savedEventsCalendar = {};
   static Map<String, Event> savedEvents = {};
   static List<Event> eventsList = [];
+  static List<Event> mapEvents = []; //events showed in map(only futer events).
   static Map<DateTime, List<Task>> tasksCalendar = {};
   static List<String> ambits = [];
   static late bool savedChanged; 

@@ -31,6 +31,7 @@ class userController {
       return -1;
     }
     AppEvents.eventsList = await EventsController.getAllEvents();
+    AppEvents.mapEvents = await EventsController.getMapEvents();
     AppEvents.ambits = await EventsController.getAllAmbits();
     AppEvents.savedChanged = false;
     print("AMBITS FETCHED");
@@ -170,6 +171,7 @@ class userController {
   static Future<void> realize_login(context) async { 
     try {
       AppEvents.eventsList = await EventsController.getAllEvents();
+      AppEvents.mapEvents = await EventsController.getMapEvents();
       AppEvents.ambits = await EventsController.getAllAmbits();
       AppEvents.savedChanged = false;
       // ignore: prefer_interpolation_to_compose_strings

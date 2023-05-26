@@ -17,7 +17,7 @@ class MapController {
   static Set<Marker> markers (BuildContext context) {
 
     Map<MarkerId, Marker> eventsMarkers = {};
-    for(Event e in AppEvents.eventsList){
+    for(Event e in AppEvents.mapEvents){
       
       if((e.latitude != "" ) && (e.longitude != "")) {
         final newMarkerId = MarkerId(e.code);
@@ -67,7 +67,7 @@ class MapController {
   static Set<Marker> markersByAmbit (BuildContext context, String ambit) {    
     Map<MarkerId, Marker> eventsMarkers = {};
 
-    for(Event e in AppEvents.eventsList){ 
+    for(Event e in AppEvents.mapEvents){ 
       if(e.ambits.contains(ambit)) {
         if((e.latitude != "" ) && (e.longitude != "")) {
           final newMarkerId = MarkerId(e.code);
