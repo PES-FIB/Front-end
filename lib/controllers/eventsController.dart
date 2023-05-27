@@ -141,6 +141,136 @@ class EventsController {
     }
   }
 
+static Future<List<Event>> getMapEvents() async {
+    List<Event> mapEvents = []; //initialize empty event list.
+    try {
+      //request events
+      final response =
+          await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/eventsMap');
+      
+      if (response.statusCode == 200) {   
+        if(response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+          String code;
+          if (response.data['data'][i]['code']== null) {
+            code = "";
+          } else {
+            code = response.data['data'][i]['code'];
+          }
+
+          String denomination;
+          if (response.data['data'][i]['denomination']== null) {
+            denomination = "";
+          } else {
+            denomination = response.data['data'][i]['denomination'];
+          }
+
+          String description;
+          if (response.data['data'][i]['description']== null) {
+            description = "";
+          } else {
+            description = response.data['data'][i]['description'];
+          }
+          String image;
+          if (response.data['data'][i]['images'] == null) {
+            image = "";
+          } else {
+            image = response.data['data'][i]['images'][0];
+          }
+          String url;
+          if (response.data['data'][i]['url'] == null) {
+            url = "";
+          } else { url = response.data['data'][i]['url']; }
+          
+          String initD;
+          if (response.data['data'][i]['initial_date'] == null) {
+            initD = "";
+          } else {
+            initD = response.data['data'][i]['initial_date'];
+          }
+          
+          String finalD;
+          if (response.data['data'][i]['final_date'] == null) {
+            finalD = "";
+          } else {
+            finalD = response.data['data'][i]['final_date'];
+          }
+          
+          String schedule;
+          if (response.data['data'][i]['schedule'] == null) {
+            schedule = "";
+          } else {
+            schedule = response.data['data'][i]['schedule'];
+          }
+         
+          String city;
+          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+              city = "";
+          } else {
+            city = response.data['data'][i]['region'][2];
+          }
+           
+          String adress;
+          if (response.data['data'][i]['address'] == null) {
+            adress = "";
+          } else {
+            adress = response.data['data'][i]['address'];
+          }
+          
+          String tickets;
+          if (response.data['data'][i]['tickets'] == null) {
+            tickets = "";
+          } else {
+            tickets = response.data['data'][i]['tickets'];
+          }
+
+          String latitude;
+          if (response.data['data'][i]['latitude'] == null) {
+            latitude = "";
+          } else {
+            latitude = response.data['data'][i]['latitude'];
+          }
+
+          String longitude;
+          if (response.data['data'][i]['longitude'] == null) {
+            longitude = "";
+          } else {
+            longitude = response.data['data'][i]['longitude'];
+          }
+          List<dynamic> ambits = [];
+           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+          
+
+          Event event = Event(
+            code,
+            denomination,
+            description,
+            image,
+            url,
+            initD,
+            finalD,
+            schedule,
+            city,
+            adress,
+            tickets,
+            latitude,
+            longitude,
+            ambits,
+          );
+          
+          mapEvents.add(event);
+          }
+          
+          return mapEvents;
+        }
+      }
+      return []; // return an empty list if there was an error
+    } catch (error) {
+      print(error.toString());
+      return []; // return an empty list if there was an error
+    }
+  }
+
   static Future<void> getSavedEvents() async {
     try {
       //request current user saved events
