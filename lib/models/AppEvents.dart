@@ -17,4 +17,5 @@ class AppEvents {
   static Map<String, Event> savedEvents = {};
   static List<Event> eventsList = [];
   static Map<DateTime, List<Task>> tasksCalendar = {};
+  static List<String> ambits = [];
 }
