@@ -92,7 +92,7 @@ class UserController {
       try {
         FormData formData = FormData.fromMap(
           {
-            'file': await MultipartFile.fromFile(pickedImage.path),
+            'profileImage': await MultipartFile.fromFile(pickedImage.path),
           }
         );
         final Map<String, dynamic> headers = {
