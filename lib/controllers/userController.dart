@@ -15,6 +15,7 @@ import '../views/styles/custom_snackbar.dart';
 import 'dart:async';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
 
 class UserController {
   final BuildContext context;
@@ -88,32 +89,39 @@ class UserController {
   Future<bool> pickImage() async {
     final ImagePicker imagePicker = ImagePicker();
     final XFile? pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    Response response;
+    print(pickedImage!.path);
+    print(pickedImage.name);
+    
     if (pickedImage != null) {
       try {
         FormData formData = FormData.fromMap(
           {
-            'profileImage': await MultipartFile.fromFile(pickedImage.path),
+            'profileImage': await MultipartFile.fromFile(pickedImage.path, contentType: MediaType('image', 'png')), // Ajusta el tipo de contenido según el formato de imagen),
           }
         );
-        final Map<String, dynamic> headers = {
-          'Content-Type': 'multipart/form-data',
-        };
         print(formData.files.first.value.filename);
-        Response response = await dio.put(
+        response = await dio.put(
           userApis.uploadImage(),
-          data: formData.files.first,
-          options: Options(headers: headers),
+          data: formData,
         );
         
         if (response.statusCode == 200) {
           Response user = await dio.get(userApis.getshowMe());
-          User.setValues(User.id, User.name, User.email, user.data['user']['image']);
+          final photoUrl = 'http://nattech.fib.upc.edu:40331${user.data['user']['image']}';
+          User.setValues(User.id, User.name, User.email, photoUrl);
           return true;
         } else {
           return false;
         }
       } catch (e) {
-        print(e);
+        if (e is DioError) {
+          if (e.response != null) {
+            print(e.response?.data);
+          }
+        } else {
+          print(e);
+        }
         return false;
       }
     }
