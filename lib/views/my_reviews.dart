@@ -43,7 +43,7 @@ class _MyReviewState extends State<MyReview> {
      appBar: AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),
-        onPressed: () => Navigator.pop(context), //retuning to homePage and updating current event if necessary. 
+        onPressed: () => Navigator.of(context).pop(), //retuning to homePage and updating current event if necessary. 
       ), 
       toolbarHeight: 70,
       automaticallyImplyLeading: false,

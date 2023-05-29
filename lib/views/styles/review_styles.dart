@@ -229,6 +229,7 @@ Card UserReview(BuildContext context, Review review){
     child: Column(
       children: [
         SizedBox(height: 20,),
+        Text("Event: $eventname", style: TextStyle(fontSize: 20),),
         TextFormField(
           decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
           controller: reviewController,
@@ -250,7 +251,7 @@ Card UserReview(BuildContext context, Review review){
                 final status = await _reviewController.deleteMyReview(review);
                 if(status == 200) {
                   ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
-                  _reviewController.toUserReviews();
+                  _reviewController.toUserReviews(false);
                 }
                 else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
                 print("valoració eliminada");

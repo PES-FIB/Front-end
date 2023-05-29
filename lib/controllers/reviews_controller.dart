@@ -28,8 +28,18 @@ class ReviewController{
 
     final List<dynamic> dataReviews = response.data['reviews'];
     for (var review in dataReviews) {
+      String? username;
       //final userresp = await dio.get(userApis.getsingleUserUrl(user.toString()));
-      reviews.add(Review(review['UserId'], review['id'], null , idActivity, review['score'], review['comment']));
+      
+      
+      if (User.id != review['UserId']) {
+        final name = review['User']['name'];
+        final email = review['User']['email'];
+        username = name + "(" + email + ")";
+      } else {
+        username = "Mí";
+      }
+      reviews.add(Review(review['UserId'], review['id'], username , idActivity, review['score'], review['comment']));
     }
     return reviews;
   }
@@ -126,15 +136,30 @@ class ReviewController{
 
   void toReviewsAgain(Event event) async {
     print('recarrga de les valoracions');
-    Navigator.push(
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: ReviewPage(event),
+        );
+      },
+    );
+    /*Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ReviewPage(event)),
-    );
+    );*/
   }
-  void toUserReviews() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyReview()),
-    );
+  void toUserReviews(bool first) {
+    if (!first && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    Navigator.of(context,
+        rootNavigator: true)
+    .push(
+    MaterialPageRoute(
+      builder: (context) => MyReview()));
   }
 }
