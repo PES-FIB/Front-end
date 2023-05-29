@@ -45,58 +45,74 @@ class _ReviewCardState extends State<ReviewCard> {
     super.dispose();
   }
 
-  final List<String> categories = ['harassment', 'spam', 'inappropriate content', 'hate speech', 'false information', 'other'];
+  final List<String> categories = ['Assatjament', 'Spam', 'Contingut inadequat', 'Discurs d\'odi', 'Informació falsa', 'Altres'];
 
   
   @override
   Widget build(BuildContext context) {
     final _reviewController = ReviewController(context);
     return Card(
-    elevation: 5.0,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        //de moment no es mostra el nom de l'usuari que ha fet la review
-        if (username != null)
-          ListTile(
-            title: Text('Valoració feta per $username'),
-          ),
-        Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text(contenido!),
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: widget.review.buildRatingBar(true),    // muestra la puntuación como estrellas
-        ),
-        SizedBox(height: 10.0),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+      elevation: 5.0,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0), // Añadir espacio alrededor del contenido
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: InkWell(
-                radius: 100,
-                child: Text("Reportar valoració"),
-                onTap: () {
-                  print("Reportar");
-                  print(User.id);
-                  print(idActivity);
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CustomReportForm(dropdownValues: categories, review: widget.review);
-                    },
-                  );
-                },
+            //de moment no es mostra el nom de l'usuari que ha fet la review
+            if (username != null)
+              ListTile(
+                title: Text(
+                  'Valoració feta per\n',
+                  style: TextStyle(fontSize: 15),
+                ),
+                subtitle: Text(
+                  username!,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold, // Aplicar negrita al nombre de usuario
+                    color: Colors.redAccent,
+                  ),
+                ),
               ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(contenido!),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Alinear la RatingBar al centro
+              children: [
+                widget.review.buildRatingBar(true), // muestra la puntuación como estrellas
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: InkWell(
+                    radius: 100,
+                    child: Text("Reportar valoració"),
+                    onTap: () {
+                      print("Reportar");
+                      print(User.id);
+                      print(idActivity);
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomReportForm(dropdownValues: categories, review: widget.review);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  );
-
+      ),
+    );
   }
 }
 
@@ -133,7 +149,7 @@ Column MakeReview(BuildContext context, Event event) {
   final reviewController = TextEditingController();
   return Column(
     children: [
-      Text("Fes la teva valoració", style: TextStyle(fontSize: 20),),
+      Text("Fes la teva valoració", style: TextStyle(fontSize: 16),),
       TextFormField(
         decoration: const InputDecoration(labelText: 'Escriu que t\'ha semblat l\'activitat'),
         controller: reviewController,
@@ -170,7 +186,7 @@ Column MyReview(BuildContext context, Event event, Review review) {
   final reviewController = TextEditingController(text: review.contenido);
   return Column(
     children: [
-      Text("La teva valoració:", style: TextStyle(fontSize: 20),),
+      Text("La teva valoració:", style: TextStyle(fontSize: 16),),
       SizedBox(height: 15.0),
       Align(
         child: valoracionUsuario.buildRatingBar(false),
@@ -226,61 +242,65 @@ Card UserReview(BuildContext context, Review review){
   
   return Card(
     elevation: 5.0,
-    child: Column(
-      children: [
-        SizedBox(height: 20,),
-        Text("Event: $eventname", style: TextStyle(fontSize: 20),),
-        TextFormField(
-          decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
-          controller: reviewController,
-        ),
-        SizedBox(height: 15.0),
-        Align(
-          child: review.buildRatingBar(false),
-        ),
-        SizedBox(height: 10.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          //botones para borrar una review y para editarla
-          children: [
-            InkWell(
-              child: Text("Delete"),
-              onTap: () async{
-                //Eliminar la review de la lista de reviews
-                print(review.idReview);
-                final status = await _reviewController.deleteMyReview(review);
-                if(status == 200) {
-                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
-                  _reviewController.toUserReviews(false);
-                }
-                else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
-                print("valoració eliminada");
-              },
-            ),
-            SizedBox(width: 120.0,),
-            InkWell(
-              child: Text("Update"),
-              onTap: () async {
-                review.contenido = reviewController.text;
-                print(review.contenido);
-                print(review.score);
-                print(review.idReview);
-                //Actualizar la review en la lista de reviews
-                final status = await _reviewController.updateMyReview(review);
-                if(status == 200) {
-                  ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
-                  
-                }
-                else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
-              },
-            ),
-          ],
-        ),
-        SizedBox(height: 20,),
-      ],
+    child: Padding(
+      padding: const EdgeInsets.all(20.0), // Añadir espacio alrededor del contenido
+      child: Column(
+        children: [
+          SizedBox(height: 20,),
+          Text("Event: $eventname", style: TextStyle(fontSize: 20),),
+          TextFormField(
+            decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
+            controller: reviewController,
+          ),
+          SizedBox(height: 15.0),
+          Align(
+            child: review.buildRatingBar(false),
+          ),
+          SizedBox(height: 10.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            //botones para borrar una review y para editarla
+            children: [
+              InkWell(
+                child: Text("Delete"),
+                onTap: () async{
+                  //Eliminar la review de la lista de reviews
+                  print(review.idReview);
+                  final status = await _reviewController.deleteMyReview(review);
+                  if(status == 200) {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
+                    _reviewController.toUserReviews(false);
+                  }
+                  else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
+                  print("valoració eliminada");
+                },
+              ),
+              SizedBox(width: 120.0,),
+              InkWell(
+                child: Text("Update"),
+                onTap: () async {
+                  review.contenido = reviewController.text;
+                  print(review.contenido);
+                  print(review.score);
+                  print(review.idReview);
+                  //Actualizar la review en la lista de reviews
+                  final status = await _reviewController.updateMyReview(review);
+                  if(status == 200) {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
+                    
+                  }
+                  else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 20,),
+        ],
+      ),
     ),
   );
 }
+
 
 
 

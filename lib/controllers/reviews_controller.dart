@@ -10,7 +10,7 @@ import '../views/my_reviews.dart';
 
 import '../APIs/reviewsApis.dart';
 import '../APIs/userApis.dart';
-
+import '../APIs/reportsApis.dart';
 
 
 class ReviewController{
@@ -37,7 +37,7 @@ class ReviewController{
         final email = review['User']['email'];
         username = name + "(" + email + ")";
       } else {
-        username = "Mí";
+        username = "mí";
       }
       reviews.add(Review(review['UserId'], review['id'], username , idActivity, review['score'], review['comment']));
     }
@@ -92,21 +92,47 @@ class ReviewController{
     return response.statusCode;
   }
   Future<int?> reportReview(Review review, String category, String comment) async {
-     Response response;
-     dio.options.validateStatus = (status) {
+    Response response;
+    dio.options.validateStatus = (status) {
       // Permitir el código de estado 400 como respuesta exitosa
       return status! < 404;
-  };
+    };
      try {
         final id = User.id;
+        switch (category) {
+          case 'Assatjament':
+            category = 'harassment';
+            break;
+          case 'Spam':
+            category = 'spam';
+            break;
+          case 'Contingut inadequat':
+            category = 'inappropriate content';
+            break;
+          case 'Discurs d\'odi':
+            category = 'hate speech';
+            break;
+          case 'Informació falsa':
+            category = 'false information';
+            break;
+          case 'Altres':
+            category = 'other';
+            break;
+          default:
+            category = 'other';
+            break;
+        }
+        print(category);
         if (comment == '' || comment == null) comment = "L'usuari amb id: $id, no ha deixat cap comentari";
+        print(ReportApis.getReportReviewUrl(review.idReview));
         final response = await dio.post(
-          reviewApi.getReportReviewUrl(review.idReview),
+          ReportApis.getReportReviewUrl(review.idReview),
           data: {
             'type': category,
             'comment': comment,
           },
-        );  
+        ); 
+        print(response.data);
       return response.statusCode;
       } catch (e) {
         print(e);
