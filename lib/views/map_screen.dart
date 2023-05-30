@@ -229,7 +229,7 @@ class MapScreenState extends State<MapScreen> {
                           ),
                           child: IconButton(
                             iconSize: 25,
-                            icon: Icon(Icons.cancel_outlined),
+                            icon: Icon(LineAwesomeIcons.calendar_times),
                             onPressed: () {
                               setState(() {
                                 filteredEvents = AppEvents.mapEvents;
