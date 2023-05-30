@@ -162,8 +162,10 @@ class _EventListState extends State<EventList> {
                             selectedAmbit = value as String;
                             if (selectedAmbit != "Tots els events") {
                               filteredEvents = AppEvents.eventsList.where((event) => event.ambits.contains(selectedAmbit)).toList();
+                              filteredEventsWithoutDataRangeFilter = filteredEvents;
                             } else {
                               filteredEvents = AppEvents.eventsList;
+                              filteredEventsWithoutDataRangeFilter = filteredEvents;
                             }
                             _runSearchFilter(wordSearched);
                           });
@@ -222,14 +224,14 @@ class _EventListState extends State<EventList> {
                             context: context, 
                             firstDate: DateTime.now(), 
                             lastDate: DateTime(3000),
-                            //initialDateRange: selectedDates,
+                            initialDateRange: selectedDates,
                           );
                           if(dateTimeRange != null) {
                             setState(() {
                               selectedDates = dateTimeRange;
                               filterByDateRange();
                               rangeSelected = true;
-                            });
+                            }); 
                           }
                         },
                         ),
