@@ -19,4 +19,5 @@ class AppEvents {
   static Map<DateTime, List<Task>> tasksCalendar = {};
   static List<String> ambits = [];
   static late bool savedChanged; 
+
 }

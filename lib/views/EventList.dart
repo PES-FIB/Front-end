@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
 import '../controllers/mapController.dart';
@@ -21,8 +22,6 @@ class EventList extends StatefulWidget {
 }
 
 class _EventListState extends State<EventList> {
-
-  late Future<List<String>> ambits; //list of all ambits 
   
   List<Event> _foundEvents = [];  
   List<Event> filteredEvents = []; 
@@ -32,32 +31,16 @@ class _EventListState extends State<EventList> {
   List<Color> backgroundColor = []; 
   String wordSearched = '';
 
-  bool _isAmbitsVisible = false;
-  bool _isSearchBarVisible = false;
-  bool rangeSelected = false;
+  String selectedAmbit = "Tots els events";
+  List<String> ambits = [];
 
   DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now()); 
   String dataIni = "";
   String dataFi = "";
   
-
-  Future<List<String>> fetchAmbits() async {
-    List<String> result = await EventsController.getAllAmbits();
-    setState(() {
-      backgroundColor.addAll(List.generate(result.length, (_) => Colors.white)); 
-    });
-    return result;
-  }
-
-
-  bool anyAmbitSelected () {
-    bool selected = false;
-    for(int i = 0; i < backgroundColor.length; ++i) {
-      if (backgroundColor[i] == Color.fromARGB(255, 235, 235, 235)) selected = true;
-    }
-    return selected;
-  }
-
+  bool _isSearchBarVisible = false;
+  bool rangeSelected = false;
+ 
   
   @override
   void initState() {
@@ -67,8 +50,8 @@ class _EventListState extends State<EventList> {
       filteredEvents.addAll(AppEvents.eventsList);
       filteredEventsWithoutDataRangeFilter.addAll(AppEvents.eventsList);
       _foundEvents.addAll(filteredEvents);
-      ambits = fetchAmbits();
-
+      ambits.add("Tots els events");
+      ambits.addAll(AppEvents.ambits);
     });
   } 
 
@@ -144,7 +127,6 @@ class _EventListState extends State<EventList> {
   setState(() {
     filteredEvents.clear();
     filteredEvents.addAll(result);
-    print(filteredEvents.length);
     _runSearchFilter(wordSearched);
   });
 }
@@ -154,248 +136,196 @@ class _EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Column(
-            children: [
-              SingleChildScrollView(
+      body: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            //filtres
+            Container(
+              padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+              child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: [ 
-                    SizedBox(width: 10, height: 70),
-                    Text("Filtra els events:"),
-                    SizedBox(width: 5),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                      
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
-                          ),
-                          child: const Text("Dates"),
-                          onPressed: () async {
-                            final DateTimeRange? dateTimeRange = await showDateRangePicker(
-                              builder: (context, child) {
-                                return Theme(
-                                  data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Colors.redAccent, 
-                                      onPrimary: Colors.white, 
-                                      onSurface: Colors.grey, 
-                                    ),
-                                   ),
-                                  child: child!,
-                                );
-                              },
-                              context: context, 
-                              firstDate: DateTime(2000), 
-                              lastDate: DateTime(3000),
-                              initialDateRange: selectedDates,
-                            );
-                            if(dateTimeRange != null) {
-                              setState(() {
-                                selectedDates = dateTimeRange;
-                                filterByDateRange();
-                                rangeSelected = true;
-                              });
-                            }
-                          },
-                        ),
-                      ],
-                  ),
-                  SizedBox(width: 5),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isAmbitsVisible = !_isAmbitsVisible;
-                      });
-                    },
-                    child: Text('Ambits'),
-                  ),
-                  SizedBox(width: 5),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), 
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isSearchBarVisible = !_isSearchBarVisible;
-                      });
-                    },
-                    child: Text('Busca!'),
-                  ),
-                  SizedBox(height: 70),
-                 ]
-                ),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
                   children: [
-                    Visibility(
-                      visible: rangeSelected,
-                      child: Row(
-                      children: [
-                        Text(" rang seleccionat:", textAlign: TextAlign.center,),
-                        Text(" " + dataIni + " - " + dataFi + "   ",),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.grey), 
-                          ),
-                        onPressed: () {
+                    Container(
+                      padding: EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(width: 0.5, color: Colors.grey)
+                      ),
+                      child: DropdownButton(
+                        value: selectedAmbit,
+                        onChanged: (value) {
                           setState(() {
-                            rangeSelected = false;
-                            selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
-                            clearRangeDateFilter();
+                            selectedAmbit = value as String;
+                            if (selectedAmbit != "Tots els events") {
+                              filteredEvents = AppEvents.eventsList.where((event) => event.ambits.contains(selectedAmbit)).toList();
+                              filteredEventsWithoutDataRangeFilter = filteredEvents;
+                            } else {
+                              filteredEvents = AppEvents.eventsList;
+                              filteredEventsWithoutDataRangeFilter = filteredEvents;
+                            }
+                            _runSearchFilter(wordSearched);
                           });
                         },
-                        child: Text('borrar filtre'),
+                        items: ambits.map(
+                          (e) {
+                            return DropdownMenuItem(value: e, child: Text(e),);
+                          }
+                        ).toList(),
                       ),
-                      ],
-                    ))
+                    ), 
+                    SizedBox(width: 3),
+                    Container(
+                      padding: EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(width: 0.5, color: Colors.grey)
+                      ),
+                      child: IconButton(
+                        iconSize: 25,
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            _isSearchBarVisible = !_isSearchBarVisible;
+                          });
+                          
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 3),
+                    Container(
+                      padding: EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(width: 0.5, color: Colors.grey)
+                      ),
+                      child: IconButton(
+                        iconSize: 27,
+                        icon: Icon(LineAwesomeIcons.alternate_calendar),
+                        onPressed: () async {
+                          final DateTimeRange? dateTimeRange = await showDateRangePicker(
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: Colors.redAccent, 
+                                    onPrimary: Colors.white, 
+                                    onSurface: Colors.grey, 
+                                  ),
+                                  ),
+                                child: child!,
+                              );
+                            },
+                            context: context, 
+                            firstDate: DateTime.now(), 
+                            lastDate: DateTime(3000),
+                            initialDateRange: selectedDates,
+                          );
+                          if(dateTimeRange != null) {
+                            setState(() {
+                              selectedDates = dateTimeRange;
+                              filterByDateRange();
+                              rangeSelected = true;
+                            }); 
+                          }
+                        },
+                        ),
+                      ),
+                      SizedBox(width: 3),
+                      Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(width: 0.5, color: Colors.grey)
+                        ),
+                        child: IconButton(
+                          iconSize: 27,
+                          icon: Icon(LineAwesomeIcons.calendar_times),
+                          onPressed: () {
+                            setState(() {
+                              if(selectedAmbit == "Tots els events"){
+                                filteredEvents = AppEvents.eventsList;
+                              } else {
+                                filteredEvents = AppEvents.eventsList.where((event) => event.ambits.contains(selectedAmbit)).toList();
+                              }
+                              _runSearchFilter(wordSearched);
+                              rangeSelected = false;
+                            });
+                           
+                          },
+                        ),
+                      ),
                   ],
                 ),
-              )
-            ],
-          ),
-          
-          
-          //ambits
-          Visibility(
-            visible: _isAmbitsVisible,
-            child: FutureBuilder<List<String>>(
-              future: ambits,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 100,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                String ambit = snapshot.data![index];
-                                return InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      bool beforeState = anyAmbitSelected(); //checking if it's the first selected.
-                                      backgroundColor[index] = backgroundColor[index] == Colors.white ? Color.fromARGB(255, 235, 235, 235) : Colors.white;
-                                      //si des-seleccionat
-                                      if (backgroundColor[index] == Colors.white) {
-                                        if (!anyAmbitSelected()) {
-                                          filteredEvents.clear();
-                                          filteredEvents.addAll(AppEvents.eventsList);
-                                        } else {
-                                          filteredEvents.removeWhere((event) => event.ambits.contains(ambit));
-                                        }
-                                        _runSearchFilter(wordSearched);
-                                      }
-                                      //si seleccionat
-                                      else {
-                                        if(!beforeState) filteredEvents.clear(); 
-                                        EventsController.getEventsByAmbit(ambit).then((value) {setState(() {
-                                          filteredEvents.addAll(value);
-                                          _runSearchFilter(wordSearched);
-                                        });});
-                                      }
-                                      filteredEventsWithoutDataRangeFilter.clear();
-                                      filteredEventsWithoutDataRangeFilter.addAll(filteredEvents);
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 130,
-                                    margin: EdgeInsets.all(5.0),
-                                    decoration: BoxDecoration(
-                                      color: backgroundColor[index],
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
-                                          blurRadius: 1,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        ambit,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                
-                              }),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          ),
-          //cercador
-          Visibility(
-            visible: _isSearchBarVisible,
-            child: Padding( 
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                onChanged: (value) => _runSearchFilter(value),
-                decoration: InputDecoration(
-                  hintText: "busca un event" ,suffixIcon: Icon(Icons.search), contentPadding: EdgeInsets.all(20.0),
-                ),
               ),
             ),
-          ),
-          //lista d'events
-          Expanded(
-            child: ListView.builder(
-              itemCount: _foundEvents.length,
-              itemBuilder: (context, index) => Card(
-                child: ListTile(
-                  key: ValueKey(_foundEvents[index].code),
-                  contentPadding: EdgeInsets.all(20.0),
-                  title: Text(_foundEvents[index].title),
-                  subtitle: Text(_foundEvents[index].initialDate.substring(0) + " a " + _foundEvents[index].finalDate.substring(0)),
-                  leading:  Icon(Icons.event, color: Colors.black, size: 30),
-                  trailing: IconButton(
-                    iconSize: 25,
-                    icon: Icon(Icons.favorite, color: inSaved(_foundEvents[index].code)? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
-                    onPressed: () {
-                    setState(() {
-                      if (inSaved(_foundEvents[index].code)){
-                        EventsController.unsaveEvent(_foundEvents[index].code);
-                        EventsController.unsaveEventLocale(_foundEvents[index]);
-                        AppEvents.savedChanged = true;
-                      }//remove
-                      else {
-                        EventsController.saveEvent(_foundEvents[index].code);
-                        EventsController.saveEventLocale(_foundEvents[index]);
-                        AppEvents.savedChanged = true;
-                      }//add
-                    });
-                    },
+            Container(
+              padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+              child: Visibility(
+                visible: _isSearchBarVisible,
+                child: TextField(
+                  onChanged: (value) => _runSearchFilter(value),
+                  decoration: InputDecoration(
+                    hintText: "Cerca un event" ,suffixIcon: Icon(Icons.search), contentPadding: EdgeInsets.all(20.0),
                   ),
-              
-                  onTap: () { 
-                    pushEventScreen(index);
-                  }
+              ),),
+            ),
+            Container(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Visibility(
+                visible: rangeSelected, 
+                child: Container(
+                  padding: EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 255, 145, 145),
+                  ),
+                  child: Text("Events del " + dataIni + " a " + dataFi)),
+              ),
+            ),
+            
+            //llista d'events
+            Expanded(
+              child: ListView.builder(
+                itemCount: _foundEvents.length,
+                itemBuilder: (context, index) => Card(
+                  child: ListTile(
+                    key: ValueKey(_foundEvents[index].code),
+                    contentPadding: EdgeInsets.all(20.0),
+                    title: Text(_foundEvents[index].title),
+                    subtitle: Text(_foundEvents[index].initialDate.substring(0, 10) + ", " + _foundEvents[index].city),
+                    leading:  Icon(LineAwesomeIcons.calendar, color: Colors.black, size: 30),
+                    trailing: IconButton(
+                      iconSize: 25,
+                      icon: Icon(Icons.favorite, color: inSaved(_foundEvents[index].code)? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
+                      onPressed: () {
+                      setState(() {
+                        if (inSaved(_foundEvents[index].code)){
+                          EventsController.unsaveEvent(_foundEvents[index].code);
+                          EventsController.unsaveEventLocale(_foundEvents[index]);
+                        }//remove
+                        else {
+                          EventsController.saveEvent(_foundEvents[index].code);
+                          EventsController.saveEventLocale(_foundEvents[index]);
+                        }//add
+                      });
+                      },
+                    ),
+                
+                    onTap: () { 
+                      pushEventScreen(index);
+                    }
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }

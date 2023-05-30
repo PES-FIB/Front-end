@@ -174,6 +174,7 @@ class userController {
       AppEvents.mapEvents = await EventsController.getMapEvents();
       AppEvents.ambits = await EventsController.getAllAmbits();
       AppEvents.savedChanged = false;
+
       // ignore: prefer_interpolation_to_compose_strings
       await EventsController.getSavedEvents();
       await taskController.getAllTasks();
