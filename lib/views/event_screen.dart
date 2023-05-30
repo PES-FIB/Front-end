@@ -23,8 +23,7 @@ class _EventsState extends State<Events> {
   Widget build(BuildContext context) {
 
   String month = "";
-  String month_number = widget.event.initialDate.substring(5,7);
-  switch (month_number) {
+  switch (widget.event.initialDate.substring(5,7)) {
       case "01":
         month = "gener";
         break;

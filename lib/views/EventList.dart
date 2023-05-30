@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
+import '../controllers/mapController.dart';
 import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 
 class EventList extends StatefulWidget {
-  //final VoidCallback onNavigate;
   
   const EventList({
     Key? key,
@@ -135,7 +135,6 @@ class _EventListState extends State<EventList> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(10),
