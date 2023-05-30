@@ -76,7 +76,7 @@ class _ReviewCardState extends State<ReviewCard> {
               ),
             Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text(contenido!),
+              child: Text(contenido!, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             ),
             SizedBox(height: 10.0),
             Row(

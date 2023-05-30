@@ -25,7 +25,7 @@ class Review {
       ignoreGestures: ignoreGesture,
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: Color.fromARGB(255, 255, 215, 97),
+        color: Colors.redAccent,
       ),
       onRatingUpdate: (value) {
         score = value.toInt();
