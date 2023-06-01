@@ -95,7 +95,7 @@ class ReviewController{
     Response response;
     dio.options.validateStatus = (status) {
       // Permitir el código de estado 400 como respuesta exitosa
-      return status! < 404;
+      return status! < 501;
     };
      try {
         final id = User.id;

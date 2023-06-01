@@ -6,6 +6,8 @@ import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../views/review_screen.dart';
 import 'styles/share_button.dart';
+import '../models/User.dart';
+import 'styles/custom_report_form.dart';
 
 class Events extends StatefulWidget {
 
@@ -65,7 +67,14 @@ class _EventsState extends State<Events> {
         month = "";
     }
 
+    final reportComment = TextEditingController();
 
+    void dispose() {
+      // Limpia el controlador cuando el widget se descarte
+      reportComment.dispose();
+      super.dispose();
+    }
+    final List<String> categories = ['Assatjament', 'Spam', 'Contingut inadequat', 'Discurs d\'odi', 'Informació falsa', 'Altres'];
     return  Scaffold(
 
         //body
@@ -310,14 +319,38 @@ class _EventsState extends State<Events> {
                       },
                     ),
                     SizedBox(height: 10.0),
-                    
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: InkWell(
+                            radius: 100,
+                            child: Text("Reportar event"),
+                            onTap: () {
+                              print("Reportar");
+                              print(User.id);
+                              print(widget.event.code);
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CustomReportEventForm(dropdownValues: categories, event: widget.event);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
               ),
               Visibility(
                 visible: amplia,
                 child: ReviewPage(widget.event))
             ],
+            
           ),
+          
           ),
           
         ),
