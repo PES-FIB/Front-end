@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../controllers/userController.dart';
@@ -10,7 +8,6 @@ class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -20,8 +17,20 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _initLogin();
+  }
 
+  Future<void> _initLogin() async {
+    bool isLoggedIn = await userController(context).initPrefs();
+    setState(() {
+      login = isLoggedIn;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -34,21 +43,31 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   Image.asset('assets/cultura_c2.png', height: 250),
                   SizedBox(height: 30),
-                  const Text(
-                    'Inicia Sessió',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  Visibility(
+                    visible: !login,
+                    child: const Text(
+                      'Inicia Sesión',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    controller: _emailController,
+                  Visibility(
+                    visible: !login,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Email'),
+                          controller: _emailController,
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: const InputDecoration(labelText: 'Password'),
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 20),
                   !login
                       ? Column(
                           children: [
@@ -60,33 +79,26 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               onPressed: () async {
-                                //obtengo los valores de los campos
+                                // Obtener los valores de los campos
                                 String email = _emailController.text;
                                 String password = _passwordController.text;
-                                setState(() {
-                                  login = true;
-                                });
                                 try {
-                                  //llamo a la funcion de login
-                                  int statusCode = await userController
-                                      .loginUser(email, password);
+                                  // Llamar a la función de inicio de sesión
+                                  int statusCode = await userController.loginUser(email, password);
                                   if (statusCode == 200) {
-                                    userController.realize_login(context);
-                                  } else {
                                     setState(() {
-                                      login = false;
+                                      login = true;
                                     });
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        customSnackbar(context,
-                                            'Usuario i/o contraseña incorrectos'));
+                                        customSnackbar(context, 'Usuari loguejat correctament'));
+                                    userController.realize_login(context);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        customSnackbar(context, 'Usuario y/o contraseña incorrectos'));
                                   }
                                 } catch (error) {
-                                  setState(() {
-                                    login = false;
-                                  });
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      customSnackbar(context,
-                                          'Fallo de connexión al intentar iniciar sesión'));
+                                      customSnackbar(context, 'Fallo de conexión al intentar iniciar sesión'));
                                 }
                               },
                               child: Row(
@@ -101,28 +113,42 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             TextButton(
-                              child: Text('Crear una nueva cuenta',
-                                  style: TextStyle(color: Colors.redAccent)),
+                              child: Text('Crear una nueva cuenta', style: TextStyle(color: Colors.redAccent)),
                               onPressed: () async {
                                 userController.to_signUp(context);
                               },
                             ),
-                            //espacio para el boton de google
                             const SizedBox(height: 20),
-                            //un flatbutton para el boton de google
                             SignInButton(
                               Buttons.Google,
-                              onPressed: ()  async {
-                                await userController.googleLogin(context);
+                              onPressed: () async {
+                                bool success = await userController.googleLogin(context);
+                                if (success) {
+                                  setState(() {
+                                    login = true;
+                                  });
+                                  // ignore: use_build_context_synchronously
+                                  userController.realize_login(context);
+                                }
                               },
                             ),
                           ],
                         )
-                      : SizedBox(
-                          child: SpinKitFadingCircle(
-                          size: MediaQuery.of(context).size.height*0.08,
-                          color: Colors.redAccent,
-                        )),
+                      : Column(
+                          children: [
+                            SizedBox(
+                              child: SpinKitFadingCircle(
+                                size: MediaQuery.of(context).size.height * 0.08,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Carregant els events...',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),

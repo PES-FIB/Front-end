@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -12,7 +14,7 @@ import '../views/create_account.dart';
 import '../views/styles/custom_snackbar.dart';
 import 'dart:async';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class userController {
   final BuildContext context;
@@ -50,6 +52,7 @@ class userController {
     AppEvents.savedEvents = {};
     AppEvents.savedEventsCalendar = {};
     AppEvents.tasksCalendar = {};
+    clearCookie();
     return response.statusCode!;
   }
 
@@ -70,6 +73,7 @@ class userController {
     }
     User.setValues(response.data['user']['id'], response.data['user']['name'],
         response.data['user']['email'], photoUrl);
+    print("User: ${User.name} ${User.email} ${User.photoUrl}");
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
@@ -164,6 +168,10 @@ class userController {
       'password': password,
     }
     ); 
+    String? rawCookie = response.headers['set-cookie']![0];
+    String? cookie = rawCookie.split(';')[0];
+    print("Cookie: $cookie");
+    manageCookie(cookie);
     await userController.getUserInfo();
     return response.statusCode!;
   }
@@ -197,7 +205,7 @@ class userController {
     }
 
     
-   static Future<void> googleLogin(context) async {
+   static Future<bool> googleLogin(context) async {
     String finalUrl = "";
 
     final redirect = await dio.post(
@@ -225,7 +233,7 @@ class userController {
         ),
       );
       try {
-        await dio.get(
+        final response = await dio.get(
           finalUrl,
           options: Options (
             validateStatus: (_) => true,
@@ -233,19 +241,53 @@ class userController {
             responseType:ResponseType.json,
           ),
         );
+        String? rawCookie = response.headers['set-cookie']![0];
+        String? cookie = rawCookie.split(';')[0];
+        print("Cookie: $cookie");
+        manageCookie(cookie);
         //logejar a l'usuari dins de l'aplicació
         await userController.getUserInfo();
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar( context, 'Login de Google realizado correctamente')
         );
-        realize_login(context);
+        return true;
       } catch (e){
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar( context, 'Se ha producido un error: $e')
         );
+        return false;
       }
-
     }
+    return false;
+  }
+
+  static Future<void> manageCookie(String? cookie) async {
+    if (cookie != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print('prefs initialized');
+      prefs.setString('Cookie', cookie);
+      print("cookie saved");
+    }
+  }
+  static Future<void> clearCookie() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('Cookie');
+    dio.options.headers['Cookie'] = null;
+  }
+
+  Future<bool> initPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? cookie = prefs.getString('Cookie');
+    print('Cookie: $cookie');
+    if (cookie != null) {
+      dio.options.headers['Cookie'] = cookie;
+      print("cookie loaded");
+      getUserInfo();
+      realize_login(context);
+      return true;
+    }
+    print('prefs initialized');
+    return false;
   }
 }
