@@ -25,8 +25,6 @@ class _EventListState extends State<EventList> {
   
   List<Event> _foundEvents = [];  
   List<Event> filteredEvents = []; 
-  List<Event> filteredEventsWithoutDataRangeFilter= [];
-
 
   List<Color> backgroundColor = []; 
   String wordSearched = '';
@@ -46,15 +44,20 @@ class _EventListState extends State<EventList> {
   void initState() {
     super.initState();
     setState(() {
-      print(AppEvents.eventsList.length);
-      filteredEvents.addAll(AppEvents.eventsList);
-      filteredEventsWithoutDataRangeFilter.addAll(AppEvents.eventsList);
+      filteredEvents = List.from(AppEvents.eventsList);
       _foundEvents.addAll(filteredEvents);
       ambits.add("Tots els events");
       ambits.addAll(AppEvents.ambits);
     });
   } 
 
+  void filterByAmbit() {
+    if (selectedAmbit != "Tots els events") {
+      filteredEvents = List.from(AppEvents.eventsList.where((event) => event.ambits.contains(selectedAmbit)));
+    } else {
+      filteredEvents = List.from(AppEvents.eventsList);
+    }
+  }
 
   bool inSaved(String codeEvent){
     return AppEvents.savedEvents.containsKey(codeEvent);
@@ -74,62 +77,54 @@ class _EventListState extends State<EventList> {
     });
   }
 
-    void pushEventScreen(int clickedEvent) async {
+  void pushEventScreen(int clickedEvent) async {
 
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Events(event: _foundEvents[clickedEvent]),
-          );
-        },
-      );
-    }
-
-  
-  void clearRangeDateFilter(){
-    setState(() {
-      filteredEvents.clear();
-      filteredEvents.addAll(filteredEventsWithoutDataRangeFilter);
-    });
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Events(event: _foundEvents[clickedEvent]),
+        );
+      },
+    );
   }
+
 
   void filterByDateRange() async{
   
-  //year-month-day
-  List<String>  dirtyInitDate = selectedDates.start.toString().split(" ");
-  //[year] [month] [day] 
-  List<String> initDate = dirtyInitDate[0].split("-");
-  //month/day/year
-  String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
-  print(queryInitDate);
+    //year-month-day
+    List<String>  dirtyInitDate = selectedDates.start.toString().split(" ");
+    //[year] [month] [day] 
+    List<String> initDate = dirtyInitDate[0].split("-");
+    //month/day/year
+    String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
+    print(queryInitDate);
 
-  //year-month-day
-  List<String>  dirtyFinalDate = selectedDates.end.toString().split(" ");
-  //[year] [month] [day] 
-  List<String> finalDate = dirtyFinalDate[0].split("-");
-  //month/day/year
-  String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
-  print(queryFinalDate);
+    //year-month-day
+    List<String>  dirtyFinalDate = selectedDates.end.toString().split(" ");
+    //[year] [month] [day] 
+    List<String> finalDate = dirtyFinalDate[0].split("-");
+    //month/day/year
+    String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
+    print(queryFinalDate);
 
-  dataIni = initDate[2] + "/" + initDate[1] + "/" + initDate[0]; 
-  dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0]; 
+    dataIni = initDate[2] + "/" + initDate[1] + "/" + initDate[0]; 
+    dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0]; 
 
-  List<Event> tmpByDateRange = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
+    List<Event> tmp = await EventsController.getEventsByDateRange(queryInitDate, queryFinalDate);
 
-  List<Event> result = [];
-  for (Event event in filteredEventsWithoutDataRangeFilter) {
-    if (tmpByDateRange.any((tmpEvent) => tmpEvent.code == event.code)) {
-      result.add(event);
+    List<Event> result = [];
+    for (Event event in filteredEvents) {
+      if (tmp.any((tmpEvent) => tmpEvent.code == event.code)) {
+        result.add(event);
+      }
     }
+    setState(() {
+      filteredEvents.clear();
+      filteredEvents.addAll(result);
+      _runSearchFilter(wordSearched);
+    });
   }
-
-  setState(() {
-    filteredEvents.clear();
-    filteredEvents.addAll(result);
-    _runSearchFilter(wordSearched);
-  });
-}
 
 
 
@@ -159,15 +154,10 @@ class _EventListState extends State<EventList> {
                         onChanged: (value) {
                           setState(() {
                             selectedAmbit = value as String;
-                            if (selectedAmbit != "Tots els events") {
-                              filteredEvents = AppEvents.eventsList.where((event) => event.ambits.contains(selectedAmbit)).toList();
-                              filteredEventsWithoutDataRangeFilter = filteredEvents;
-                            } else {
-                              filteredEvents = AppEvents.eventsList;
-                              filteredEventsWithoutDataRangeFilter = filteredEvents;
-                            }
+                            filterByAmbit();
                             _runSearchFilter(wordSearched);
                           });
+
                         },
                         items: ambits.map(
                           (e) {
@@ -247,16 +237,13 @@ class _EventListState extends State<EventList> {
                           iconSize: 27,
                           icon: Icon(LineAwesomeIcons.calendar_times),
                           onPressed: () {
-                            setState(() {
-                              if(selectedAmbit == "Tots els events"){
-                                filteredEvents = AppEvents.eventsList;
-                              } else {
-                                filteredEvents = AppEvents.eventsList.where((event) => event.ambits.contains(selectedAmbit)).toList();
-                              }
-                              _runSearchFilter(wordSearched);
-                              rangeSelected = false;
-                            });
-                           
+                            if(rangeSelected) {
+                              setState(() {
+                                filterByAmbit();
+                                _runSearchFilter(wordSearched);
+                                rangeSelected = false;
+                              });
+                            }
                           },
                         ),
                       ),
