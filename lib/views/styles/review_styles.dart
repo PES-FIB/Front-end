@@ -145,7 +145,7 @@ ListView MyReviewsList(BuildContext context, List<Review> valoracions) {
 
 Column MakeReview(BuildContext context, Event event) {
   ReviewController _reviewController = ReviewController(context);
-  Review valoracionUsuario = Review(User.id, -1, User.name, event.code, 5, "");
+  Review valoracionUsuario = Review(User.id, -1, User.name, event.code, 5, "", event.title);
   final reviewController = TextEditingController();
   return Column(
     children: [
@@ -238,7 +238,7 @@ Column MyReview(BuildContext context, Event event, Review review) {
 Card UserReview(BuildContext context, Review review){
   ReviewController _reviewController = ReviewController(context);
   final reviewController = TextEditingController(text: review.contenido);
-  final eventname = review.idActivity;
+  final eventname = review.title;
   
   return Card(
     elevation: 5.0,
@@ -246,8 +246,14 @@ Card UserReview(BuildContext context, Review review){
       padding: const EdgeInsets.all(20.0), // Añadir espacio alrededor del contenido
       child: Column(
         children: [
-          SizedBox(height: 20,),
-          Text("Event: $eventname", style: TextStyle(fontSize: 20),),
+          SizedBox(height: 20),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Event:\n", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(eventname!, style: TextStyle(fontSize: 20)),
+            ],
+          ),
           TextFormField(
             decoration: const InputDecoration(labelText: 'Edita la teva valoració'),
             controller: reviewController,
@@ -259,23 +265,23 @@ Card UserReview(BuildContext context, Review review){
           SizedBox(height: 10.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            //botones para borrar una review y para editarla
             children: [
               InkWell(
                 child: Text("Delete"),
-                onTap: () async{
-                  //Eliminar la review de la lista de reviews
+                onTap: () async {
+                  // Eliminar la review de la lista de reviews
                   print(review.idReview);
                   final status = await _reviewController.deleteMyReview(review);
-                  if(status == 200) {
+                  if (status == 200) {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
                     _reviewController.toUserReviews(false);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
                   }
-                  else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
                   print("valoració eliminada");
                 },
               ),
-              SizedBox(width: 120.0,),
+              SizedBox(width: 120.0),
               InkWell(
                 child: Text("Update"),
                 onTap: () async {
@@ -283,23 +289,24 @@ Card UserReview(BuildContext context, Review review){
                   print(review.contenido);
                   print(review.score);
                   print(review.idReview);
-                  //Actualizar la review en la lista de reviews
+                  // Actualizar la review en la lista de reviews
                   final status = await _reviewController.updateMyReview(review);
-                  if(status == 200) {
+                  if (status == 200) {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració actualitzada exitosament"));
-                    
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
                   }
-                  else ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al actualizar la valoració"));
                 },
               ),
             ],
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
         ],
       ),
     ),
   );
 }
+
 
 
 

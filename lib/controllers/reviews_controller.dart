@@ -39,7 +39,7 @@ class ReviewController{
       } else {
         username = "mí";
       }
-      reviews.add(Review(review['UserId'], review['id'], username , idActivity, review['score'], review['comment']));
+      reviews.add(Review(review['UserId'], review['id'], username , idActivity, review['score'], review['comment'], null));
     }
     return reviews;
   }
@@ -52,7 +52,9 @@ class ReviewController{
     final myReviews = response.data['reviews'];
     for (var review in myReviews) {
       print(review);
-      reviews.add(Review(User.id, review['id'], User.name, review["EventCode"], review['score'], review['comment']));
+      //busca el nombre del evento
+      Event event = AppEvents.eventsList.firstWhere((event) => event.code == review["EventCode"]);
+      reviews.add(Review(User.id, review['id'], User.name, review["EventCode"] , review['score'], review['comment'], event.title));
     }
     return reviews;
   }
@@ -156,7 +158,7 @@ class ReviewController{
         return review;
       }
     }
-    return Review(-1, -1, "", "0", 1, "");
+    return Review(-1, -1, "", "0", 1, "", null);
   }
   
 
