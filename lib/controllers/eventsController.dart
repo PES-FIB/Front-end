@@ -1,3 +1,4 @@
+import 'package:dio/src/response.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../models/AppEvents.dart';
@@ -6,6 +7,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../utils/map_style.dart';
 import '../views/event_screen.dart';
 import 'package:share_plus/share_plus.dart';
+import '../models/User.dart';
+import '../models/Formulari.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:geocoding/geocoding.dart';
+
 
 class EventsController {
   final BuildContext context;
@@ -17,120 +23,124 @@ class EventsController {
       //request events
       final response =
           await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events');
-      
-      if (response.statusCode == 200) {   
-        if(response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-          String code;
-          if (response.data['data'][i]['code']== null) {
-            code = "";
-          } else {
-            code = response.data['data'][i]['code'];
-          }
 
-          String denomination;
-          if (response.data['data'][i]['denomination']== null) {
-            denomination = "";
-          } else {
-            denomination = response.data['data'][i]['denomination'];
-          }
+      if (response.statusCode == 200) {
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) {
+            //response is already decoded.
+            String code;
+            if (response.data['data'][i]['code'] == null) {
+              code = "";
+            } else {
+              code = response.data['data'][i]['code'];
+            }
 
-          String description;
-          if (response.data['data'][i]['description']== null) {
-            description = "";
-          } else {
-            description = response.data['data'][i]['description'];
-          }
-          String image;
-          if (response.data['data'][i]['images'] == null) {
-            image = "";
-          } else {
-            image = response.data['data'][i]['images'][0];
-          }
-          String url;
-          if (response.data['data'][i]['url'] == null) {
-            url = "";
-          } else { url = response.data['data'][i]['url']; }
-          
-          String initD;
-          if (response.data['data'][i]['initial_date'] == null) {
-            initD = "";
-          } else {
-            initD = response.data['data'][i]['initial_date'];
-          }
-          
-          String finalD;
-          if (response.data['data'][i]['final_date'] == null) {
-            finalD = "";
-          } else {
-            finalD = response.data['data'][i]['final_date'];
-          }
-          
-          String schedule;
-          if (response.data['data'][i]['schedule'] == null) {
-            schedule = "";
-          } else {
-            schedule = response.data['data'][i]['schedule'];
-          }
-         
-          String city;
-          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+            String denomination;
+            if (response.data['data'][i]['denomination'] == null) {
+              denomination = "";
+            } else {
+              denomination = response.data['data'][i]['denomination'];
+            }
+
+            String description;
+            if (response.data['data'][i]['description'] == null) {
+              description = "";
+            } else {
+              description = response.data['data'][i]['description'];
+            }
+            String image;
+            if (response.data['data'][i]['images'] == null) {
+              image = "";
+            } else {
+              image = response.data['data'][i]['images'][0];
+            }
+            String url;
+            if (response.data['data'][i]['url'] == null) {
+              url = "";
+            } else {
+              url = response.data['data'][i]['url'];
+            }
+
+            String initD;
+            if (response.data['data'][i]['initial_date'] == null) {
+              initD = "";
+            } else {
+              initD = response.data['data'][i]['initial_date'];
+            }
+
+            String finalD;
+            if (response.data['data'][i]['final_date'] == null) {
+              finalD = "";
+            } else {
+              finalD = response.data['data'][i]['final_date'];
+            }
+
+            String schedule;
+            if (response.data['data'][i]['schedule'] == null) {
+              schedule = "";
+            } else {
+              schedule = response.data['data'][i]['schedule'];
+            }
+
+            String city;
+            if (response.data['data'][i]['region'] == null ||
+                response.data['data'][i]['region'].length < 3) {
               city = "";
-          } else {
-            city = response.data['data'][i]['region'][2];
-          }
-           
-          String adress;
-          if (response.data['data'][i]['address'] == null) {
-            adress = "";
-          } else {
-            adress = response.data['data'][i]['address'];
-          }
-          
-          String tickets;
-          if (response.data['data'][i]['tickets'] == null) {
-            tickets = "";
-          } else {
-            tickets = response.data['data'][i]['tickets'];
+            } else {
+              city = response.data['data'][i]['region'][2];
+            }
+
+            String adress;
+            if (response.data['data'][i]['address'] == null) {
+              adress = "";
+            } else {
+              adress = response.data['data'][i]['address'];
+            }
+
+            String tickets;
+            if (response.data['data'][i]['tickets'] == null) {
+              tickets = "";
+            } else {
+              tickets = response.data['data'][i]['tickets'];
+            }
+
+            String latitude;
+            if (response.data['data'][i]['latitude'] == null) {
+              latitude = "";
+            } else {
+              latitude = response.data['data'][i]['latitude'];
+            }
+
+            String longitude;
+            if (response.data['data'][i]['longitude'] == null) {
+              longitude = "";
+            } else {
+              longitude = response.data['data'][i]['longitude'];
+            }
+            List<dynamic> ambits = [];
+            if (response.data['data'][i]['ambits'] != null)
+              ambits.addAll(response.data['data'][i]['ambits']);
+
+            Event event = Event(
+              code,
+              denomination,
+              description,
+              image,
+              url,
+              initD,
+              finalD,
+              schedule,
+              city,
+              adress,
+              tickets,
+              latitude,
+              longitude,
+              ambits,
+            );
+
+            allEvents.add(event);
           }
 
-          String latitude;
-          if (response.data['data'][i]['latitude'] == null) {
-            latitude = "";
-          } else {
-            latitude = response.data['data'][i]['latitude'];
-          }
-
-          String longitude;
-          if (response.data['data'][i]['longitude'] == null) {
-            longitude = "";
-          } else {
-            longitude = response.data['data'][i]['longitude'];
-          }
-          List<dynamic> ambits = [];
-           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
-          
-
-          Event event = Event(
-            code,
-            denomination,
-            description,
-            image,
-            url,
-            initD,
-            finalD,
-            schedule,
-            city,
-            adress,
-            tickets,
-            latitude,
-            longitude,
-            ambits,
-          );
-          
-          allEvents.add(event);
-          }
-          
           return allEvents;
         }
       }
@@ -141,126 +151,130 @@ class EventsController {
     }
   }
 
-static Future<List<Event>> getMapEvents() async {
+  static Future<List<Event>> getMapEvents() async {
     List<Event> mapEvents = []; //initialize empty event list.
     try {
       //request events
-      final response =
-          await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/eventsMap');
-      
-      if (response.statusCode == 200) {   
-        if(response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-          String code;
-          if (response.data['data'][i]['code']== null) {
-            code = "";
-          } else {
-            code = response.data['data'][i]['code'];
-          }
+      final response = await dio
+          .get('http://nattech.fib.upc.edu:40331/api/v1/events/eventsMap');
 
-          String denomination;
-          if (response.data['data'][i]['denomination']== null) {
-            denomination = "";
-          } else {
-            denomination = response.data['data'][i]['denomination'];
-          }
+      if (response.statusCode == 200) {
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) {
+            //response is already decoded.
+            String code;
+            if (response.data['data'][i]['code'] == null) {
+              code = "";
+            } else {
+              code = response.data['data'][i]['code'];
+            }
 
-          String description;
-          if (response.data['data'][i]['description']== null) {
-            description = "";
-          } else {
-            description = response.data['data'][i]['description'];
-          }
-          String image;
-          if (response.data['data'][i]['images'] == null) {
-            image = "";
-          } else {
-            image = response.data['data'][i]['images'][0];
-          }
-          String url;
-          if (response.data['data'][i]['url'] == null) {
-            url = "";
-          } else { url = response.data['data'][i]['url']; }
-          
-          String initD;
-          if (response.data['data'][i]['initial_date'] == null) {
-            initD = "";
-          } else {
-            initD = response.data['data'][i]['initial_date'];
-          }
-          
-          String finalD;
-          if (response.data['data'][i]['final_date'] == null) {
-            finalD = "";
-          } else {
-            finalD = response.data['data'][i]['final_date'];
-          }
-          
-          String schedule;
-          if (response.data['data'][i]['schedule'] == null) {
-            schedule = "";
-          } else {
-            schedule = response.data['data'][i]['schedule'];
-          }
-         
-          String city;
-          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+            String denomination;
+            if (response.data['data'][i]['denomination'] == null) {
+              denomination = "";
+            } else {
+              denomination = response.data['data'][i]['denomination'];
+            }
+
+            String description;
+            if (response.data['data'][i]['description'] == null) {
+              description = "";
+            } else {
+              description = response.data['data'][i]['description'];
+            }
+            String image;
+            if (response.data['data'][i]['images'] == null) {
+              image = "";
+            } else {
+              image = response.data['data'][i]['images'][0];
+            }
+            String url;
+            if (response.data['data'][i]['url'] == null) {
+              url = "";
+            } else {
+              url = response.data['data'][i]['url'];
+            }
+
+            String initD;
+            if (response.data['data'][i]['initial_date'] == null) {
+              initD = "";
+            } else {
+              initD = response.data['data'][i]['initial_date'];
+            }
+
+            String finalD;
+            if (response.data['data'][i]['final_date'] == null) {
+              finalD = "";
+            } else {
+              finalD = response.data['data'][i]['final_date'];
+            }
+
+            String schedule;
+            if (response.data['data'][i]['schedule'] == null) {
+              schedule = "";
+            } else {
+              schedule = response.data['data'][i]['schedule'];
+            }
+
+            String city;
+            if (response.data['data'][i]['region'] == null ||
+                response.data['data'][i]['region'].length < 3) {
               city = "";
-          } else {
-            city = response.data['data'][i]['region'][2];
-          }
-           
-          String adress;
-          if (response.data['data'][i]['address'] == null) {
-            adress = "";
-          } else {
-            adress = response.data['data'][i]['address'];
-          }
-          
-          String tickets;
-          if (response.data['data'][i]['tickets'] == null) {
-            tickets = "";
-          } else {
-            tickets = response.data['data'][i]['tickets'];
+            } else {
+              city = response.data['data'][i]['region'][2];
+            }
+
+            String adress;
+            if (response.data['data'][i]['address'] == null) {
+              adress = "";
+            } else {
+              adress = response.data['data'][i]['address'];
+            }
+
+            String tickets;
+            if (response.data['data'][i]['tickets'] == null) {
+              tickets = "";
+            } else {
+              tickets = response.data['data'][i]['tickets'];
+            }
+
+            String latitude;
+            if (response.data['data'][i]['latitude'] == null) {
+              latitude = "";
+            } else {
+              latitude = response.data['data'][i]['latitude'];
+            }
+
+            String longitude;
+            if (response.data['data'][i]['longitude'] == null) {
+              longitude = "";
+            } else {
+              longitude = response.data['data'][i]['longitude'];
+            }
+            List<dynamic> ambits = [];
+            if (response.data['data'][i]['ambits'] != null)
+              ambits.addAll(response.data['data'][i]['ambits']);
+
+            Event event = Event(
+              code,
+              denomination,
+              description,
+              image,
+              url,
+              initD,
+              finalD,
+              schedule,
+              city,
+              adress,
+              tickets,
+              latitude,
+              longitude,
+              ambits,
+            );
+
+            mapEvents.add(event);
           }
 
-          String latitude;
-          if (response.data['data'][i]['latitude'] == null) {
-            latitude = "";
-          } else {
-            latitude = response.data['data'][i]['latitude'];
-          }
-
-          String longitude;
-          if (response.data['data'][i]['longitude'] == null) {
-            longitude = "";
-          } else {
-            longitude = response.data['data'][i]['longitude'];
-          }
-          List<dynamic> ambits = [];
-           if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
-          
-
-          Event event = Event(
-            code,
-            denomination,
-            description,
-            image,
-            url,
-            initD,
-            finalD,
-            schedule,
-            city,
-            adress,
-            tickets,
-            latitude,
-            longitude,
-            ambits,
-          );
-          
-          mapEvents.add(event);
-          }
-          
           return mapEvents;
         }
       }
@@ -289,7 +303,7 @@ static Future<List<Event>> getMapEvents() async {
             } else {
               image = response.data['events'][i]['images'][0];
             }
-            
+
             String url;
             if (response.data['events'][i]['url'] == null) {
               url = "";
@@ -310,7 +324,7 @@ static Future<List<Event>> getMapEvents() async {
             } else {
               finalD = response.data['events'][i]['final_date'];
             }
-            
+
             String schedule;
             if (response.data['events'][i]['schedule'] == null) {
               schedule = "";
@@ -332,7 +346,7 @@ static Future<List<Event>> getMapEvents() async {
             } else {
               adress = response.data['events'][i]['adress'];
             }
-            
+
             String tickets;
             if (response.data['events'][i]['tickets'] == null) {
               tickets = "";
@@ -340,17 +354,18 @@ static Future<List<Event>> getMapEvents() async {
               tickets = response.data['events'][i]['tickets'];
             }
             String latitude = "";
-          if (response.data['events'][i]['latitude'] != null) {
-            latitude = response.data['events'][i]['latitude'];
-          }
-          String longitude ="";
-          if (response.data['events'][i]['longitude'] != null) {
-            longitude = response.data['events'][i]['longitude'];
-          }
+            if (response.data['events'][i]['latitude'] != null) {
+              latitude = response.data['events'][i]['latitude'];
+            }
+            String longitude = "";
+            if (response.data['events'][i]['longitude'] != null) {
+              longitude = response.data['events'][i]['longitude'];
+            }
 
-          List<dynamic> ambits = [];
-           if(response.data['events'][i]['ambits'] != null) ambits.addAll(response.data['events'][i]['ambits']);
-          
+            List<dynamic> ambits = [];
+            if (response.data['events'][i]['ambits'] != null)
+              ambits.addAll(response.data['events'][i]['ambits']);
+
             Event event = Event(
                 response.data['events'][i]['code'],
                 response.data['events'][i]['denomination'],
@@ -377,34 +392,36 @@ static Future<List<Event>> getMapEvents() async {
 
   static void saveEventLocale(Event e) {
     AppEvents.savedEvents[e.code] = e;
-    if (AppEvents.savedEventsCalendar.containsKey(DateUtils.dateOnly(DateTime.parse(e.initialDate)))) {
-      AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(DateTime.parse(e.initialDate)))]?.add(e);
-    } 
-    else {
+    if (AppEvents.savedEventsCalendar
+        .containsKey(DateUtils.dateOnly(DateTime.parse(e.initialDate)))) {
+      AppEvents.savedEventsCalendar[DateUtils.dateOnly(
+              DateUtils.dateOnly(DateTime.parse(e.initialDate)))]
+          ?.add(e);
+    } else {
       List<Event> l = [e];
-      AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateUtils.dateOnly(
-          DateTime.parse(e.initialDate)))] = l;
+      AppEvents.savedEventsCalendar[DateUtils.dateOnly(
+          DateUtils.dateOnly(DateTime.parse(e.initialDate)))] = l;
     }
   }
 
- static void unsaveEventLocale(Event e) {
-  if (AppEvents.savedEvents.containsKey(e.code)) {
-    AppEvents.savedEvents.remove(e.code);
+  static void unsaveEventLocale(Event e) {
+    if (AppEvents.savedEvents.containsKey(e.code)) {
+      AppEvents.savedEvents.remove(e.code);
+    }
+    final eventsOnDate = AppEvents
+        .savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))];
+    if (eventsOnDate != null) {
+      eventsOnDate.removeWhere((event) => event.code == e.code);
+    }
   }
-  final eventsOnDate = AppEvents.savedEventsCalendar[DateUtils.dateOnly(DateTime.parse(e.initialDate))];
-  if (eventsOnDate != null) {
-    eventsOnDate.removeWhere((event) => event.code == e.code);
-  }
-}
 
   static void saveEvent(String codeEvent) async {
     try {
       //save event
       await dio.post(
           'http://nattech.fib.upc.edu:40331/api/v1/users/saveEvent/$codeEvent');
-     
+
       //cheking response
-   
     } catch (error) {
       return;
     }
@@ -422,108 +439,114 @@ static Future<List<Event>> getMapEvents() async {
     }
   }
 
-static Future<Event> getEventByCode(String code) async {
-    Event emptyEvent = Event("", "", "", "", "", "", "", "", "", "", "", "", "", []);
+  static Future<Event> getEventByCode(String code) async {
+    Event emptyEvent =
+        Event("", "", "", "", "", "", "", "", "", "", "", "", "", []);
     try {
       //auth login for getting autorization
-     await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login', data: {'email':'cbum@gmail.com', 'password':'cbumpostman'});
+      await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login',
+          data: {'email': 'cbum@gmail.com', 'password': 'cbumpostman'});
       //checking if event is saved
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/$code');
-      if(response.statusCode == 200) {
-
+      final response =
+          await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/$code');
+      if (response.statusCode == 200) {
         String code;
-          if (response.data['data']['code']== null) {
-            code = "";
-          } else {
-            code = response.data['data']['code'];
-          }
+        if (response.data['data']['code'] == null) {
+          code = "";
+        } else {
+          code = response.data['data']['code'];
+        }
 
-          String denomination;
-          if (response.data['data']['denomination']== null) {
-            denomination = "";
-          } else {
-            denomination = response.data['data']['denomination'];
-          }
+        String denomination;
+        if (response.data['data']['denomination'] == null) {
+          denomination = "";
+        } else {
+          denomination = response.data['data']['denomination'];
+        }
 
-          String description;
-          if (response.data['data']['description']== null) {
-            description = "";
-          } else {
-            description = response.data['data']['description'];
-          }
-          
-          //images can be empty 
-          String image;
-          if (response.data['data']['images'] == null) {
-            image = "";
-          } else {
-            image = response.data['data']['images'][0];
-          }
+        String description;
+        if (response.data['data']['description'] == null) {
+          description = "";
+        } else {
+          description = response.data['data']['description'];
+        }
 
-          //url can be null 
-          String url;
-          if (response.data['data']['url'] == null) {
-            url = "";
-          } else { url = response.data['data']['url']; }
+        //images can be empty
+        String image;
+        if (response.data['data']['images'] == null) {
+          image = "";
+        } else {
+          image = response.data['data']['images'][0];
+        }
 
-          String initD;
-          if (response.data['data']['initial_date'] == null) {
-            initD = "";
-          } else {
-            initD = response.data['data']['initial_date'];
-          }
-          
-          String finalD;
-          if (response.data['data']['final_date'] == null) {
-            finalD = "";
-          } else {
-            finalD = response.data['data']['final_date'];
-          }
+        //url can be null
+        String url;
+        if (response.data['data']['url'] == null) {
+          url = "";
+        } else {
+          url = response.data['data']['url'];
+        }
 
-          String schedule;
-          if (response.data['data']['schedule'] == null) {
-            schedule = "";
-          } else {
-            schedule = response.data['data']['schedule'];
-          }
+        String initD;
+        if (response.data['data']['initial_date'] == null) {
+          initD = "";
+        } else {
+          initD = response.data['data']['initial_date'];
+        }
 
-          String city;
-          if (response.data['data']['region'] == null || response.data['data']['region'].length < 3) {
-              city = "";
-          } else {
-            city = response.data['data']['region'][2];
-          }
+        String finalD;
+        if (response.data['data']['final_date'] == null) {
+          finalD = "";
+        } else {
+          finalD = response.data['data']['final_date'];
+        }
 
-          String adress;
-          if (response.data['data']['address'] == null) {
-            adress = "";
-          } else {
-            adress = response.data['data']['address'];
-          }
-          
-          String tickets;
-          if (response.data['data']['tickets'] == null) {
-            tickets = "";
-          } else {
-            tickets = response.data['data']['tickets'];
-          }
+        String schedule;
+        if (response.data['data']['schedule'] == null) {
+          schedule = "";
+        } else {
+          schedule = response.data['data']['schedule'];
+        }
 
-          String latitude;
-          if (response.data['data']['latitude'] == null) {
-            latitude = "";
-          } else {
-            latitude = response.data['data']['latitude'];
-          }
+        String city;
+        if (response.data['data']['region'] == null ||
+            response.data['data']['region'].length < 3) {
+          city = "";
+        } else {
+          city = response.data['data']['region'][2];
+        }
 
-          String longitude;
-          if (response.data['data']['longitude'] == null) {
-            longitude = "";
-          } else {
-            longitude = response.data['data']['longitude'];
-          }
-          List<dynamic> ambits = [];
-          if(response.data['data']['ambits'] != null) ambits.addAll(response.data['data']['ambits']);
-        
+        String adress;
+        if (response.data['data']['address'] == null) {
+          adress = "";
+        } else {
+          adress = response.data['data']['address'];
+        }
+
+        String tickets;
+        if (response.data['data']['tickets'] == null) {
+          tickets = "";
+        } else {
+          tickets = response.data['data']['tickets'];
+        }
+
+        String latitude;
+        if (response.data['data']['latitude'] == null) {
+          latitude = "";
+        } else {
+          latitude = response.data['data']['latitude'];
+        }
+
+        String longitude;
+        if (response.data['data']['longitude'] == null) {
+          longitude = "";
+        } else {
+          longitude = response.data['data']['longitude'];
+        }
+        List<dynamic> ambits = [];
+        if (response.data['data']['ambits'] != null)
+          ambits.addAll(response.data['data']['ambits']);
+
         Event event = Event(
             code,
             denomination,
@@ -538,147 +561,148 @@ static Future<Event> getEventByCode(String code) async {
             tickets,
             latitude,
             longitude,
-            ambits
-        );
+            ambits);
 
         return event;
-      }
-      else return emptyEvent;
-    } catch (error) {
+      } else
         return emptyEvent;
-      }
+    } catch (error) {
+      return emptyEvent;
+    }
   }
 
-  static Future<List<Event>> getEventsByAmbit(String ambit) async{
+  static Future<List<Event>> getEventsByAmbit(String ambit) async {
     try {
       List<Event> eventsByAmbit = [];
-    
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/searchByAmbit?ambit=$ambit');
+
+      final response = await dio.get(
+          'http://nattech.fib.upc.edu:40331/api/v1/events/searchByAmbit?ambit=$ambit');
       if (response.statusCode == 200) {
-        if(response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-        
-          String denomination;
-          if(response.data['data'][i]['denomination'] == null) {
-            denomination = '';
-          } else {denomination = response.data['data'][i]['denomination'];}
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) {
+            //response is already decoded.
 
-          String description;
-          if (response.data['data'][i]['description'] == null) {description = '';}
-          else {description = response.data['data'][i]['description']; }
+            String denomination;
+            if (response.data['data'][i]['denomination'] == null) {
+              denomination = '';
+            } else {
+              denomination = response.data['data'][i]['denomination'];
+            }
 
-          //images can be empty 
-          String image;
-          if (response.data['data'][i]['images'] == null) {
-            image = "";
-          } else {
-            image = response.data['data'][i]['images'][0];
-          }
+            String description;
+            if (response.data['data'][i]['description'] == null) {
+              description = '';
+            } else {
+              description = response.data['data'][i]['description'];
+            }
 
-          //url can be null 
-          String url;
-          if (response.data['data'][i]['url'] == null) {
-            url = "";
-          } else { url = response.data['data'][i]['url']; }
+            //images can be empty
+            String image;
+            if (response.data['data'][i]['images'] == null) {
+              image = "";
+            } else {
+              image = response.data['data'][i]['images'][0];
+            }
 
-          String initD;
-          if (response.data['data'][i]['initial_date'] == null) {
-            initD = "";
-          } else {
-            initD = response.data['data'][i]['initial_date'];
-          }
-          
-          String finalD;
-          if (response.data['data'][i]['final_date'] == null) {
-            finalD = "";
-          } else {
-            finalD = response.data['data'][i]['final_date'];
-          }
-          
+            //url can be null
+            String url;
+            if (response.data['data'][i]['url'] == null) {
+              url = "";
+            } else {
+              url = response.data['data'][i]['url'];
+            }
 
-          String schedule;
-          if (response.data['data'][i]['schedule'] == null) {
-            schedule = "";
-          } else {
-            schedule = response.data['data'][i]['schedule'];
-          }
+            String initD;
+            if (response.data['data'][i]['initial_date'] == null) {
+              initD = "";
+            } else {
+              initD = response.data['data'][i]['initial_date'];
+            }
 
-          String city;
-          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+            String finalD;
+            if (response.data['data'][i]['final_date'] == null) {
+              finalD = "";
+            } else {
+              finalD = response.data['data'][i]['final_date'];
+            }
+
+            String schedule;
+            if (response.data['data'][i]['schedule'] == null) {
+              schedule = "";
+            } else {
+              schedule = response.data['data'][i]['schedule'];
+            }
+
+            String city;
+            if (response.data['data'][i]['region'] == null ||
+                response.data['data'][i]['region'].length < 3) {
               city = "";
-          } else {
-            city = response.data['data'][i]['region'][2];
+            } else {
+              city = response.data['data'][i]['region'][2];
+            }
+
+            String adress;
+            if (response.data['data'][i]['address'] == null) {
+              adress = "";
+            } else {
+              adress = response.data['data'][i]['address'];
+            }
+
+            String tickets;
+            if (response.data['data'][i]['tickets'] == null) {
+              tickets = "";
+            } else {
+              tickets = response.data['data'][i]['tickets'];
+            }
+
+            List<dynamic> ambits = [];
+            if (response.data['data'][i]['ambits'] != null)
+              ambits.addAll(response.data['data'][i]['ambits']);
+
+            String latitude;
+            if (response.data['data'][i]['latitude'] == null) {
+              latitude = "";
+            } else {
+              latitude = response.data['data'][i]['latitude'];
+            }
+
+            String longitude;
+            if (response.data['data'][i]['longitude'] == null) {
+              longitude = "";
+            } else {
+              longitude = response.data['data'][i]['longitude'];
+            }
+
+            Event event = Event(
+                response.data['data'][i]['code'],
+                denomination,
+                description,
+                image,
+                url,
+                initD,
+                finalD,
+                schedule,
+                city,
+                adress,
+                tickets,
+                latitude,
+                longitude,
+                ambits);
+            eventsByAmbit.add(event);
           }
-
-          String adress;
-          if (response.data['data'][i]['address'] == null) {
-            adress = "";
-          } else {
-            adress = response.data['data'][i]['address'];
-          }
-          
-          String tickets;
-          if (response.data['data'][i]['tickets'] == null) {
-            tickets = "";
-          } else {
-            tickets = response.data['data'][i]['tickets'];
-          }
-
-
-          List<dynamic> ambits = [];
-          if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
-
-
-          String latitude;
-          if (response.data['data'][i]['latitude'] == null) {
-            latitude = "";
-          } else {
-            latitude = response.data['data'][i]['latitude'];
-          }
-
-
-
-          String longitude;
-          if (response.data['data'][i]['longitude'] == null) {
-            longitude = "";
-          } else {
-            longitude = response.data['data'][i]['longitude'];
-          }
- 
-
-          Event event = Event(
-            response.data['data'][i]['code'],
-            denomination,
-            description,
-            image,
-            url,
-            initD,
-            finalD,
-            schedule,
-            city,
-            adress,
-            tickets,
-            latitude,
-            longitude,
-            ambits
-          );
-          eventsByAmbit.add(event);
-          }
-        return eventsByAmbit;
+          return eventsByAmbit;
         }
       }
       return [];
-    } catch (error){
+    } catch (error) {
       return [];
     }
   }
 
-  
-   static Future<String> existsSavedEvent(String codeEvent) async {
+  static Future<String> existsSavedEvent(String codeEvent) async {
     try {
       //auth login for getting autorization
-      await dio.post(
-          'http://nattech.fib.upc.edu:40331/api/v1/auth/login',
+      await dio.post('http://nattech.fib.upc.edu:40331/api/v1/auth/login',
           data: {'email': 'cbum@gmail.com', 'password': 'cbumpostman'});
       //checking if event is saved
       final response = await dio.get(
@@ -693,23 +717,24 @@ static Future<Event> getEventByCode(String code) async {
     }
   }
 
-    static Future<List<String>> getAllAmbits() async {
-    List<String> allAmbits = []; 
+  static Future<List<String>> getAllAmbits() async {
+    List<String> allAmbits = [];
     try {
-      //request events 
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/ambits');
-       
-      if (response.statusCode == 200) {
+      //request events
+      final response =
+          await dio.get('http://nattech.fib.upc.edu:40331/api/v1/ambits');
 
-        if(response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
+      if (response.statusCode == 200) {
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) {
+            //response is already decoded.
             allAmbits.add(response.data['data'][i]['name']);
           }
           return allAmbits;
         }
-        return []; 
+        return [];
       }
-      return [];// return an empty list if there was an error
+      return []; // return an empty list if there was an error
     } catch (error) {
       return []; // return an empty list if there was an error
     }
@@ -719,137 +744,221 @@ static Future<Event> getEventByCode(String code) async {
     if (url == "") {
       final eventname = title;
       return ("Check out this event! $eventname, this event doesn't have a link.");
-    }
-    else {
+    } else {
       return ("Check out this event found on CulturiCAT!\n$url , you can find more information about this event in the link");
     }
-    } 
-      
+  }
+
   static void ShareAction(String message) {
     Share.share(message);
   }
 
-  static Future<List<Event>> getEventsByDateRange(String initDate, String finalDate) async{
+  static Future<List<Event>> getEventsByDateRange(
+      String initDate, String finalDate) async {
     try {
       List<Event> eventsByDataRange = [];
-    
-      final response = await dio.get('http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$initDate&final_date=$finalDate');
+
+      final response = await dio.get(
+          'http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$initDate&final_date=$finalDate');
       print(response.statusCode);
       if (response.statusCode == 200) {
-        if(response.data['data'] != null) {
-          for (int i = 0; i < response.data['data'].length; ++i) { //response is already decoded. 
-        
-          String denomination;
-          if(response.data['data'][i]['denomination'] == null) {
-            denomination = '';
-          } else {denomination = response.data['data'][i]['denomination'];}
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) {
+            //response is already decoded.
 
-          String description;
-          if (response.data['data'][i]['description'] == null) {description = '';}
-          else {description = response.data['data'][i]['description']; }
+            String denomination;
+            if (response.data['data'][i]['denomination'] == null) {
+              denomination = '';
+            } else {
+              denomination = response.data['data'][i]['denomination'];
+            }
 
-          //images can be empty 
-          String image;
-          if (response.data['data'][i]['images'] == null) {
-            image = "";
-          } else {
-            image = response.data['data'][i]['images'][0];
-          }
+            String description;
+            if (response.data['data'][i]['description'] == null) {
+              description = '';
+            } else {
+              description = response.data['data'][i]['description'];
+            }
 
-          //url can be null 
-          String url;
-          if (response.data['data'][i]['url'] == null) {
-            url = "";
-          } else { url = response.data['data'][i]['url']; }
+            //images can be empty
+            String image;
+            if (response.data['data'][i]['images'] == null) {
+              image = "";
+            } else {
+              image = response.data['data'][i]['images'][0];
+            }
 
-          String initD;
-          if (response.data['data'][i]['initial_date'] == null) {
-            initD = "";
-          } else {
-            initD = response.data['data'][i]['initial_date'];
-          }
-          
-          String finalD;
-          if (response.data['data'][i]['final_date'] == null) {
-            finalD = "";
-          } else {
-            finalD = response.data['data'][i]['final_date'];
-          }
+            //url can be null
+            String url;
+            if (response.data['data'][i]['url'] == null) {
+              url = "";
+            } else {
+              url = response.data['data'][i]['url'];
+            }
 
-          String schedule;
-          if (response.data['data'][i]['schedule'] == null) {
-            schedule = "";
-          } else {
-            schedule = response.data['data'][i]['schedule'];
-          }
+            String initD;
+            if (response.data['data'][i]['initial_date'] == null) {
+              initD = "";
+            } else {
+              initD = response.data['data'][i]['initial_date'];
+            }
 
-          String city;
-          if (response.data['data'][i]['region'] == null || response.data['data'][i]['region'].length < 3) {
+            String finalD;
+            if (response.data['data'][i]['final_date'] == null) {
+              finalD = "";
+            } else {
+              finalD = response.data['data'][i]['final_date'];
+            }
+
+            String schedule;
+            if (response.data['data'][i]['schedule'] == null) {
+              schedule = "";
+            } else {
+              schedule = response.data['data'][i]['schedule'];
+            }
+
+            String city;
+            if (response.data['data'][i]['region'] == null ||
+                response.data['data'][i]['region'].length < 3) {
               city = "";
-          } else {
-            city = response.data['data'][i]['region'][2];
-          }
+            } else {
+              city = response.data['data'][i]['region'][2];
+            }
 
-          String adress;
-          if (response.data['data'][i]['address'] == null) {
-            adress = "";
-          } else {
-            adress = response.data['data'][i]['address'];
-          }
-          
-          String tickets;
-          if (response.data['data'][i]['tickets'] == null) {
-            tickets = "";
-          } else {
-            tickets = response.data['data'][i]['tickets'];
-          }
+            String adress;
+            if (response.data['data'][i]['address'] == null) {
+              adress = "";
+            } else {
+              adress = response.data['data'][i]['address'];
+            }
 
-          List<dynamic> ambits = [];
-          if(response.data['data'][i]['ambits'] != null) ambits.addAll(response.data['data'][i]['ambits']);
+            String tickets;
+            if (response.data['data'][i]['tickets'] == null) {
+              tickets = "";
+            } else {
+              tickets = response.data['data'][i]['tickets'];
+            }
 
-          String latitude;
-          if (response.data['data'][i]['latitude'] == null) {
-            latitude = "";
-          } else {
-            latitude = response.data['data'][i]['latitude'];
+            List<dynamic> ambits = [];
+            if (response.data['data'][i]['ambits'] != null)
+              ambits.addAll(response.data['data'][i]['ambits']);
+
+            String latitude;
+            if (response.data['data'][i]['latitude'] == null) {
+              latitude = "";
+            } else {
+              latitude = response.data['data'][i]['latitude'];
+            }
+
+            String longitude;
+            if (response.data['data'][i]['longitude'] == null) {
+              longitude = "";
+            } else {
+              longitude = response.data['data'][i]['longitude'];
+            }
+
+            Event event = Event(
+                response.data['data'][i]['code'],
+                denomination,
+                description,
+                image,
+                url,
+                initD,
+                finalD,
+                schedule,
+                city,
+                adress,
+                tickets,
+                latitude,
+                longitude,
+                ambits);
+            eventsByDataRange.add(event);
           }
-
-        String longitude;
-          if (response.data['data'][i]['longitude'] == null) {
-            longitude = "";
-          } else {
-            longitude = response.data['data'][i]['longitude'];
-          }
-
-          Event event = Event(
-            response.data['data'][i]['code'],
-            denomination,
-            description,
-            image,
-            url,
-            initD,
-            finalD,
-            schedule,
-            city,
-            adress,
-            tickets,
-            latitude,
-            longitude,
-            ambits
-          );
-          eventsByDataRange.add(event);
-           }
           return eventsByDataRange;
         }
       }
       return [];
-    } catch (error){
+    } catch (error) {
       print(error.toString());
       return [];
     }
   }
+
+  static Future<int> enviarFormulari(
+    String formulari_name,
+    String dataIni,
+    String dataFi,
+    String denomination_event,
+    String description_event,
+    String tickets_event,
+    String schedule_event,
+    List<String> ambits_event,
+    String address_event,
+    String postal_code_event,
+    String email_event,
+    String municipality_event,
+    String url_event,
+    XFile? app_image_event,
+  ) async {
+    List<Location> locations = [];
+    try {
+    locations = await locationFromAddress('$address_event, $postal_code_event ${municipality_event.toUpperCase()}');
+    // Access the first location from the list
+  } catch (e) {
+    print('Error, ubicació no trobada: $e');
+  }
+    Response response;
+    try {
+      response = await dio.post(
+          'http://nattech.fib.upc.edu:40331/api/v1/formulari/${User.id}',
+          data: {
+            'formulari_name': formulari_name,
+            'formulari_reason': '',
+            'user_id': User.id,
+            'initial_d': dataIni.substring(0, dataIni.indexOf(' ')),
+            'final_d': dataFi.substring(0, dataFi.indexOf(' ')),
+            'initial_h':
+                dataIni.substring(dataIni.lastIndexOf(' ') + 1, dataIni.length),
+            'final_h':
+                dataFi.substring(dataFi.lastIndexOf(' ') + 1, dataFi.length),
+            'denomination_event': denomination_event,
+            'description_event': description_event,
+            'ambits_event': ambits_event,
+            'address_event': address_event,
+            'postal_code_event': postal_code_event,
+            'email_event': email_event,
+            'municipality_event': municipality_event,
+            'latitude_event': locations.first.latitude,
+            'longitude_event': locations.first.longitude,
+            'url_event': url_event,
+            'app_image_event': app_image_event
+          });
+    } catch (e) {
+      return -2;
+    }
+    if (response.statusCode == 200) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
+  static Future<List<Formulari>> getUserForms() async {
+    List<Formulari> listReturn = [];
+    Response r;
+    try {
+      r = await dio
+          .get('http://nattech.fib.upc.edu:40331/api/v1/formulari/${User.id}');
+    } catch (e) {
+      print ('error = ${e.toString()}');
+      return listReturn;
+    }
+    if (r.statusCode == 200) {
+      if (r.data['data'] != null) {
+        for (int i = 0; i < r.data['data'].length; ++i) {
+        }
+      }
+    }
+    return listReturn;
+  }
 }
-
-
-
-

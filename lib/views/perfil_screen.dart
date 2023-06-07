@@ -8,6 +8,7 @@ import '../models/User.dart';
 import 'perfil_config.dart';
 import 'styles/custom_snackbar.dart';
 import 'styles/custom_user_image.dart';
+import 'createForm_screen.dart';
 
 class Perfil extends StatefulWidget {
   @override
@@ -17,6 +18,19 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
+
+Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
+  // Show a dialog and wait for it to be popped
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return createForm();
+    },
+  );
+  setState(() {
+  });
+}
+
   @override
   Widget build(BuildContext context) {
     final ReviewController reviewController = ReviewController(context);
@@ -27,11 +41,11 @@ class _PerfilState extends State<Perfil> {
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(right: 10, left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              child: Column(
                 children: <Widget>[
-                  Column(
-                    children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       CircleAvatar(
                         radius: 20,
                         backgroundColor: Colors.redAccent,
@@ -62,7 +76,6 @@ class _PerfilState extends State<Perfil> {
                               color: Colors.white),
                         ),
                       ),
-                      SizedBox(height: 5),
                       CircleAvatar(
                           radius: 20,
                           backgroundColor: Colors.redAccent,
@@ -84,7 +97,27 @@ class _PerfilState extends State<Perfil> {
                                 Icon(LineAwesomeIcons.cog, color: Colors.white),
                           )),
                     ],
-                  )
+                  ),
+                  SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.redAccent,
+                        child: IconButton(
+                          tooltip: 'Sol·licitud d\'event',
+                          style: IconButton.styleFrom(shape: CircleBorder()),
+                          onPressed: ()  {
+                            _showDialogAndThenUpdateState(context);
+                          },
+                          icon: Icon(LineAwesomeIcons.folder_plus,
+                              color: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
+                      SizedBox(height: 5),
                 ],
               ),
             ),
