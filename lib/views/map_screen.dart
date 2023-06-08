@@ -33,7 +33,7 @@ class MapScreenState extends State<MapScreen> {
   DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now()); 
   String dataIni = "";
   String dataFi = "";
-  List<Event> filteredEvents = AppEvents.mapEvents;
+  List<Event> filteredEvents = List.from(AppEvents.mapEvents);
 
   //default camera position = barcelona.
   CameraPosition initialCameraPosition =  CameraPosition(
@@ -232,7 +232,7 @@ class MapScreenState extends State<MapScreen> {
                             icon: Icon(LineAwesomeIcons.calendar_times),
                             onPressed: () {
                               setState(() {
-                                filteredEvents = AppEvents.mapEvents;
+                                filteredEvents = List.from(AppEvents.mapEvents);
                                 rangeSelected = false;
                               });
                               _fetchMarkers();
