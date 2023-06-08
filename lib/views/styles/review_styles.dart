@@ -1,9 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, curly_braces_in_flow_control_structures, unrelated_type_equality_checks, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
+import '../../models/AppEvents.dart';
 import '../../models/Review.dart';
 import '../../models/Event.dart';
 import '../../models/User.dart';
+import '../event_screen.dart';
 import 'custom_snackbar.dart';
 import 'custom_report_form.dart';
 import '../../controllers/reviews_controller.dart';
@@ -251,7 +254,23 @@ Card UserReview(BuildContext context, Review review){
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Event:\n", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Text(eventname!, style: TextStyle(fontSize: 20)),
+              InkWell(
+                radius: 1000,
+                child: Text(eventname!, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent)),
+                onTap: () async {
+                  Event? event = AppEvents.eventsList.firstWhereOrNull((event) => event.code == review.idActivity);
+                  if (event != null) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: Events(event: event),
+                        );
+                      },
+                    );
+                  }   
+                },
+              ),
             ],
           ),
           TextFormField(

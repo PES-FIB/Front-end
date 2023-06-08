@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import '../models/AppEvents.dart';
 import '../models/Review.dart';
@@ -53,8 +54,10 @@ class ReviewController{
     for (var review in myReviews) {
       print(review);
       //busca el nombre del evento
-      Event event = AppEvents.eventsList.firstWhere((event) => event.code == review["EventCode"]);
-      reviews.add(Review(User.id, review['id'], User.name, review["EventCode"] , review['score'], review['comment'], event.title));
+      Event? event = AppEvents.eventsList.firstWhereOrNull((event) => event.code == review["EventCode"]);
+      if (event != null) {
+        reviews.add(Review(User.id, review['id'], User.name, review["EventCode"] , review['score'], review['comment'], event.title));
+      }
     }
     return reviews;
   }
