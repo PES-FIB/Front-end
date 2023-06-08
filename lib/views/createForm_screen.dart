@@ -5,7 +5,7 @@ import 'package:prova_login/controllers/taskController.dart';
 import 'package:prova_login/controllers/userController.dart';
 import 'styles/custom_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
-
+import '../models/AppEvents.dart';
 
 class createForm extends StatefulWidget {
   const createForm({
@@ -28,13 +28,11 @@ class _createFormState extends State<createForm> {
   TextEditingController emailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController urlController = TextEditingController();
+  TextEditingController imageController = TextEditingController();
+  List<String> selectedValues = [];
   late DateTime dataIni = DateTime.now();
   late DateTime dataFi = DateTime.now();
-  XFile? imageEvent = null;
-
-  Future<void> selectImage () async {
-    imageEvent = await ImagePicker().pickImage(source: ImageSource.gallery);
-  }
+  bool mostrarpicklist = false;
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +139,37 @@ class _createFormState extends State<createForm> {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          mostrarpicklist = !mostrarpicklist;
+                        });
+                      },
+                      child: Text('Seleccionar Àmbits... ▼'),
+                    ),
+                  ],
+                ),
+                mostrarpicklist?
+                Column(
+                  children: AppEvents.ambits.map((String ambit) {
+                    return CheckboxListTile(
+                      title: Text(ambit),
+                      value: selectedValues.contains(ambit),
+                      onChanged: (bool? selected) {
+                        setState(() {
+                          if (selected == true) {
+                            selectedValues.add(ambit);
+                          } else {
+                            selectedValues.remove(ambit);
+                          }
+                          print('selectedValues: $selectedValues');
+                        });
+                      },
+                    );
+                  }).toList(),
+                ): SizedBox(height: 0),
                 TextFormField(
                   controller: scheduleController,
                   decoration: const InputDecoration(
@@ -160,7 +189,6 @@ class _createFormState extends State<createForm> {
                 ),
                 TextFormField(
                   controller: addressController,
-                  enableSuggestions: true,
                   decoration: const InputDecoration(
                       labelText: 'Adreça',
                       labelStyle: TextStyle(fontSize: 12),
@@ -168,18 +196,16 @@ class _createFormState extends State<createForm> {
                       hintStyle: TextStyle(fontSize: 12)),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                Row(
-                  children: [
-                  Text('Imatge de l\'event: '),
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.036,
-                    decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                      ),
-                    child: TextButton(onPressed: () async {
-                      await selectImage();
-                    }, child: Text('Puja una imatge', style: TextStyle(color: Colors.white),)))
-                ]),
+                TextFormField(
+                  controller: imageController,
+                  decoration: const InputDecoration(
+                      labelText: 'Imatge',
+                      labelStyle: TextStyle(fontSize: 12),
+                      hintText:
+                          'Enllaç de la imatge, en format PNG o JPG, ha de ser una URL vàlida i pública',
+                      hintStyle: TextStyle(fontSize: 12)),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               ],
             ),
           )),
@@ -195,7 +221,34 @@ class _createFormState extends State<createForm> {
             ),
             TextButton(
               onPressed: () async {
-                EventsController.enviarFormulari(nameController.text, dataIni.toString(), dataFi.toString(), denominationController.text, descriptionController.text, ticketsController.text, scheduleController.text, [], addressController.text, postalCodeController.text, emailController.text, cityController.text, urlController.text,imageEvent );
+                int returnvalue = await EventsController.enviarFormulari(
+                    nameController.text,
+                    dataIni.toString(),
+                    dataFi.toString(),
+                    denominationController.text,
+                    descriptionController.text,
+                    ticketsController.text,
+                    scheduleController.text,
+                    [],
+                    addressController.text,
+                    postalCodeController.text,
+                    emailController.text,
+                    cityController.text,
+                    urlController.text,
+                    imageController.text);
+                if (returnvalue == 1) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Sol·licitud enviada!')));
+                } else if (returnvalue == -4) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'No s\ha trobat l\'adreça, si us plau, introdueix una adreça vàlida')));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'Hi ha hagut un error en la sol·licitud. Si us plau, revisi les dades introduïdes')));
+                }
               },
               child: Text('Enviar Sol·licitud'),
             ),

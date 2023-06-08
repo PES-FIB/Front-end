@@ -898,22 +898,26 @@ class EventsController {
     String email_event,
     String municipality_event,
     String url_event,
-    XFile? app_image_event,
+    String app_image_event,
   ) async {
     List<Location> locations = [];
+    List<String> appImage = [app_image_event];
     try {
-    locations = await locationFromAddress('$address_event, $postal_code_event ${municipality_event.toUpperCase()}');
-    // Access the first location from the list
+      String locationUnified = '$address_event, $postal_code_event ${municipality_event.toUpperCase()}';
+      print('locationUnified: $locationUnified');
+    locations = await locationFromAddress(locationUnified);
   } catch (e) {
     print('Error, ubicació no trobada: $e');
+    return -4;
   }
     Response response;
     try {
       response = await dio.post(
-          'http://nattech.fib.upc.edu:40331/api/v1/formulari/${User.id}',
+          'http://nattech.fib.upc.edu:40331/api/v1/formulari',
           data: {
             'formulari_name': formulari_name,
-            'formulari_reason': '',
+            'formulari_reason': ' ',
+            'schedule_event': schedule_event,
             'user_id': User.id,
             'initial_d': dataIni.substring(0, dataIni.indexOf(' ')),
             'final_d': dataFi.substring(0, dataFi.indexOf(' ')),
@@ -931,12 +935,13 @@ class EventsController {
             'latitude_event': locations.first.latitude,
             'longitude_event': locations.first.longitude,
             'url_event': url_event,
-            'app_image_event': app_image_event
+            'app_image_event': appImage
           });
     } catch (e) {
+      print('Error, no s\'ha pogut enviar el formulari: $e');
       return -2;
     }
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return 1;
     } else {
       return -1;
