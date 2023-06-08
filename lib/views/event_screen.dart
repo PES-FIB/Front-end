@@ -23,8 +23,7 @@ class _EventsState extends State<Events> {
   Widget build(BuildContext context) {
 
   String month = "";
-  String month_number = widget.event.initialDate.substring(5,7);
-  switch (month_number) {
+  switch (widget.event.initialDate.substring(5,7)) {
       case "01":
         month = "gener";
         break;
@@ -269,6 +268,22 @@ class _EventsState extends State<Events> {
                                 )],
                             ),
                           ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                Icon(Icons.category),
+                                SizedBox(width: 10.0),
+                                Text(
+                                  widget.event.ambits.join(", "),
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.black
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),      
                           if (widget.event.url != null)
                             //espacio de 10p
                             SizedBox(height: 10.0),
