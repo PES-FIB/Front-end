@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/User.dart';
 
 class Contacte extends StatefulWidget {
   const Contacte({Key? key}) : super(key: key);
@@ -9,12 +12,13 @@ class Contacte extends StatefulWidget {
   _ContacteState createState() => _ContacteState();
 }
 
-final nameController = TextEditingController();
+
+class _ContacteState extends State<Contacte> {
+
 final subjectController = TextEditingController();
-final emailController = TextEditingController();
 final messageController = TextEditingController();
 
-Future sendEmail() async{
+Future sendEmail(BuildContext context) async{
   final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
   const serviceId = "service_8ltqtxj";
   const templateId = "template_b7k7n1i";
@@ -30,19 +34,30 @@ Future sendEmail() async{
       "template_id":templateId,
       "user_id": userId,
       "template_params": {
-        "user": nameController.text,
+        "user": User.name,
         "subject": subjectController.text,
-        "user_email": emailController.text,
+        "user_email": User.email,
         "message":messageController.text,
       }
     })
   );
-  print(response.statusCode);
+  if (response.statusCode == 200) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Correu enviat correctament!'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error al enviar el correu'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
   return response.statusCode;
 }
-
-
-class _ContacteState extends State<Contacte> {
   
 
   @override
@@ -74,30 +89,13 @@ class _ContacteState extends State<Contacte> {
           child: Form(
             child: Column(
               children: [
-                TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.account_circle),
-                    hintText: 'Name',
-                    labelText: 'Name',
-                  ),
-                ), 
+                Text("No dubtis en contactar-nos!"),
                 SizedBox(height: 25,),
                 TextFormField(
                   controller: subjectController,
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.subject_rounded),
-                    hintText: 'Subject',
-                    labelText: 'Subject',
-                  ),
-                ), 
-                SizedBox(height: 25,),
-                TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.email),
-                    hintText: 'Email',
-                    labelText: 'Email',
+                    icon: Icon(Icons.subject),
+                    labelText: 'Subjecte', 
                   ),
                 ), 
                 SizedBox(height: 25,),
@@ -105,16 +103,21 @@ class _ContacteState extends State<Contacte> {
                   controller: messageController,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.message),
-                    hintText: 'Message',
-                    labelText: 'Message',
+                    labelText: 'Missatge',
                   ),
                 ), 
                 SizedBox(height: 30,),
-                ElevatedButton(
-                  onPressed: (){sendEmail();}, 
-                  child: Text("Enviar", style: TextStyle(fontSize: 20),),
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.redAccent), elevation: MaterialStateProperty.all<double>(0),),
-                )
+                Builder( // Envuelve el ElevatedButton con un Builder
+                  builder: (BuildContext context) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        sendEmail(context); // Llama al método sendEmail con el nuevo BuildContext
+                      }, 
+                      child: Text("Enviar", style: TextStyle(fontSize: 20),),
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.grey), elevation: MaterialStateProperty.all<double>(0),),
+                    );
+                  },
+                ),
               ],
             )
           ),
