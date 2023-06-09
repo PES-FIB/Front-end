@@ -156,7 +156,7 @@ class _EventsState extends State<Events> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.event.description,
+                            widget.event.description.replaceAll('&nbsp;', ''),
                             style: TextStyle(
                               fontSize: 15.0,
                               color: Colors.black,
