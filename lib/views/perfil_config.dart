@@ -34,16 +34,16 @@ class _PerfilConfigState extends State<PerfilConfig> {
       resizeToAvoidBottomInset: false,
         child: Scaffold(
           appBar: AppBar(
-        toolbarHeight: 70,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.redAccent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "C U L T U R I C A 'T",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          toolbarHeight: 70,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.redAccent,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            "C U L T U R I C A 'T",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
           body:Column (
         children: [
           Row(

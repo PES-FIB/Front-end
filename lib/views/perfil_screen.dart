@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/reviews_controller.dart';
 import 'package:prova_login/controllers/userController.dart';
+import 'email_screen.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 import 'perfil_config.dart';
@@ -108,7 +109,7 @@ class _PerfilState extends State<Perfil> {
                     ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews();}),
                     ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
                     ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
-                    ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})
+                    ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Contacte()));})
                   ],
                 ),
               )
