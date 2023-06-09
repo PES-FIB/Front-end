@@ -7,7 +7,7 @@ final dio = Dio(
   BaseOptions(
     connectTimeout: Duration(seconds: 20),
     //los unicos status validos son 200 y 302
-    validateStatus: (status) => status == 200 || status == 201 || status == 302,
+    validateStatus: (status) => status == 200 || status == 201 || status == 302 || status == 400 || status == 401 || status == 403 || status == 404 || status == 500,
   ),
 );
 
