@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _initLogin() async {
-    bool isLoggedIn = await userController(context).initPrefs();
+    bool isLoggedIn = await UserController(context).initPrefs();
     setState(() {
       login = isLoggedIn;
       if (login) {
