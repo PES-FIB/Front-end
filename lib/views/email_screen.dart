@@ -114,7 +114,7 @@ Future sendEmail(BuildContext context) async{
                         sendEmail(context); // Llama al método sendEmail con el nuevo BuildContext
                       }, 
                       child: Text("Enviar", style: TextStyle(fontSize: 20),),
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.grey), elevation: MaterialStateProperty.all<double>(0),),
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 155, 154, 154)), elevation: MaterialStateProperty.all<double>(0),),
                     );
                   },
                 ),

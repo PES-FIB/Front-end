@@ -109,7 +109,7 @@ class _PerfilState extends State<Perfil> {
                     ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews();}),
                     ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
                     ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
-                    ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Contacte()));})
+                    ProfileWidget(title: 'Contacte', icon: Icons.mail, onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Contacte()));})
                   ],
                 ),
               )
