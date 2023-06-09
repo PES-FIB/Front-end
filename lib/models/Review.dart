@@ -7,10 +7,11 @@ class Review {
   int idReview;
   String? username;
   String idActivity;
+  String? title;
   int score;
   String contenido;
   
-  Review(this.userId, this.idReview, this.username, this.idActivity, this.score, this.contenido);
+  Review(this.userId, this.idReview, this.username, this.idActivity, this.score, this.contenido, this.title);
   
   //mirar (no funciona correctament el primer cop)
   Widget buildRatingBar(bool ignoreGesture) {
@@ -25,7 +26,7 @@ class Review {
       ignoreGestures: ignoreGesture,
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: Color.fromARGB(255, 255, 215, 97),
+        color: Colors.redAccent,
       ),
       onRatingUpdate: (value) {
         score = value.toInt();

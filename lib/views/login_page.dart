@@ -40,12 +40,12 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    decoration: const InputDecoration(labelText: 'Correu electrònic'),
                     controller: _emailController,
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
+                    decoration: const InputDecoration(labelText: 'Contrasenya'),
                     obscureText: true,
                   ),
                   const SizedBox(height: 20),
@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                                     });
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         customSnackbar(context,
-                                            'Usuario i/o contraseña incorrectos'));
+                                            'Usuari i/o contrasenya incorrectes'));
                                   }
                                 } catch (error) {
                                   setState(() {
@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       customSnackbar(context,
-                                          'Fallo de connexión al intentar iniciar sesión'));
+                                          'Error de conexió al intentar iniciar la sessió'));
                                 }
                               },
                               child: Row(
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             TextButton(
-                              child: Text('Crear una nueva cuenta',
+                              child: Text('Crea un nou compte',
                                   style: TextStyle(color: Colors.redAccent)),
                               onPressed: () async {
                                 UserController.to_signUp(context);

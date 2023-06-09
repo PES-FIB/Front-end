@@ -7,6 +7,8 @@ import '../models/User.dart';
 import 'styles/review_styles.dart';
 import '../models/Event.dart';
 
+import 'event_screen.dart';
+
 class MyReview extends StatefulWidget {
 
   @override
@@ -35,6 +37,19 @@ class _MyReviewState extends State<MyReview> {
     reviews = [review1, review2, review3, review4, review5];
     */
   }
+
+  void pushEventScreen(Event event) async {
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Events(event: event),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
   final _reviewController = ReviewController(context);
@@ -43,7 +58,7 @@ class _MyReviewState extends State<MyReview> {
      appBar: AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20,),
-        onPressed: () => Navigator.pop(context), //retuning to homePage and updating current event if necessary. 
+        onPressed: () => Navigator.of(context).pop(), //retuning to homePage and updating current event if necessary. 
       ), 
       toolbarHeight: 70,
       automaticallyImplyLeading: false,

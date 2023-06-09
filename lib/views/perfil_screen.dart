@@ -106,7 +106,7 @@ class _PerfilState extends State<Perfil> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews();}),
+                    ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews(true);}),
                     ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
                     ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
                     ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})
