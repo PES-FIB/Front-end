@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/views/createTask_screen.dart';
-import 'package:prova_login/views/task_screen.dart';
+import '../views/createTask_screen.dart';
+import '../views/task_screen.dart';
 import 'styles/custom_snackbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
