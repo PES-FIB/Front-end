@@ -20,6 +20,7 @@ class _PerfilState extends State<Perfil> {
   @override
   Widget build(BuildContext context) {
     final ReviewController reviewController = ReviewController(context);
+    final UserController userController = UserController(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -41,7 +42,7 @@ class _PerfilState extends State<Perfil> {
                           onPressed: () async {
                             int response = 0;
                             try {
-                              response = await userController.logOut();
+                              response = await UserController.logOut();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                     customSnackbar(context,
@@ -105,7 +106,7 @@ class _PerfilState extends State<Perfil> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews();}),
+                    ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews(true);}),
                     ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
                     ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
                     ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})

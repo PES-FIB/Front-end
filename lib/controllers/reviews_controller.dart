@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import '../models/AppEvents.dart';
 import '../models/Review.dart';
@@ -10,7 +11,7 @@ import '../views/my_reviews.dart';
 
 import '../APIs/reviewsApis.dart';
 import '../APIs/userApis.dart';
-
+import '../APIs/reportsApis.dart';
 
 
 class ReviewController{
@@ -28,8 +29,18 @@ class ReviewController{
 
     final List<dynamic> dataReviews = response.data['reviews'];
     for (var review in dataReviews) {
+      String? username;
       //final userresp = await dio.get(userApis.getsingleUserUrl(user.toString()));
-      reviews.add(Review(review['UserId'], review['id'], null , idActivity, review['score'], review['comment']));
+      
+      
+      if (User.id != review['UserId']) {
+        final name = review['User']['name'];
+        final email = review['User']['email'];
+        username = name + "(" + email + ")";
+      } else {
+        username = "mí";
+      }
+      reviews.add(Review(review['UserId'], review['id'], username , idActivity, review['score'], review['comment'], null));
     }
     return reviews;
   }
@@ -42,7 +53,11 @@ class ReviewController{
     final myReviews = response.data['reviews'];
     for (var review in myReviews) {
       print(review);
-      reviews.add(Review(User.id, review['id'], User.name, review["EventCode"], review['score'], review['comment']));
+      //busca el nombre del evento
+      Event? event = AppEvents.eventsList.firstWhereOrNull((event) => event.code == review["EventCode"]);
+      if (event != null) {
+        reviews.add(Review(User.id, review['id'], User.name, review["EventCode"] , review['score'], review['comment'], event.title));
+      }
     }
     return reviews;
   }
@@ -82,21 +97,47 @@ class ReviewController{
     return response.statusCode;
   }
   Future<int?> reportReview(Review review, String category, String comment) async {
-     Response response;
-     dio.options.validateStatus = (status) {
+    Response response;
+    dio.options.validateStatus = (status) {
       // Permitir el código de estado 400 como respuesta exitosa
-      return status! < 404;
-  };
+      return status! < 501;
+    };
      try {
         final id = User.id;
+        switch (category) {
+          case 'Assatjament':
+            category = 'harassment';
+            break;
+          case 'Spam':
+            category = 'spam';
+            break;
+          case 'Contingut inadequat':
+            category = 'inappropriate content';
+            break;
+          case 'Discurs d\'odi':
+            category = 'hate speech';
+            break;
+          case 'Informació falsa':
+            category = 'false information';
+            break;
+          case 'Altres':
+            category = 'other';
+            break;
+          default:
+            category = 'other';
+            break;
+        }
+        print(category);
         if (comment == '' || comment == null) comment = "L'usuari amb id: $id, no ha deixat cap comentari";
+        print(ReportApis.getReportReviewUrl(review.idReview));
         final response = await dio.post(
-          reviewApi.getReportReviewUrl(review.idReview),
+          ReportApis.getReportReviewUrl(review.idReview),
           data: {
             'type': category,
             'comment': comment,
           },
-        );  
+        ); 
+        print(response.data);
       return response.statusCode;
       } catch (e) {
         print(e);
@@ -120,21 +161,36 @@ class ReviewController{
         return review;
       }
     }
-    return Review(-1, -1, "", "0", 1, "");
+    return Review(-1, -1, "", "0", 1, "", null);
   }
   
 
   void toReviewsAgain(Event event) async {
     print('recarrga de les valoracions');
-    Navigator.push(
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: ReviewPage(event),
+        );
+      },
+    );
+    /*Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ReviewPage(event)),
-    );
+    );*/
   }
-  void toUserReviews() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyReview()),
-    );
+  void toUserReviews(bool first) {
+    if (!first && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    Navigator.of(context,
+        rootNavigator: true)
+    .push(
+    MaterialPageRoute(
+      builder: (context) => MyReview()));
   }
 }

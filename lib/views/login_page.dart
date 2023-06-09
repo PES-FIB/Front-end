@@ -60,12 +60,12 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: [
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'Email'),
+                          decoration: const InputDecoration(labelText: 'Correu electrònic'),
                           controller: _emailController,
                         ),
                         TextFormField(
                           controller: _passwordController,
-                          decoration: const InputDecoration(labelText: 'Password'),
+                          decoration: const InputDecoration(labelText: 'Contrasenya'),
                           obscureText: true,
                         ),
                         const SizedBox(height: 20),
@@ -88,21 +88,23 @@ class _LoginPageState extends State<LoginPage> {
                                 String password = _passwordController.text;
                                 try {
                                   // Llamar a la función de inicio de sesión
-                                  int statusCode = await userController.loginUser(email, password);
+                                  int statusCode = await UserController.loginUser(email, password);
                                   if (statusCode == 200) {
                                     setState(() {
                                       login = true;
                                     });
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         customSnackbar(context, 'Usuari loguejat correctament'));
-                                    userController.realize_login(context);
+                                    UserController.realize_login(context);
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        customSnackbar(context, 'Usuario y/o contraseña incorrectos'));
+                                        customSnackbar(context,
+                                            'Usuari i/o contrasenya incorrectes'));
                                   }
                                 } catch (error) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      customSnackbar(context, 'Fallo de conexión al intentar iniciar sesión'));
+                                      customSnackbar(context,
+                                          'Error de conexió al intentar iniciar la sessió'));
                                 }
                               },
                               child: Row(
@@ -117,22 +119,23 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             TextButton(
-                              child: Text('Crear una nueva cuenta', style: TextStyle(color: Colors.redAccent)),
+                              child: Text('Crea un nou compte',
+                                  style: TextStyle(color: Colors.redAccent)),
                               onPressed: () async {
-                                userController.to_signUp(context);
+                                UserController.to_signUp(context);
                               },
                             ),
                             const SizedBox(height: 20),
                             SignInButton(
                               Buttons.Google,
                               onPressed: () async {
-                                bool success = await userController.googleLogin(context);
+                                bool success = await UserController.googleLogin(context);
                                 if (success) {
                                   setState(() {
                                     login = true;
                                   });
                                   // ignore: use_build_context_synchronously
-                                  userController.realize_login(context);
+                                  UserController.realize_login(context);
                                 }
                               },
                             ),

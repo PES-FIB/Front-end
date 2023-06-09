@@ -157,7 +157,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         });
                         int response = 0;
                         try {
-                          response = await userController.signUp(
+                          response = await UserController.signUp(
                               _nameController.text,
                               _emailController.text,
                               _passwordController.text);

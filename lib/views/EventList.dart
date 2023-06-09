@@ -294,10 +294,12 @@ class _EventListState extends State<EventList> {
                         if (inSaved(_foundEvents[index].code)){
                           EventsController.unsaveEvent(_foundEvents[index].code);
                           EventsController.unsaveEventLocale(_foundEvents[index]);
+                          AppEvents.savedChanged = true;
                         }//remove
                         else {
                           EventsController.saveEvent(_foundEvents[index].code);
                           EventsController.saveEventLocale(_foundEvents[index]);
+                          AppEvents.savedChanged = true;
                         }//add
                       });
                       },
