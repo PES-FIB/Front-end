@@ -214,11 +214,16 @@ class UserController {
       'password': password,
     }
     ); 
-    String? rawCookie = response.headers['set-cookie']![0];
-    String? cookie = rawCookie.split(';')[0];
-    print("Cookie: $cookie");
-    await manageCookie(cookie);
-    await UserController.getUserInfo();
+    if(response.statusCode == 400 && response.data['msg'] == 'You have been blocked!') {
+      return -1;
+    } else if (response.statusCode == 200){
+      String? rawCookie = response.headers['set-cookie']![0];
+      String? cookie = rawCookie.split(';')[0];
+      print("Cookie: $cookie");
+      await manageCookie(cookie);
+      await UserController.getUserInfo();
+    }
+    print(response.statusCode!);
     return response.statusCode!;
   }
 
@@ -298,13 +303,27 @@ class UserController {
         await UserController.getUserInfo();
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar( context, 'Login de Google realizado correctamente')
+          customSnackbar( context, 'Login de Google realitzat correctament')
         );
         return true;
-      } catch (e){
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar( context, 'Se ha producido un error: $e')
-        );
+      } on DioError catch (e){
+        if (e.response!.data['msg'] == 'You have been blocked!') {
+          // ignore: use_build_context_synchronously
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                alignment: Alignment.center,
+                content: Text('Usuari bloquejat per l\'administració del sistema!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.redAccent), textAlign: TextAlign.center,),
+              );
+            },
+          );
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            customSnackbar( context, 'S\'ha produit algun error: $e')
+          );
+        }
         return false;
       }
     }

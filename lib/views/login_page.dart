@@ -86,26 +86,46 @@ class _LoginPageState extends State<LoginPage> {
                                 // Obtener los valores de los campos
                                 String email = _emailController.text;
                                 String password = _passwordController.text;
-                                try {
-                                  // Llamar a la función de inicio de sesión
-                                  int statusCode = await UserController.loginUser(email, password);
-                                  if (statusCode == 200) {
-                                    setState(() {
-                                      login = true;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        customSnackbar(context, 'Usuari loguejat correctament'));
-                                    UserController.realize_login(context);
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        customSnackbar(context,
-                                            'Usuari i/o contrasenya incorrectes'));
-                                  }
-                                } catch (error) {
+                                
+                                // Llamar a la función de inicio de sesión
+                                int statusCode = await UserController.loginUser(email, password);
+                                if (statusCode == 200) {
+                                  setState(() {
+                                    login = true;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackbar(context, 'Usuari loguejat correctament'));
+                                  UserController.realize_login(context);
+                                  
+                                } else if (statusCode == -1) {
+                                  // ignore: use_build_context_synchronously
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        alignment: Alignment.center,
+                                        content: Text('Usuari bloquejat per l\'administració del sistema!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.redAccent), textAlign: TextAlign.center,),
+                                      );
+                                    },
+                                  );
+                                } else if (statusCode == 400) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       customSnackbar(context,
-                                          'Error de conexió al intentar iniciar la sessió'));
-                                }
+                                          'Introdueix un usuari i contrasenya'));
+                                          
+                                  _emailController.clear();
+                                  _passwordController.clear();
+                                } else if (statusCode == 401) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackbar(context,
+                                          'Usuari i/o contrasenya incorrectes'));
+                                  _emailController.clear();
+                                  _passwordController.clear();
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackbar(context,
+                                        'Error de conexió al intentar iniciar la sessió'));
+                                } 
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
