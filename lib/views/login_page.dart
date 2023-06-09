@@ -26,6 +26,10 @@ class _LoginPageState extends State<LoginPage> {
     bool isLoggedIn = await userController(context).initPrefs();
     setState(() {
       login = isLoggedIn;
+      if (login) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(context, 'Sessió de l\'usuari recuperada correctament'));
+      }
     });
   }
 
