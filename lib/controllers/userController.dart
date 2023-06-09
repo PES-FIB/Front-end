@@ -171,7 +171,7 @@ class userController {
     String? rawCookie = response.headers['set-cookie']![0];
     String? cookie = rawCookie.split(';')[0];
     print("Cookie: $cookie");
-    manageCookie(cookie);
+    await manageCookie(cookie);
     await userController.getUserInfo();
     return response.statusCode!;
   }
@@ -244,7 +244,7 @@ class userController {
         String? rawCookie = response.headers['set-cookie']![0];
         String? cookie = rawCookie.split(';')[0];
         print("Cookie: $cookie");
-        manageCookie(cookie);
+        await manageCookie(cookie);
         //logejar a l'usuari dins de l'aplicació
         await userController.getUserInfo();
         //missatge de success
@@ -267,6 +267,7 @@ class userController {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print('prefs initialized');
       prefs.setString('Cookie', cookie);
+      dio.options.headers['Cookie'] = cookie;
       print("cookie saved");
     }
   }
@@ -283,9 +284,12 @@ class userController {
     if (cookie != null) {
       dio.options.headers['Cookie'] = cookie;
       print("cookie loaded");
-      getUserInfo();
-      realize_login(context);
-      return true;
+      await getUserInfo();
+      if(User.id != -1) {
+        realize_login(context);
+        return true;
+      }
+      return false;
     }
     print('prefs initialized');
     return false;
