@@ -20,6 +20,7 @@ class _PerfilState extends State<Perfil> {
   @override
   Widget build(BuildContext context) {
     final ReviewController reviewController = ReviewController(context);
+    final UserController userController = UserController(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -41,7 +42,7 @@ class _PerfilState extends State<Perfil> {
                           onPressed: () async {
                             int response = 0;
                             try {
-                              response = await userController.logOut();
+                              response = await UserController.logOut();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                     customSnackbar(context,

@@ -68,10 +68,10 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                                 try {
                                   //llamo a la funcion de login
-                                  int statusCode = await userController
+                                  int statusCode = await UserController
                                       .loginUser(email, password);
                                   if (statusCode == 200) {
-                                    userController.realize_login(context);
+                                    UserController.realize_login(context);
                                   } else {
                                     setState(() {
                                       login = false;
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text('Crea un nou compte',
                                   style: TextStyle(color: Colors.redAccent)),
                               onPressed: () async {
-                                userController.to_signUp(context);
+                                UserController.to_signUp(context);
                               },
                             ),
                             //espacio para el boton de google
@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                             SignInButton(
                               Buttons.Google,
                               onPressed: ()  async {
-                                await userController.googleLogin(context);
+                                await UserController.googleLogin(context);
                               },
                             ),
                           ],

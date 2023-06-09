@@ -2,12 +2,15 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../controllers/eventsController.dart';
 import '../models/Event.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../views/review_screen.dart';
 import 'styles/share_button.dart';
 import '../models/User.dart';
 import 'styles/custom_report_form.dart';
+import '../models/AppEvents.dart';
+
 
 class Events extends StatefulWidget {
 
@@ -294,7 +297,6 @@ class _EventsState extends State<Events> {
                             ),
                           ),      
                           if (widget.event.url != null)
-                            //espacio de 10p
                             SizedBox(height: 10.0),
                           if (widget.event.url != null)
                             Row(
@@ -307,7 +309,27 @@ class _EventsState extends State<Events> {
                       ),
                     ),
                     SizedBox(height: 10.0),
-                  //boton para ir a la pagina de valoraciones
+                    //posar a favs.
+                    Center(
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            if(AppEvents.savedEvents.containsKey(widget.event.code)) {
+                              EventsController.unsaveEvent(widget.event.code);
+                              EventsController.unsaveEventLocale(widget.event);
+                              AppEvents.savedChanged = true;
+                            } else {
+                              EventsController.saveEvent(widget.event.code);
+                              EventsController.saveEventLocale(widget.event);
+                              AppEvents.savedChanged = true;
+                            }
+                          });
+                        }, 
+                        icon: Icon(Icons.favorite, size: 30, color: AppEvents.savedEvents.containsKey(widget.event.code)? Colors.redAccent: Color.fromARGB(255, 182, 179, 179)),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    //boton para ir a la pagina de valoraciones
                     ElevatedButton(
                      style: ButtonStyle(
                       
@@ -317,7 +339,7 @@ class _EventsState extends State<Events> {
                       child: Center(
                         child: Text(
                           "Valoracions",
-                          style: TextStyle(color: Colors.black), // Change the color here
+                          style: TextStyle(color: Colors.black), 
                         ),
                         
                       ),
