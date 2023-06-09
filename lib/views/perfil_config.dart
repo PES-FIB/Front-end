@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/userController.dart';
+import '../controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 import 'styles/custom_snackbar.dart';

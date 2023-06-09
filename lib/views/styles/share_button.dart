@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:prova_login/controllers/eventsController.dart';
+import '../../controllers/eventsController.dart';
 import '../../models/Event.dart';
 
 Widget ShareButton(Event event,String url) {

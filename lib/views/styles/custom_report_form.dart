@@ -1,7 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:prova_login/models/Review.dart';
+import '../../models/Review.dart';
 import '../../models/User.dart';
 import 'custom_snackbar.dart';
 import '../../controllers/reviews_controller.dart';

@@ -5,12 +5,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:prova_login/controllers/eventsController.dart';
-import 'package:prova_login/models/AppEvents.dart';
+import '../controllers/eventsController.dart';
+import '../models/AppEvents.dart';
 import '../models/User.dart';
 import '../APIs/userApis.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:prova_login/controllers/taskController.dart';
+import '../controllers/taskController.dart';
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
 import '../views/styles/custom_snackbar.dart';
@@ -236,6 +236,9 @@ class UserController {
       return;
     }
     finally {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
