@@ -55,6 +55,8 @@ class UserController {
     AppEvents.savedEvents = {};
     AppEvents.savedEventsCalendar = {};
     AppEvents.tasksCalendar = {};
+    AppEvents.userForms = [];
+    AppEvents.recommendedEvents = [];
     clearCookie();
     return response.statusCode!;
   }
@@ -200,6 +202,8 @@ class UserController {
       AppEvents.savedEvents = {};
       AppEvents.savedEventsCalendar = {};
       AppEvents.tasksCalendar = {};
+      AppEvents.userForms = [];
+      AppEvents.recommendedEvents = [];
       return true;
     }
     else {
@@ -233,9 +237,8 @@ class UserController {
       AppEvents.mapEvents = await EventsController.getMapEvents();
       AppEvents.ambits = await EventsController.getAllAmbits();
       AppEvents.userForms = await EventsController.getUserForms();
+      AppEvents.recommendedEvents = await EventsController.getBestRatedEvents();
       AppEvents.savedChanged = false;
-
-      // ignore: prefer_interpolation_to_compose_strings
       await EventsController.getSavedEvents();
       await taskController.getAllTasks();
     } catch (e) {

@@ -21,5 +21,6 @@ class AppEvents {
   static List<String> ambits = [];
   static late bool savedChanged; 
   static List<Formulari> userForms = [];
+  static List<Event> recommendedEvents = [];
 
 }

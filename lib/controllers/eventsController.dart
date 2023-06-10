@@ -887,50 +887,49 @@ class EventsController {
       // Permitir el código de estado 400 como respuesta exitosa
       return status! < 405;
     };
-     try {
-        final id = User.id;
-        switch (category) {
-          case 'Assatjament':
-            category = 'harassment';
-            break;
-          case 'Spam':
-            category = 'spam';
-            break;
-          case 'Contingut inadequat':
-            category = 'inappropriate content';
-            break;
-          case 'Discurs d\'odi':
-            category = 'hate speech';
-            break;
-          case 'Informació falsa':
-            category = 'false information';
-            break;
-          case 'Altres':
-            category = 'other';
-            break;
-          default:
-            category = 'other';
-            break;
-        }
-        print(category);
-        if (comment == '' || comment == null) comment = "L'usuari amb id: $id, no ha deixat cap comentari";
-        print(ReportApis.getReportEventUrl(event.code));
-        final response = await dio.post(
-          ReportApis.getReportEventUrl(event.code),
-          data: {
-            'type': category,
-            'comment': comment,
-          },
-        ); 
-        print(response.data);
+    try {
+      final id = User.id;
+      switch (category) {
+        case 'Assatjament':
+          category = 'harassment';
+          break;
+        case 'Spam':
+          category = 'spam';
+          break;
+        case 'Contingut inadequat':
+          category = 'inappropriate content';
+          break;
+        case 'Discurs d\'odi':
+          category = 'hate speech';
+          break;
+        case 'Informació falsa':
+          category = 'false information';
+          break;
+        case 'Altres':
+          category = 'other';
+          break;
+        default:
+          category = 'other';
+          break;
+      }
+      print(category);
+      if (comment == '' || comment == null)
+        comment = "L'usuari amb id: $id, no ha deixat cap comentari";
+      print(ReportApis.getReportEventUrl(event.code));
+      final response = await dio.post(
+        ReportApis.getReportEventUrl(event.code),
+        data: {
+          'type': category,
+          'comment': comment,
+        },
+      );
+      print(response.data);
       return response.statusCode;
-      } catch (e) {
-        print(e);
-        return null;
-     }
-    
-}
-
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 
   static Future<int> enviarFormulari(
     String formulari_name,
@@ -951,46 +950,48 @@ class EventsController {
     List<Location> locations = [];
     List<String> appImage = [app_image_event];
     try {
-      String locationUnified = '$address_event, $postal_code_event ${municipality_event.toUpperCase()}';
+      String locationUnified =
+          '$address_event, $postal_code_event ${municipality_event.toUpperCase()}';
       print('locationUnified: $locationUnified');
-    locations = await locationFromAddress(locationUnified);
-  } catch (e) {
-    print('Error, ubicació no trobada: $e');
-    return -4;
-  }
+      locations = await locationFromAddress(locationUnified);
+    } catch (e) {
+      print('Error, ubicació no trobada: $e');
+      return -4;
+    }
     Response response;
     try {
-      response = await dio.post(
-          'http://nattech.fib.upc.edu:40331/api/v1/formulari',
-          data: {
-            'formulari_name': formulari_name,
-            'formulari_reason': ' ',
-            'schedule_event': schedule_event,
-            'user_id': User.id,
-            'initial_d': dataIni.substring(0, dataIni.indexOf(' ')),
-            'final_d': dataFi.substring(0, dataFi.indexOf(' ')),
-            'initial_h':
-                dataIni.substring(dataIni.lastIndexOf(' ') + 1, dataIni.length),
-            'final_h':
-                dataFi.substring(dataFi.lastIndexOf(' ') + 1, dataFi.length),
-            'denomination_event': denomination_event,
-            'description_event': description_event,
-            'ambits_event': ambits_event,
-            'address_event': address_event,
-            'postal_code_event': postal_code_event,
-            'email_event': email_event,
-            'municipality_event': municipality_event,
-            'latitude_event': locations.first.latitude,
-            'longitude_event': locations.first.longitude,
-            'url_event': url_event,
-            'app_image_event': appImage
-          });
+      response = await dio
+          .post('http://nattech.fib.upc.edu:40331/api/v1/formulari', data: {
+        'formulari_name': formulari_name,
+        'formulari_reason': ' ',
+        'schedule_event': schedule_event,
+        'user_id': User.id,
+        'initial_d': dataIni.substring(0, dataIni.indexOf(' ')),
+        'final_d': dataFi.substring(0, dataFi.indexOf(' ')),
+        'initial_h':
+            dataIni.substring(dataIni.lastIndexOf(' ') + 1, dataIni.length),
+        'final_h': dataFi.substring(dataFi.lastIndexOf(' ') + 1, dataFi.length),
+        'denomination_event': denomination_event,
+        'description_event': description_event,
+        'ambits_event': ambits_event,
+        'address_event': address_event,
+        'postal_code_event': postal_code_event,
+        'email_event': email_event,
+        'municipality_event': municipality_event,
+        'latitude_event': locations.first.latitude,
+        'longitude_event': locations.first.longitude,
+        'url_event': url_event,
+        'app_image_event': appImage
+      });
     } catch (e) {
       print('Error, no s\'ha pogut enviar el formulari: $e');
       return -2;
     }
     if (response.statusCode == 201) {
-      Formulari f = Formulari(response.data['data']['formulari_name'],response.data['data']['denomination_event'],response.data['data']['formulari_status']);
+      Formulari f = Formulari(
+          response.data['data']['formulari_name'],
+          response.data['data']['denomination_event'],
+          response.data['data']['formulari_status']);
       AppEvents.userForms.add(f);
       return 1;
     } else {
@@ -1005,17 +1006,148 @@ class EventsController {
       r = await dio
           .get('http://nattech.fib.upc.edu:40331/api/v1/formulari/${User.id}');
     } catch (e) {
-      print ('error = ${e.toString()}');
+      print('error = ${e.toString()}');
       return listReturn;
     }
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
         for (int i = 0; i < r.data['data'].length; ++i) {
-          Formulari f = Formulari(r.data['data'][i]['formulari_name'],r.data['data'][i]['denomination_event'],r.data['data'][i]['formulari_status']);
+          Formulari f = Formulari(
+              r.data['data'][i]['formulari_name'],
+              r.data['data'][i]['denomination_event'],
+              r.data['data'][i]['formulari_status']);
           listReturn.add(f);
         }
       }
     }
     return listReturn;
+  }
+
+  static Future<List<Event>> getBestRatedEvents() async {
+    try {
+      List<Event> eventsByAmbit = [];
+
+      final response = await dio
+          .get('http://nattech.fib.upc.edu:40331/api/v1/events/best_rated');
+      if (response.statusCode == 200) {
+        if (response.data['data'] != null) {
+          for (int i = 0; i < response.data['data'].length; ++i) {
+            //response is already decoded.
+
+            String denomination;
+            if (response.data['data'][i]['denomination'] == null) {
+              denomination = '';
+            } else {
+              denomination = response.data['data'][i]['denomination'];
+            }
+
+            String description;
+            if (response.data['data'][i]['description'] == null) {
+              description = '';
+            } else {
+              description = response.data['data'][i]['description'];
+            }
+
+            //images can be empty
+            String image;
+            if (response.data['data'][i]['images'] == null) {
+              image = "";
+            } else {
+              image = response.data['data'][i]['images'][0];
+            }
+
+            //url can be null
+            String url;
+            if (response.data['data'][i]['url'] == null) {
+              url = "";
+            } else {
+              url = response.data['data'][i]['url'];
+            }
+
+            String initD;
+            if (response.data['data'][i]['initial_date'] == null) {
+              initD = "";
+            } else {
+              initD = response.data['data'][i]['initial_date'];
+            }
+
+            String finalD;
+            if (response.data['data'][i]['final_date'] == null) {
+              finalD = "";
+            } else {
+              finalD = response.data['data'][i]['final_date'];
+            }
+
+            String schedule;
+            if (response.data['data'][i]['schedule'] == null) {
+              schedule = "";
+            } else {
+              schedule = response.data['data'][i]['schedule'];
+            }
+
+            String city;
+            if (response.data['data'][i]['region'] == null ||
+                response.data['data'][i]['region'].length < 3) {
+              city = "";
+            } else {
+              city = response.data['data'][i]['region'][2];
+            }
+
+            String adress;
+            if (response.data['data'][i]['address'] == null) {
+              adress = "";
+            } else {
+              adress = response.data['data'][i]['address'];
+            }
+
+            String tickets;
+            if (response.data['data'][i]['tickets'] == null) {
+              tickets = "";
+            } else {
+              tickets = response.data['data'][i]['tickets'];
+            }
+
+            List<dynamic> ambits = [];
+            if (response.data['data'][i]['ambits'] != null)
+              ambits.addAll(response.data['data'][i]['ambits']);
+
+            String latitude;
+            if (response.data['data'][i]['latitude'] == null) {
+              latitude = "";
+            } else {
+              latitude = response.data['data'][i]['latitude'];
+            }
+
+            String longitude;
+            if (response.data['data'][i]['longitude'] == null) {
+              longitude = "";
+            } else {
+              longitude = response.data['data'][i]['longitude'];
+            }
+
+            Event event = Event(
+                response.data['data'][i]['code'],
+                denomination,
+                description,
+                image,
+                url,
+                initD,
+                finalD,
+                schedule,
+                city,
+                adress,
+                tickets,
+                latitude,
+                longitude,
+                ambits);
+            eventsByAmbit.add(event);
+          }
+          return eventsByAmbit;
+        }
+      }
+      return [];
+    } catch (error) {
+      return [];
+    }
   }
 }
