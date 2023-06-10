@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/EventsController.dart';
+import '../controllers/eventsController.dart';
 import '../models/AppEvents.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../models/Formulari.dart';

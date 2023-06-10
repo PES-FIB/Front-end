@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/reviews_controller.dart';
-import 'package:prova_login/controllers/userController.dart';
-import 'package:prova_login/views/userApplications.dart';
+import '../controllers/reviews_controller.dart';
+import '../controllers/userController.dart';
+import '../views/userApplications.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 import 'perfil_config.dart';
@@ -145,7 +145,7 @@ class _PerfilState extends State<Perfil> {
                       title: 'Les meves valoracions',
                       icon: LineAwesomeIcons.comments,
                       onPress: () {
-                        reviewController.toUserReviews();
+                        reviewController.toUserReviews(true);
                       }),
                   ProfileWidget(
                       title: 'Les meves sol·licituds',

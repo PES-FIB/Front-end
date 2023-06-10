@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:prova_login/controllers/eventsController.dart';
+import '../controllers/eventsController.dart';
 import 'styles/custom_snackbar.dart';
 import '../models/AppEvents.dart';
 
