@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/mapController.dart';
+import '../controllers/mapController.dart';
 import 'dart:async';
 import 'package:search_map_place_updated/search_map_place_updated.dart';
 import '../controllers/eventsController.dart';

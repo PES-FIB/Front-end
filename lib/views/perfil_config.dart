@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/controllers/userController.dart';
+import '../controllers/userController.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 import 'styles/custom_snackbar.dart';
@@ -30,6 +30,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
 
   @override
   Widget build(BuildContext context) {
+    UserController userController = UserController(context);
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
         child: Scaffold(
@@ -75,7 +76,8 @@ class _PerfilConfigState extends State<PerfilConfig> {
                         },
                         icon: Icon(LineAwesomeIcons.user_minus, color: Colors.white),
                       )
-                  ),)
+                  ),
+                ),  
             ],
           ),
           Padding(
@@ -87,6 +89,43 @@ class _PerfilConfigState extends State<PerfilConfig> {
                   Text('Donar-se \nde baixa')
                 ],
                 )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005, right:MediaQuery.of(context).size.width*0.054),
+                      child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.redAccent,
+                          child: IconButton(
+                            tooltip: 'Canviar foto perfil',
+                            style: IconButton.styleFrom(shape: CircleBorder()),
+                            onPressed: () async {
+                              final response = await userController.pickImage();
+                              if (response){
+                                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'La foto de perfil s\'ha actualitzat correctament'));
+                              }
+                              else{
+                                ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error al actualitzar la foto de perfil'));
+                              }
+                            },
+                            icon:
+                                Icon(LineAwesomeIcons.image, color: Colors.white),
+                          )
+                        ),
+                    ),
+              ],
+            ),
+            Padding(
+            padding: EdgeInsets.only(right:MediaQuery.of(context).size.width*0.025),
+              child:
+              Row( 
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('Cambiar \nfoto de \nperfil')
+                ],
+              ),
             ),
           pageStatus == 0?
           Expanded(
@@ -144,7 +183,6 @@ class _PerfilConfigState extends State<PerfilConfig> {
                     ),
                     controller: _emailController,
                     enabled: editEmail,
-                    
                   ),
                   ),
                   SizedBox(width: 30),
@@ -195,7 +233,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
             if(_nameController.text.isNotEmpty && _emailController.text.isNotEmpty && (!(_nameController.text == User.name) || !(_emailController.text == User.email))) {
               bool b = false;
               try {
-               b = await userController.updateUserInfo(_nameController.text,_emailController.text);
+               b = await UserController.updateUserInfo(_nameController.text,_emailController.text);
               }
               catch(e) {
                 setState(() {
@@ -255,7 +293,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
                 onPressed: () async {
                   bool check = false;
                   try {
-                  check = await userController.deleteUser(User.id);
+                  check = await UserController.deleteUser(User.id);
                   }
                   catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en donar-se de baixa'));
@@ -384,7 +422,7 @@ class _PerfilConfigState extends State<PerfilConfig> {
                   if (_newPasswordController.text == _newPasswordControllerRepeat.text) {
                     bool res = false;
                     try {
-                      res = await userController.updateUserPassword(_passwordController.text, _newPasswordController.text);
+                      res = await UserController.updateUserPassword(_passwordController.text, _newPasswordController.text);
                     }
                     catch (error){
                       ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, 'Hi ha hagut un error en canviar la contrasenya'));

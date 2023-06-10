@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:prova_login/views/styles/custom_snackbar.dart';
+import '../views/styles/custom_snackbar.dart';
 import 'main_screen.dart';
 import '../controllers/userController.dart';
 
@@ -157,7 +157,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         });
                         int response = 0;
                         try {
-                          response = await userController.signUp(
+                          response = await UserController.signUp(
                               _nameController.text,
                               _emailController.text,
                               _passwordController.text);

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/views/EventList.dart';
+import '../views/EventList.dart';
 import 'map_screen.dart';
 import 'favorites_screen.dart';
 import 'perfil_screen.dart';
