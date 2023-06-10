@@ -229,7 +229,7 @@ class _createFormState extends State<createForm> {
                     descriptionController.text,
                     ticketsController.text,
                     scheduleController.text,
-                    [],
+                    selectedValues,
                     addressController.text,
                     postalCodeController.text,
                     emailController.text,
