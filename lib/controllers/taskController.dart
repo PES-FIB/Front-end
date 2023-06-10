@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:prova_login/models/AppEvents.dart';
+import '../models/AppEvents.dart';
 import '../models/User.dart';
 import '../models/Task.dart';
 import '../APIs/taskApis.dart';

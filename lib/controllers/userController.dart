@@ -1,23 +1,28 @@
+// ignore_for_file: camel_case_types
+
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:prova_login/controllers/eventsController.dart';
-import 'package:prova_login/models/AppEvents.dart';
+import '../controllers/eventsController.dart';
+import '../models/AppEvents.dart';
 import '../models/User.dart';
 import '../APIs/userApis.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:prova_login/controllers/taskController.dart';
+import '../controllers/taskController.dart';
 import '../views/main_screen.dart';
 import '../views/create_account.dart';
 import '../views/styles/custom_snackbar.dart';
 import 'dart:async';
 import 'package:webview_flutter/webview_flutter.dart';
-
-
-class userController {
+import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+class UserController {
   final BuildContext context;
 
-  userController(this.context);
+  UserController(this.context);
 
   static Future<int> signUp(String name, String email, String password) async {
     Response response;
@@ -50,6 +55,7 @@ class userController {
     AppEvents.savedEvents = {};
     AppEvents.savedEventsCalendar = {};
     AppEvents.tasksCalendar = {};
+    clearCookie();
     return response.statusCode!;
   }
 
@@ -70,6 +76,7 @@ class userController {
     }
     User.setValues(response.data['user']['id'], response.data['user']['name'],
         response.data['user']['email'], photoUrl);
+    print("User: ${User.name} ${User.email} ${User.photoUrl}");
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
@@ -84,6 +91,49 @@ class userController {
       User.setValues(User.id, name, email, User.photoUrl);
       return true;
     }
+  }
+
+
+  Future<bool> pickImage() async {
+    final ImagePicker imagePicker = ImagePicker();
+    final XFile? pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    Response response;
+    print(pickedImage!.path);
+    print(pickedImage.name);
+    
+    if (pickedImage != null) {
+      try {
+        FormData formData = FormData.fromMap(
+          {
+            'profileImage': await MultipartFile.fromFile(pickedImage.path, contentType: MediaType('image', 'png')), // Ajusta el tipo de contenido según el formato de imagen),
+          }
+        );
+        print(formData.files.first.value.filename);
+        response = await dio.put(
+          userApis.uploadImage(),
+          data: formData,
+        );
+        
+        if (response.statusCode == 200) {
+          Response user = await dio.get(userApis.getshowMe());
+          final photoUrl = 'http://nattech.fib.upc.edu:40331${user.data['user']['image']}';
+          User.setValues(User.id, User.name, User.email, photoUrl);
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        if (e is DioError) {
+          if (e.response != null) {
+            print(e.response?.data);
+          }
+        } else {
+          print(e);
+        }
+        return false;
+      }
+    }
+    return false;
   }
 
   static Future<bool> checkStoragePermission() async {
@@ -164,7 +214,16 @@ class userController {
       'password': password,
     }
     ); 
-    await userController.getUserInfo();
+    if(response.statusCode == 400 && response.data['msg'] == 'You have been blocked!') {
+      return -1;
+    } else if (response.statusCode == 200){
+      String? rawCookie = response.headers['set-cookie']![0];
+      String? cookie = rawCookie.split(';')[0];
+      print("Cookie: $cookie");
+      await manageCookie(cookie);
+      await UserController.getUserInfo();
+    }
+    print(response.statusCode!);
     return response.statusCode!;
   }
 
@@ -183,6 +242,9 @@ class userController {
       return;
     }
     finally {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
@@ -198,7 +260,7 @@ class userController {
     }
 
     
-   static Future<void> googleLogin(context) async {
+   static Future<bool> googleLogin(context) async {
     String finalUrl = "";
 
     final redirect = await dio.post(
@@ -226,7 +288,7 @@ class userController {
         ),
       );
       try {
-        await dio.get(
+        final response = await dio.get(
           finalUrl,
           options: Options (
             validateStatus: (_) => true,
@@ -234,19 +296,71 @@ class userController {
             responseType:ResponseType.json,
           ),
         );
+        String? rawCookie = response.headers['set-cookie']![0];
+        String? cookie = rawCookie.split(';')[0];
+        print("Cookie: $cookie");
+        await manageCookie(cookie);
         //logejar a l'usuari dins de l'aplicació
-        await userController.getUserInfo();
+        await UserController.getUserInfo();
         //missatge de success
         ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar( context, 'Login de Google realizado correctamente')
+          customSnackbar( context, 'Login de Google realitzat correctament')
         );
-        realize_login(context);
-      } catch (e){
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar( context, 'Se ha producido un error: $e')
-        );
+        return true;
+      } on DioError catch (e){
+        if (e.response!.data['msg'] == 'You have been blocked!') {
+          // ignore: use_build_context_synchronously
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                alignment: Alignment.center,
+                content: Text('Usuari bloquejat per l\'administració del sistema!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.redAccent), textAlign: TextAlign.center,),
+              );
+            },
+          );
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            customSnackbar( context, 'S\'ha produit algun error: $e')
+          );
+        }
+        return false;
       }
-
     }
+    return false;
+  }
+
+  static Future<void> manageCookie(String? cookie) async {
+    if (cookie != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print('prefs initialized');
+      prefs.setString('Cookie', cookie);
+      dio.options.headers['Cookie'] = cookie;
+      print("cookie saved");
+    }
+  }
+  static Future<void> clearCookie() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('Cookie');
+    dio.options.headers['Cookie'] = null;
+  }
+
+  Future<bool> initPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? cookie = prefs.getString('Cookie');
+    print('Cookie: $cookie');
+    if (cookie != null) {
+      dio.options.headers['Cookie'] = cookie;
+      print("cookie loaded");
+      await getUserInfo();
+      if(User.id != -1) {
+        realize_login(context);
+        return true;
+      }
+      return false;
+    }
+    print('prefs initialized');
+    return false;
   }
 }

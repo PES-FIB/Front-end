@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:prova_login/controllers/taskController.dart';
+import '../controllers/taskController.dart';
 import 'styles/custom_snackbar.dart';
 
 

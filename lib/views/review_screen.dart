@@ -45,38 +45,43 @@ class _ReviewPageState extends State<ReviewPage> {
   final eventName = widget.event.title;
 
   return Scaffold(
-    body: Container(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),
-            onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
-          ), 
-          //si el usuario no ha hecho review del evento, la puede crear, pero si ya la ha hecho, la puede editar o borrar
-          if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
-            MyReview(context, widget.event, _reviewController.takeMyReview(reviews, User.id))
-          else if (fechaActual.isAfter(fechaEvento))
-            MakeReview(context, widget.event)
-          else
-            Column(
-              children: [
-                SizedBox(height: 15.0),
-                Text("No compleixes els requisits per fer una valoració", style: TextStyle(fontSize: 15, color: Colors.red[900]), textAlign: TextAlign.center,),
-              ],
+    body: Center(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20,),
+                onPressed: () => Navigator.pop(context, widget.event), //retuning to homePage and updating current event if necessary. 
+              ),
             ),
-          SizedBox(height: 8.0),
-          Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 14), textAlign: TextAlign.center,),
-          SizedBox(height: 8.0),
-          if (reviews.length == 0)
-            Text("Encara no hi ha cap valoració", style: TextStyle(fontSize: 14), textAlign: TextAlign.center,)
-          else 
-            Expanded(
-              child: 
-                ReviewList(reviews, widget.event)
-            ),
-        ],
+            //si el usuario no ha hecho review del evento, la puede crear, pero si ya la ha hecho, la puede editar o borrar
+            if (_reviewController.iMadeReviewForEvent(reviews, User.name)) 
+              MyReview(context, widget.event, _reviewController.takeMyReview(reviews, User.id))
+            else if (fechaActual.isAfter(fechaEvento))
+              MakeReview(context, widget.event)
+            else
+              Column(
+                children: [
+                  SizedBox(height: 15.0),
+                  Text("L'event encara no ha començat, per tant, encara no es pot valorar", style: TextStyle(fontSize: 15, color: Colors.redAccent, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                ],
+              ),
+            SizedBox(height: 15.0),
+            Text("Valoracions de l'event:\n$eventName", style: TextStyle(fontSize: 18), textAlign: TextAlign.center,),
+            SizedBox(height: 15.0),
+            if (reviews.length == 0)
+              Text("Encara no hi ha cap valoració", style: TextStyle(fontSize: 15, color: Colors.redAccent, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
+            else 
+              Expanded(
+                child: 
+                  ReviewList(reviews, widget.event)
+              ),
+          ],
+        ),
       ),
     ),
   );

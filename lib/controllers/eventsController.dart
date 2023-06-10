@@ -7,11 +7,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../utils/map_style.dart';
 import '../views/event_screen.dart';
 import 'package:share_plus/share_plus.dart';
-import '../models/User.dart';
 import '../models/Formulari.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geocoding/geocoding.dart';
-
+import '../models/Review.dart';
+import 'package:dio/dio.dart';
+import '../models/User.dart';
+import '../APIs/reportsApis.dart';
 
 class EventsController {
   final BuildContext context;
@@ -883,6 +885,58 @@ class EventsController {
       return [];
     }
   }
+
+  Future<int?> reportEvent(Event event, String category, String comment) async {
+    Response response;
+    dio.options.validateStatus = (status) {
+      // Permitir el código de estado 400 como respuesta exitosa
+      return status! < 405;
+    };
+     try {
+        final id = User.id;
+        switch (category) {
+          case 'Assatjament':
+            category = 'harassment';
+            break;
+          case 'Spam':
+            category = 'spam';
+            break;
+          case 'Contingut inadequat':
+            category = 'inappropriate content';
+            break;
+          case 'Discurs d\'odi':
+            category = 'hate speech';
+            break;
+          case 'Informació falsa':
+            category = 'false information';
+            break;
+          case 'Altres':
+            category = 'other';
+            break;
+          default:
+            category = 'other';
+            break;
+        }
+        print(category);
+        if (comment == '' || comment == null) comment = "L'usuari amb id: $id, no ha deixat cap comentari";
+        print(ReportApis.getReportEventUrl(event.code));
+        final response = await dio.post(
+          ReportApis.getReportEventUrl(event.code),
+          data: {
+            'type': category,
+            'comment': comment,
+          },
+        ); 
+        print(response.data);
+      return response.statusCode;
+      } catch (e) {
+        print(e);
+        return null;
+     }
+     
+  }
+}
+
 
   static Future<int> enviarFormulari(
     String formulari_name,

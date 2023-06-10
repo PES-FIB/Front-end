@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../controllers/userController.dart';
@@ -10,7 +8,6 @@ class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -20,8 +17,24 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _initLogin();
+  }
 
+  Future<void> _initLogin() async {
+    bool isLoggedIn = await UserController(context).initPrefs();
+    setState(() {
+      login = isLoggedIn;
+      if (login) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(context, 'Sessió de l\'usuari recuperada correctament'));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -34,21 +47,31 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   Image.asset('assets/cultura_c2.png', height: 250),
                   SizedBox(height: 30),
-                  const Text(
-                    'Inicia Sessió',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  Visibility(
+                    visible: !login,
+                    child: const Text(
+                      'Inicia Sesión',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Email'),
-                    controller: _emailController,
+                  Visibility(
+                    visible: !login,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Correu electrònic'),
+                          controller: _emailController,
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: const InputDecoration(labelText: 'Contrasenya'),
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 20),
                   !login
                       ? Column(
                           children: [
@@ -60,34 +83,49 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               onPressed: () async {
-                                //obtengo los valores de los campos
+                                // Obtener los valores de los campos
                                 String email = _emailController.text;
                                 String password = _passwordController.text;
-                                setState(() {
-                                  login = true;
-                                });
-                                try {
-                                  //llamo a la funcion de login
-                                  int statusCode = await userController
-                                      .loginUser(email, password);
-                                  if (statusCode == 200) {
-                                    userController.realize_login(context);
-                                  } else {
-                                    setState(() {
-                                      login = false;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        customSnackbar(context,
-                                            'Usuario i/o contraseña incorrectos'));
-                                  }
-                                } catch (error) {
+                                
+                                // Llamar a la función de inicio de sesión
+                                int statusCode = await UserController.loginUser(email, password);
+                                if (statusCode == 200) {
                                   setState(() {
-                                    login = false;
+                                    login = true;
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackbar(context, 'Usuari loguejat correctament'));
+                                  UserController.realize_login(context);
+                                  
+                                } else if (statusCode == -1) {
+                                  // ignore: use_build_context_synchronously
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        alignment: Alignment.center,
+                                        content: Text('Usuari bloquejat per l\'administració del sistema!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.redAccent), textAlign: TextAlign.center,),
+                                      );
+                                    },
+                                  );
+                                } else if (statusCode == 400) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                       customSnackbar(context,
-                                          'Fallo de connexión al intentar iniciar sesión'));
-                                }
+                                          'Introdueix un usuari i contrasenya'));
+                                          
+                                  _emailController.clear();
+                                  _passwordController.clear();
+                                } else if (statusCode == 401) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackbar(context,
+                                          'Usuari i/o contrasenya incorrectes'));
+                                  _emailController.clear();
+                                  _passwordController.clear();
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackbar(context,
+                                        'Error de conexió al intentar iniciar la sessió'));
+                                } 
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -101,28 +139,43 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             TextButton(
-                              child: Text('Crear una nueva cuenta',
+                              child: Text('Crea un nou compte',
                                   style: TextStyle(color: Colors.redAccent)),
                               onPressed: () async {
-                                userController.to_signUp(context);
+                                UserController.to_signUp(context);
                               },
                             ),
-                            //espacio para el boton de google
                             const SizedBox(height: 20),
-                            //un flatbutton para el boton de google
                             SignInButton(
                               Buttons.Google,
-                              onPressed: ()  async {
-                                await userController.googleLogin(context);
+                              onPressed: () async {
+                                bool success = await UserController.googleLogin(context);
+                                if (success) {
+                                  setState(() {
+                                    login = true;
+                                  });
+                                  // ignore: use_build_context_synchronously
+                                  UserController.realize_login(context);
+                                }
                               },
                             ),
                           ],
                         )
-                      : SizedBox(
-                          child: SpinKitFadingCircle(
-                          size: MediaQuery.of(context).size.height*0.08,
-                          color: Colors.redAccent,
-                        )),
+                      : Column(
+                          children: [
+                            SizedBox(
+                              child: SpinKitFadingCircle(
+                                size: MediaQuery.of(context).size.height * 0.08,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Carregant els events...',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),

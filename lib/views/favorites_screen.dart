@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:prova_login/views/createTask_screen.dart';
-import 'package:prova_login/views/task_screen.dart';
+import '../views/createTask_screen.dart';
+import '../views/task_screen.dart';
 import 'styles/custom_snackbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../models/Event.dart';
@@ -139,7 +139,7 @@ class _FavoritesState extends State<Favorites> {
                                   color: Colors.redAccent),
                               onPressed: () async {
                                 int downloadResult =
-                                    await userController.exportCalendar(
+                                    await UserController.exportCalendar(
                                         '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics');
                                 setState(() {
                                   statusDownload = 1;
