@@ -232,6 +232,7 @@ class UserController {
       AppEvents.eventsList = await EventsController.getAllEvents();
       AppEvents.mapEvents = await EventsController.getMapEvents();
       AppEvents.ambits = await EventsController.getAllAmbits();
+      AppEvents.userForms = await EventsController.getUserForms();
       AppEvents.savedChanged = false;
 
       // ignore: prefer_interpolation_to_compose_strings
