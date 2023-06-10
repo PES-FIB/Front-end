@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import '../controllers/reviews_controller.dart';
-import '../controllers/userController.dart';
+import 'package:prova_login/controllers/reviews_controller.dart';
+import 'package:prova_login/controllers/userController.dart';
+import 'email_screen.dart';
 import '../views/userApplications.dart';
 import 'login_page.dart';
 import '../models/User.dart';
@@ -165,10 +166,7 @@ class _PerfilState extends State<Perfil> {
                       title: 'Compartir Perfil',
                       icon: LineAwesomeIcons.share_square,
                       onPress: () {}),
-                  ProfileWidget(
-                      title: 'Ajuda',
-                      icon: LineAwesomeIcons.question,
-                      onPress: () {})
+                  ProfileWidget(title: 'Contacte', icon: Icons.mail, onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Contacte()));})
                 ],
               ),
             )
