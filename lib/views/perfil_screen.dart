@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:prova_login/controllers/reviews_controller.dart';
 import 'package:prova_login/controllers/userController.dart';
+import 'package:prova_login/views/userApplications.dart';
 import 'login_page.dart';
 import '../models/User.dart';
 import 'perfil_config.dart';
@@ -18,18 +19,16 @@ class Perfil extends StatefulWidget {
 }
 
 class _PerfilState extends State<Perfil> {
-
-Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
-  // Show a dialog and wait for it to be popped
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return createForm();
-    },
-  );
-  setState(() {
-  });
-}
+  Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
+    // Show a dialog and wait for it to be popped
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return createForm();
+      },
+    );
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +57,17 @@ Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
                               response = await userController.logOut();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                    customSnackbar(context,
-                                        'No s\'ha pogut tancar sessió'));
+                                  customSnackbar(
+                                      context, 'No s\'ha pogut tancar sessió'));
                             } finally {
                               if (response == 200) {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushReplacement(MaterialPageRoute(
-                                        builder: (context) => LoginPage()));
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                  (route) =>
+                                      false, // Condition to remove all routes
+                                );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     customSnackbar(context,
@@ -83,8 +86,7 @@ Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
                             tooltip: 'Configuració',
                             style: IconButton.styleFrom(shape: CircleBorder()),
                             onPressed: () async {
-                              await Navigator.of(context,
-                                      rootNavigator: true)
+                              await Navigator.of(context, rootNavigator: true)
                                   .push(
                                 MaterialPageRoute(
                                     builder: (context) => PerfilConfig()),
@@ -108,7 +110,7 @@ Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
                         child: IconButton(
                           tooltip: 'Sol·licitud d\'event',
                           style: IconButton.styleFrom(shape: CircleBorder()),
-                          onPressed: ()  {
+                          onPressed: () {
                             _showDialogAndThenUpdateState(context);
                           },
                           icon: Icon(LineAwesomeIcons.folder_plus,
@@ -117,38 +119,60 @@ Future<void> _showDialogAndThenUpdateState(BuildContext context) async {
                       )
                     ],
                   ),
-                      SizedBox(height: 5),
+                  SizedBox(height: 5),
                 ],
               ),
             ),
-              SizedBox(
-                width: 180,
-                height: 180,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: UserImage(),
-                  
-                ),
+            SizedBox(
+              width: 180,
+              height: 180,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: UserImage(),
               ),
-              const SizedBox(height: 10),  
-                Text(User.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
-                Text(User.email),
-              const Divider(),
-              const SizedBox(height: 20),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ProfileWidget(title: 'Les meves valoracions', icon: LineAwesomeIcons.comments, onPress: (){reviewController.toUserReviews();}),
-                    ProfileWidget(title: 'Entrades', icon: LineAwesomeIcons.alternate_ticket, onPress: (){}),
-                    ProfileWidget(title: 'Compartir Perfil', icon: LineAwesomeIcons.share_square, onPress: (){}),
-                    ProfileWidget(title: 'Ajuda', icon: LineAwesomeIcons.question, onPress: (){})
-                  ],
-                ),
-              )
-
-
-            ],
-          ), 
+            ),
+            const SizedBox(height: 10),
+            Text(User.name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+            Text(User.email),
+            const Divider(),
+            const SizedBox(height: 20),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  ProfileWidget(
+                      title: 'Les meves valoracions',
+                      icon: LineAwesomeIcons.comments,
+                      onPress: () {
+                        reviewController.toUserReviews();
+                      }),
+                  ProfileWidget(
+                      title: 'Les meves sol·licituds',
+                      icon: LineAwesomeIcons.folder,
+                      onPress: () async {
+                        await Navigator.of(context, rootNavigator: true)
+                                  .push(
+                                MaterialPageRoute(
+                                    builder: (context) => userApplications()),
+                              );
+                      }),
+                  ProfileWidget(
+                      title: 'Entrades',
+                      icon: LineAwesomeIcons.alternate_ticket,
+                      onPress: () {}),
+                  ProfileWidget(
+                      title: 'Compartir Perfil',
+                      icon: LineAwesomeIcons.share_square,
+                      onPress: () {}),
+                  ProfileWidget(
+                      title: 'Ajuda',
+                      icon: LineAwesomeIcons.question,
+                      onPress: () {})
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

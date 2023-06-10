@@ -942,6 +942,8 @@ class EventsController {
       return -2;
     }
     if (response.statusCode == 201) {
+      Formulari f = Formulari(response.data['data']['formulari_name'],response.data['data']['denomination_event'],response.data['data']['formulari_status']);
+      AppEvents.userForms.add(f);
       return 1;
     } else {
       return -1;
@@ -961,6 +963,8 @@ class EventsController {
     if (r.statusCode == 200) {
       if (r.data['data'] != null) {
         for (int i = 0; i < r.data['data'].length; ++i) {
+          Formulari f = Formulari(r.data['data'][i]['formulari_name'],r.data['data'][i]['denomination_event'],r.data['data'][i]['formulari_status']);
+          listReturn.add(f);
         }
       }
     }
