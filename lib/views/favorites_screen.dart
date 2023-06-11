@@ -138,9 +138,15 @@ class _FavoritesState extends State<Favorites> {
                               icon: Icon(LineAwesomeIcons.download,
                                   color: Colors.redAccent),
                               onPressed: () async {
+                                String calNom;
+                                if (User.name.contains(' ')) {
+                                  calNom = '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics';
+                                }
+                                else {
+                                  calNom = '${User.name}EventCal.ics';
+                                }
                                 int downloadResult =
-                                    await UserController.exportCalendar(
-                                        '${User.name.substring(0, User.name.indexOf(' '))}EventCal.ics');
+                                    await UserController.exportCalendar(calNom);
                                 setState(() {
                                   statusDownload = 1;
                                 });

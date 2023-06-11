@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';  
 import '../controllers/eventsController.dart';
 import '../models/AppEvents.dart';
 import '../models/User.dart';
@@ -19,6 +20,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class UserController {
   final BuildContext context;
 
@@ -164,13 +166,13 @@ class UserController {
     return -2;
   }
   try {
-    final directory = Directory("/storage/emulated/0/Download");
-    final file = File('${directory.path}/$fileName');
+    final directory = await DownloadsPathProvider.downloadsDirectory;
     dio.options.headers['Content-Type'] = 'application/octet-stream';
     dio.options.responseType = ResponseType.bytes;
-    Response response = await dio.get(userApis.getExportCalendar());
-    file.writeAsBytesSync(response.data);
+    await dio.download(userApis.getExportCalendar(), '${directory?.path}/$fileName');
+
   } catch (e) {
+    print(e);
     return -1;
   }
   return 1;
