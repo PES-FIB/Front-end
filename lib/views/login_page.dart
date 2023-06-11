@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                   Visibility(
                     visible: !login,
                     child: const Text(
-                      'Inicia Sesión',
+                      'Inicia Sessió',
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
