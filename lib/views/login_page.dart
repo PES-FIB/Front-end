@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(height: 10),
                             const Text(
-                              'Carregant els events...',
+                              'Carregant els esdeveniments...',
                               style: TextStyle(fontSize: 16),
                             ),
                           ],

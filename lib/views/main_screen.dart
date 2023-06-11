@@ -5,7 +5,6 @@ import '../views/EventList.dart';
 import 'map_screen.dart';
 import 'favorites_screen.dart';
 import 'perfil_screen.dart';
-import '../models/Event.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -40,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(LineAwesomeIcons.calendar),
-                label: 'events',
+                label: 'agenda',
               ),
               BottomNavigationBarItem(
                 icon: Icon(LineAwesomeIcons.map_marker),
@@ -48,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(LineAwesomeIcons.heart),
-                label: 'favs',
+                label: 'preferits',
               ),
               BottomNavigationBarItem(
                 icon: Icon(LineAwesomeIcons.user),
