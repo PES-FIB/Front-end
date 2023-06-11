@@ -38,6 +38,7 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   Widget build(BuildContext context) {
   DateTime fechaEvento = DateTime.parse(widget.event.finalDate);
+  String mostrarFecha = widget.event.finalDate;
   DateTime fechaActual = DateTime.now();
   final _reviewController = ReviewController(context);
   final eventName = widget.event.title;
@@ -65,7 +66,7 @@ class _ReviewPageState extends State<ReviewPage> {
               Column(
                 children: [
                   SizedBox(height: 15.0),
-                  Text("L'event encara no ha començat, per tant, encara no es pot valorar", style: TextStyle(fontSize: 15, color: Colors.redAccent, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+                  Text("L'event encara no ha acabat (data de fí: ${mostrarFecha.substring(0, 10)}), per tant, encara no es pot valorar", style: TextStyle(fontSize: 15, color: Colors.redAccent, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ],
               ),
             SizedBox(height: 15.0),
