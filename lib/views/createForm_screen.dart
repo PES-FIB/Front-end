@@ -185,7 +185,6 @@ class _createFormState extends State<createForm> {
                                   } else {
                                     selectedValues.remove(ambit);
                                   }
-                                  print('selectedValues: $selectedValues');
                                 });
                               },
                             );

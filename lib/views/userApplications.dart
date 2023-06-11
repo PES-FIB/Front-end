@@ -131,8 +131,6 @@ class _userApplicationsState extends State<userApplications> {
                                     ],
                                   ),
                                   onTap: () {
-                                    print(
-                                        'quin estatus esta el form: ${f.formulari_status}');
                                   }),
                             );
                           }))

@@ -41,7 +41,6 @@ class UserController {
     AppEvents.mapEvents = await EventsController.getMapEvents();
     AppEvents.ambits = await EventsController.getAllAmbits();
     AppEvents.savedChanged = false;
-    print("AMBITS FETCHED");
     getUserInfo();
     return response.statusCode!;
   }
@@ -80,7 +79,6 @@ class UserController {
     }
     User.setValues(response.data['user']['id'], response.data['user']['name'],
         response.data['user']['email'], photoUrl);
-    print("User: ${User.name} ${User.email} ${User.photoUrl}");
   }
 
   static Future<bool> updateUserInfo(String name, String email) async {
@@ -102,8 +100,6 @@ class UserController {
     final ImagePicker imagePicker = ImagePicker();
     final XFile? pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
     Response response;
-    print(pickedImage!.path);
-    print(pickedImage.name);
     
     if (pickedImage != null) {
       try {
@@ -112,7 +108,6 @@ class UserController {
             'profileImage': await MultipartFile.fromFile(pickedImage.path, contentType: MediaType('image', 'png')), // Ajusta el tipo de contenido según el formato de imagen),
           }
         );
-        print(formData.files.first.value.filename);
         response = await dio.put(
           userApis.uploadImage(),
           data: formData,
@@ -129,10 +124,8 @@ class UserController {
       } catch (e) {
         if (e is DioError) {
           if (e.response != null) {
-            print(e.response?.data);
           }
         } else {
-          print(e);
         }
         return false;
       }
@@ -172,7 +165,6 @@ class UserController {
     await dio.download(userApis.getExportCalendar(), '${directory?.path}/$fileName');
 
   } catch (e) {
-    print(e);
     return -1;
   }
   return 1;
@@ -225,11 +217,9 @@ class UserController {
     } else if (response.statusCode == 200){
       String? rawCookie = response.headers['set-cookie']![0];
       String? cookie = rawCookie.split(';')[0];
-      print("Cookie: $cookie");
       await manageCookie(cookie);
       await UserController.getUserInfo();
     }
-    print(response.statusCode!);
     return response.statusCode!;
   }
 
@@ -303,7 +293,6 @@ class UserController {
         );
         String? rawCookie = response.headers['set-cookie']![0];
         String? cookie = rawCookie.split(';')[0];
-        print("Cookie: $cookie");
         await manageCookie(cookie);
         //logejar a l'usuari dins de l'aplicació
         await UserController.getUserInfo();
@@ -339,10 +328,8 @@ class UserController {
   static Future<void> manageCookie(String? cookie) async {
     if (cookie != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      print('prefs initialized');
       prefs.setString('Cookie', cookie);
       dio.options.headers['Cookie'] = cookie;
-      print("cookie saved");
     }
   }
   static Future<void> clearCookie() async {
@@ -354,10 +341,8 @@ class UserController {
   Future<bool> initPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? cookie = prefs.getString('Cookie');
-    print('Cookie: $cookie');
     if (cookie != null) {
       dio.options.headers['Cookie'] = cookie;
-      print("cookie loaded");
       await getUserInfo();
       if(User.id != -1) {
         realize_login(context);
@@ -365,7 +350,6 @@ class UserController {
       }
       return false;
     }
-    print('prefs initialized');
     return false;
   }
 }

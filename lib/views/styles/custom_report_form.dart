@@ -75,7 +75,6 @@ class CustomReportFormState extends State<CustomReportForm> {
         ElevatedButton(
           child: Text('Cancelar'),
           onPressed: () {
-            print("report cancelled");
             Navigator.of(context).pop();
           },
         ),
@@ -85,9 +84,6 @@ class CustomReportFormState extends State<CustomReportForm> {
             if (selectedValue == null) {
               ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al crear el report, necesites escullir un tipus de report"));
             } else {
-              print(selectedValue);
-              print(reportComment.text);
-              print(User.id);
               final status = await _reviewController.reportReview(widget.review, selectedValue!, reportComment.text);
               if (status == 200) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració reportada exitosament"));
               else if(status == 400) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració, ja has reportat aquesta valoració"));
@@ -170,7 +166,6 @@ class CustomReportEventFormState extends State<CustomReportEventForm> {
         ElevatedButton(
           child: Text('Cancelar'),
           onPressed: () {
-            print("report cancelled");
             Navigator.of(context).pop();
           },
         ),
@@ -180,9 +175,6 @@ class CustomReportEventFormState extends State<CustomReportEventForm> {
             if (selectedValue == null) {
               ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al crear el report, necesites escullir un tipus de report"));
             } else {
-              print(selectedValue);
-              print(reportComment.text);
-              print(User.id);
               final status = await _eventsController.reportEvent(widget.event, selectedValue!, reportComment.text);
               if (status == 200) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració reportada exitosament"));
               else if(status == 400) ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al reportar la valoració, ja has reportat aquesta valoració"));

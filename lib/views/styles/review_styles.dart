@@ -98,9 +98,6 @@ class _ReviewCardState extends State<ReviewCard> {
                     radius: 100,
                     child: Text("Reportar valoració"),
                     onTap: () {
-                      print("Reportar");
-                      print(User.id);
-                      print(idActivity);
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -168,8 +165,6 @@ Column MakeReview(BuildContext context, Event event) {
         child: Text("Enviar"),
         onPressed: () async {
           valoracionUsuario.contenido = reviewController.text;
-          print(valoracionUsuario.contenido);
-          print(valoracionUsuario.score);
           //añadir la review a la lista de reviews
           final status = await _reviewController.addReview(valoracionUsuario);
           if(status == 200) {
@@ -207,7 +202,6 @@ Column MyReview(BuildContext context, Event event, Review review) {
             child: Text("Delete"),
             onPressed: () async{
               //Eliminar la review de la lista de reviews
-              print(valoracionUsuario.idReview);
               final status = await _reviewController.deleteMyReview(valoracionUsuario);
               if(status == 200) {
                 ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
@@ -221,8 +215,6 @@ Column MyReview(BuildContext context, Event event, Review review) {
           child: Text("Update"),
           onPressed: () async{
             valoracionUsuario.contenido = reviewController.text;
-            print(valoracionUsuario.contenido);
-            print(valoracionUsuario.score);
             //Actualizar la review en la lista de reviews
             final status = await _reviewController.updateMyReview(valoracionUsuario);
             if(status == 200) {
@@ -289,7 +281,6 @@ Card UserReview(BuildContext context, Review review){
                 child: Text("Delete"),
                 onTap: () async {
                   // Eliminar la review de la lista de reviews
-                  print(review.idReview);
                   final status = await _reviewController.deleteMyReview(review);
                   if (status == 200) {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Valoració eliminada exitosament"));
@@ -297,7 +288,6 @@ Card UserReview(BuildContext context, Review review){
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar(context, "Error al eliminar la valoració"));
                   }
-                  print("valoració eliminada");
                 },
               ),
               SizedBox(width: 120.0),
@@ -305,9 +295,6 @@ Card UserReview(BuildContext context, Review review){
                 child: Text("Update"),
                 onTap: () async {
                   review.contenido = reviewController.text;
-                  print(review.contenido);
-                  print(review.score);
-                  print(review.idReview);
                   // Actualizar la review en la lista de reviews
                   final status = await _reviewController.updateMyReview(review);
                   if (status == 200) {

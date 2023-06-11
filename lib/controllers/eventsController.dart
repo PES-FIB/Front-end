@@ -143,7 +143,6 @@ class EventsController {
       }
       return []; // return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
       return []; // return an empty list if there was an error
     }
   }
@@ -277,7 +276,6 @@ class EventsController {
       }
       return []; // return an empty list if there was an error
     } catch (error) {
-      print(error.toString());
       return []; // return an empty list if there was an error
     }
   }
@@ -757,7 +755,6 @@ class EventsController {
 
       final response = await dio.get(
           'http://nattech.fib.upc.edu:40331/api/v1/events/search?initial_date=$initDate&final_date=$finalDate');
-      print(response.statusCode);
       if (response.statusCode == 200) {
         if (response.data['data'] != null) {
           for (int i = 0; i < response.data['data'].length; ++i) {
@@ -876,7 +873,6 @@ class EventsController {
       }
       return [];
     } catch (error) {
-      print(error.toString());
       return [];
     }
   }
@@ -912,10 +908,8 @@ class EventsController {
           category = 'other';
           break;
       }
-      print(category);
       if (comment == '' || comment == null)
         comment = "L'usuari amb id: $id, no ha deixat cap comentari";
-      print(ReportApis.getReportEventUrl(event.code));
       final response = await dio.post(
         ReportApis.getReportEventUrl(event.code),
         data: {
@@ -923,10 +917,8 @@ class EventsController {
           'comment': comment,
         },
       );
-      print(response.data);
       return response.statusCode;
     } catch (e) {
-      print(e);
       return null;
     }
   }
@@ -952,10 +944,8 @@ class EventsController {
     try {
       String locationUnified =
           '$address_event, $postal_code_event ${municipality_event.toUpperCase()}';
-      print('locationUnified: $locationUnified');
       locations = await locationFromAddress(locationUnified);
     } catch (e) {
-      print('Error, ubicació no trobada: $e');
       return -4;
     }
     Response response;
@@ -984,7 +974,6 @@ class EventsController {
         'app_image_event': appImage
       });
     } catch (e) {
-      print('Error, no s\'ha pogut enviar el formulari: $e');
       return -2;
     }
     if (response.statusCode == 201) {
@@ -1006,7 +995,6 @@ class EventsController {
       r = await dio
           .get('http://nattech.fib.upc.edu:40331/api/v1/formulari/${User.id}');
     } catch (e) {
-      print('error = ${e.toString()}');
       return listReturn;
     }
     if (r.statusCode == 200) {
