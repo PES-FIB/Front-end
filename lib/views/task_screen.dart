@@ -77,136 +77,138 @@ repeteix = widget.t.repeats;
         width: MediaQuery.of(context).size.width * 0.5,
         child:
         !eliminar? 
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TextFormField(
-              enabled: edit,
-              controller: nameController,
-              decoration: const InputDecoration(
-                  labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
-            ),
-            TextFormField(
-              enabled: edit,
-              maxLines: 3,
-              controller: descriptionController,
-              decoration: const InputDecoration(
-                  labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
-            ),
-            edit?
-            Row(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: TextButton(
-                    onPressed: () {
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (BuildContext context) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: CupertinoDatePicker(
-                            backgroundColor: Colors.white,
-                            initialDateTime: task_ini,
-                            onDateTimeChanged: (DateTime newTime) {
-                              setState(() {
-                                task_ini = newTime;
-                              });
-                            },
-                            use24hFormat: true,
-                            mode: CupertinoDatePickerMode.dateAndTime,
+        SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              TextFormField(
+                enabled: edit,
+                controller: nameController,
+                decoration: const InputDecoration(
+                    labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
+              ),
+              TextFormField(
+                enabled: edit,
+                maxLines: 3,
+                controller: descriptionController,
+                decoration: const InputDecoration(
+                    labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
+              ),
+              edit?
+              Row(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: TextButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            child: CupertinoDatePicker(
+                              backgroundColor: Colors.white,
+                              initialDateTime: task_ini,
+                              onDateTimeChanged: (DateTime newTime) {
+                                setState(() {
+                                  task_ini = newTime;
+                                });
+                              },
+                              use24hFormat: true,
+                              mode: CupertinoDatePickerMode.dateAndTime,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}',
-                      style: TextStyle(fontSize: 15, color: Colors.black),
+                        );
+                      },
+                      child: Text(
+                        'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}',
+                        style: TextStyle(fontSize: 15, color: Colors.black),
+                      ),
+                    ),
+                  )
+                ],
+              ): Row(children: [Text('Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}', style: TextStyle(fontSize: 15, color: Colors.black))]),
+              edit?
+              Row(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: TextButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            child: CupertinoDatePicker(
+                              backgroundColor: Colors.white,
+                              initialDateTime: task_fi,
+                              onDateTimeChanged: (DateTime newTime) {
+                                setState(() {
+                                  task_fi = newTime;
+                                });
+                              },
+                              use24hFormat: true,
+                              mode: CupertinoDatePickerMode.dateAndTime,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                          'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',
+                          style: TextStyle(fontSize: 15, color: Colors.black)),
                     ),
                   ),
-                )
-              ],
-            ): Row(children: [Text('Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}', style: TextStyle(fontSize: 15, color: Colors.black))]),
-            edit?
-            Row(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: TextButton(
-                    onPressed: () {
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (BuildContext context) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: CupertinoDatePicker(
-                            backgroundColor: Colors.white,
-                            initialDateTime: task_fi,
-                            onDateTimeChanged: (DateTime newTime) {
-                              setState(() {
-                                task_fi = newTime;
-                              });
-                            },
-                            use24hFormat: true,
-                            mode: CupertinoDatePickerMode.dateAndTime,
-                          ),
-                        ),
-                      );
+                ],
+              ): Row(
+                children: [
+                  Text('Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',style: TextStyle(fontSize: 15, color: Colors.black)),
+                ],
+              ),
+              edit?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('Es repeteix?    ', style: TextStyle(fontSize: 16),),
+                  DropdownButton<String>(
+                    value: repeteix,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        repeteix = newValue;
+                      });
                     },
-                    child: Text(
-                        'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',
-                        style: TextStyle(fontSize: 15, color: Colors.black)),
-                  ),
-                ),
-              ],
-            ): Row(
-              children: [
-                Text('Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',style: TextStyle(fontSize: 15, color: Colors.black)),
-              ],
-            ),
-            edit?
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text('Es repeteix?    ', style: TextStyle(fontSize: 16),),
-                DropdownButton<String>(
-                  value: repeteix,
-                  onChanged: (String? newValue) {
+                    items: <String>['NO', 'Diàriament', 'Setmanalment', 'Mensualment', 'Anualment']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ],
+              ): widget.t.repeats == ''?
+              Row(
+                children: [
+                  Text('Es repeteix?  NO'),
+                ],
+              ): Row(
+                children: [
+                  Text('Es repeteix?  ${widget.t.repeats}'),
+                ],
+              ),
+              edit?
+              Row(
+                children: [
+                  Text('Actualitzar totes les \ntasques relacionades', maxLines: 2),
+                  Checkbox(value: cascadeUpdate, onChanged: (value) {
                     setState(() {
-                      repeteix = newValue;
+                      cascadeUpdate = !cascadeUpdate;
                     });
-                  },
-                  items: <String>['NO', 'Diàriament', 'Setmanalment', 'Mensualment', 'Anualment']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )
-              ],
-            ): widget.t.repeats == ''?
-            Row(
-              children: [
-                Text('Es repeteix?  NO'),
-              ],
-            ): Row(
-              children: [
-                Text('Es repeteix?  ${widget.t.repeats}'),
-              ],
-            ),
-            edit?
-            Row(
-              children: [
-                Text('Actualitzar totes les \ntasques relacionades', maxLines: 2),
-                Checkbox(value: cascadeUpdate, onChanged: (value) {
-                  setState(() {
-                    cascadeUpdate = !cascadeUpdate;
-                  });
-                  
-                }
-                ),
-              ],
-            ):SizedBox(height: 0)
-          ],
+                    
+                  }
+                  ),
+                ],
+              ):SizedBox(height: 0)
+            ],
+          ),
         ):SizedBox(
           child: Column(children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.05),

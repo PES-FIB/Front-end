@@ -20,8 +20,6 @@ class ReviewController{
 
   //obte las reviews de un event
   Future<List<Review>> getReviews(String idActivity) async {
-    print(idActivity);
-    print(reviewApi.getReviewsUrl(idActivity));
     final response = await dio.get(
       reviewApi.getReviewsUrl(idActivity)
     );
@@ -52,7 +50,6 @@ class ReviewController{
     final List<Review> reviews = [];
     final myReviews = response.data['reviews'];
     for (var review in myReviews) {
-      print(review);
       //busca el nombre del evento
       Event? event = AppEvents.eventsList.firstWhereOrNull((event) => event.code == review["EventCode"]);
       if (event != null) {
@@ -64,7 +61,6 @@ class ReviewController{
 
 
   Future<int?> addReview(Review review) async {
-    print(reviewApi.getCreateReviewUrl(review.idActivity));
     final response = await dio.post(
       reviewApi.getCreateReviewUrl(review.idActivity),
       data: {
@@ -76,17 +72,13 @@ class ReviewController{
   }
 
   Future<int?> deleteMyReview(Review review) async {
-    print(reviewApi.getDeleteReviewUrl(review.idActivity));
     final response = await dio.delete(
       reviewApi.getDeleteReviewUrl(review.idActivity),
     );
-    print(response.statusCode);
-    print("fet delete");
     return response.statusCode;
   }
 
   Future<int?> updateMyReview(Review review) async {
-    print(reviewApi.getUpdateReviewUrl(review.idActivity));
     final response = await dio.patch(
       reviewApi.getUpdateReviewUrl(review.idActivity),
       data: {
@@ -127,9 +119,7 @@ class ReviewController{
             category = 'other';
             break;
         }
-        print(category);
         if (comment == '' || comment == null) comment = "L'usuari amb id: $id, no ha deixat cap comentari";
-        print(ReportApis.getReportReviewUrl(review.idReview));
         final response = await dio.post(
           ReportApis.getReportReviewUrl(review.idReview),
           data: {
@@ -137,10 +127,8 @@ class ReviewController{
             'comment': comment,
           },
         ); 
-        print(response.data);
       return response.statusCode;
       } catch (e) {
-        print(e);
         return null;
      }
      
@@ -166,7 +154,6 @@ class ReviewController{
   
 
   void toReviewsAgain(Event event) async {
-    print('recarrga de les valoracions');
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

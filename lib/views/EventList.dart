@@ -1,12 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'event_screen.dart';
 import '../controllers/eventsController.dart';
-import '../controllers/mapController.dart';
 import '../models/Event.dart';
 import '../models/AppEvents.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class EventList extends StatefulWidget {
   const EventList({
@@ -106,7 +103,6 @@ class _EventListState extends State<EventList> {
     List<String> initDate = dirtyInitDate[0].split("-");
     //month/day/year
     String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
-    print(queryInitDate);
 
     //year-month-day
     List<String> dirtyFinalDate = selectedDates.end.toString().split(" ");
@@ -115,7 +111,6 @@ class _EventListState extends State<EventList> {
     //month/day/year
     String queryFinalDate =
         finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
-    print(queryFinalDate);
 
     dataIni = initDate[2] + "/" + initDate[1] + "/" + initDate[0];
     dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0];

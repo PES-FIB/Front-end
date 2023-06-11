@@ -32,105 +32,107 @@ class _createTaskState extends State<createTask> {
       content: SizedBox(
         height: MediaQuery.of(context).size.height * 0.4,
         width: MediaQuery.of(context).size.width * 0.5,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextFormField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                  labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
-            ),
-            TextFormField(
-              controller: descriptionController,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                  labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: TextButton(
-                    onPressed: () {
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (BuildContext context) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: CupertinoDatePicker(
-                            backgroundColor: Colors.white,
-                            initialDateTime: task_ini,
-                            onDateTimeChanged: (DateTime newTime) {
-                              setState(() {
-                                task_ini = newTime;
-                              });
-                            },
-                            use24hFormat: true,
-                            mode: CupertinoDatePickerMode.dateAndTime,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                    labelText: 'Nom', labelStyle: TextStyle(fontSize: 12)),
+              ),
+              TextFormField(
+                controller: descriptionController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                    labelText: 'Descripció', labelStyle: TextStyle(fontSize: 12)),
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: TextButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            child: CupertinoDatePicker(
+                              backgroundColor: Colors.white,
+                              initialDateTime: task_ini,
+                              onDateTimeChanged: (DateTime newTime) {
+                                setState(() {
+                                  task_ini = newTime;
+                                });
+                              },
+                              use24hFormat: true,
+                              mode: CupertinoDatePickerMode.dateAndTime,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}',
-                      style: TextStyle(fontSize: 15, color: Colors.black),
+                        );
+                      },
+                      child: Text(
+                        'Data Inicial: ${task_ini.toString().substring(0, task_ini.toString().indexOf(' '))}  ${task_ini.toString().substring(task_ini.toString().indexOf(' '), task_ini.toString().indexOf(' ')+6)}',
+                        style: TextStyle(fontSize: 15, color: Colors.black),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: TextButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            child: CupertinoDatePicker(
+                              backgroundColor: Colors.white,
+                              initialDateTime: task_fi,
+                              onDateTimeChanged: (DateTime newTime) {
+                                setState(() {
+                                  task_fi = newTime;
+                                });
+                              },
+                              use24hFormat: true,
+                              mode: CupertinoDatePickerMode.dateAndTime,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                          'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',
+                          style: TextStyle(fontSize: 15, color: Colors.black)),
                     ),
                   ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: TextButton(
-                    onPressed: () {
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (BuildContext context) => SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: CupertinoDatePicker(
-                            backgroundColor: Colors.white,
-                            initialDateTime: task_fi,
-                            onDateTimeChanged: (DateTime newTime) {
-                              setState(() {
-                                task_fi = newTime;
-                              });
-                            },
-                            use24hFormat: true,
-                            mode: CupertinoDatePickerMode.dateAndTime,
-                          ),
-                        ),
-                      );
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('Es repeteix?    ', style: TextStyle(fontSize: 14),),
+                  DropdownButton<String>(
+                    value: repeteix,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        repeteix = newValue;
+                      });
                     },
-                    child: Text(
-                        'Data Final: ${task_fi.toString().substring(0, task_fi.toString().indexOf(' '))}  ${task_fi.toString().substring(task_fi.toString().indexOf(' '), task_fi.toString().indexOf(' ')+6)}',
-                        style: TextStyle(fontSize: 15, color: Colors.black)),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text('Es repeteix?    ', style: TextStyle(fontSize: 14),),
-                DropdownButton<String>(
-                  value: repeteix,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      repeteix = newValue;
-                    });
-                  },
-                  items: <String>['NO', 'Diàriament', 'Setmanalment', 'Mensualment', 'Anualment']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )
-              ],
-            )
-          ],
+                    items: <String>['NO', 'Diàriament', 'Setmanalment', 'Mensualment', 'Anualment']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
       actions: [

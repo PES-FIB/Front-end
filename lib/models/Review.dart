@@ -30,8 +30,6 @@ class Review {
       ),
       onRatingUpdate: (value) {
         score = value.toInt();
-        print('score: $score');
-        print('value: $value');
       },
       
     );

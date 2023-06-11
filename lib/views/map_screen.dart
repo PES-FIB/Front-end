@@ -75,7 +75,6 @@ class MapScreenState extends State<MapScreen> {
     List<String> initDate = dirtyInitDate[0].split("-");
     //month/day/year
     String queryInitDate = initDate[1] + "/" + initDate[2] + "/" + initDate[0];
-    print(queryInitDate);
 
     //year-month-day
     List<String>  dirtyFinalDate = selectedDates.end.toString().split(" ");
@@ -83,7 +82,6 @@ class MapScreenState extends State<MapScreen> {
     List<String> finalDate = dirtyFinalDate[0].split("-");
     //month/day/year
     String queryFinalDate = finalDate[1] + "/" + finalDate[2] + "/" + finalDate[0];
-    print(queryFinalDate);
 
     dataIni = initDate[2] + "/" + initDate[1] + "/" + initDate[0]; 
     dataFi = finalDate[2] + "/" + finalDate[1] + "/" + finalDate[0]; 
@@ -106,8 +104,6 @@ class MapScreenState extends State<MapScreen> {
     startChecking();
     _fetchMarkers();
     _gps.startPositionStream(_handlePositionStream).catchError((e) { setState(() {_exception = e;});});
-    print("init state");
-    print(AppEvents.mapEvents);
   }
 
   @override
@@ -236,7 +232,6 @@ class MapScreenState extends State<MapScreen> {
                                 rangeSelected = false;
                               });
                               _fetchMarkers();
-                              print(AppEvents.mapEvents.length);
                             },
                           ),
                         ),

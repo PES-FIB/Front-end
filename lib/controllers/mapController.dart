@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import '../models/Event.dart';
 import '../models/AppEvents.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../utils/map_style.dart';
 import '../views/event_screen.dart';
-import '../views/map_screen.dart';
-import 'eventsController.dart';
 
 class MapController {
 

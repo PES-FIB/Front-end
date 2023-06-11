@@ -365,9 +365,6 @@ class _EventsState extends State<Events> {
                             radius: 100,
                             child: Text("Reportar event"),
                             onTap: () {
-                              print("Reportar");
-                              print(User.id);
-                              print(widget.event.code);
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {

@@ -34,10 +34,8 @@ class _PerfilState extends State<Perfil> {
   @override
   Widget build(BuildContext context) {
     final ReviewController reviewController = ReviewController(context);
-    final UserController userController = UserController(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           children: <Widget>[
             const SizedBox(height: 10),
             Padding(
@@ -125,7 +123,12 @@ class _PerfilState extends State<Perfil> {
                 ],
               ),
             ),
-            SizedBox(
+            Container(
+              height: MediaQuery.of(context).size.height*0.6,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
               width: 180,
               height: 180,
               child: ClipRRect(
@@ -158,20 +161,15 @@ class _PerfilState extends State<Perfil> {
                                     builder: (context) => userApplications()),
                               );
                       }),
-                  ProfileWidget(
-                      title: 'Entrades',
-                      icon: LineAwesomeIcons.alternate_ticket,
-                      onPress: () {}),
-                  ProfileWidget(
-                      title: 'Compartir Perfil',
-                      icon: LineAwesomeIcons.share_square,
-                      onPress: () {}),
                   ProfileWidget(title: 'Contacte', icon: Icons.mail, onPress: (){Navigator.push(context, MaterialPageRoute(builder: (context) => Contacte()));})
                 ],
               ),
             )
+                  ],
+                ),
+              ),
+            ),
           ],
-        ),
       ),
     );
   }
